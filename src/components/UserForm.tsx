@@ -1,4 +1,36 @@
-const UserForm = () => {
+interface Props {
+  name: string;
+  age: number;
+  weight: number;
+  height: number;
+  gender: string;
+  goal: string;
+  activity: string;
+  setName: (value: string) => void;
+  setAge: (value: number) => void;
+  setWeight: (value: number) => void;
+  setHeight: (value: number) => void;
+  setGender: (value: string) => void;
+  setGoal: (value: string) => void;
+  setActivity: (value: string) => void;
+}
+
+const UserForm = ({
+  name,
+  age,
+  weight,
+  height,
+  gender,
+  goal,
+  activity,
+  setName,
+  setAge,
+  setWeight,
+  setHeight,
+  setGender,
+  setGoal,
+  setActivity,
+}: Props) => {
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -17,6 +49,8 @@ const UserForm = () => {
                     id="name"
                     className="form-control"
                     placeholder="Your first name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                 </div>
               </div>
@@ -32,15 +66,21 @@ const UserForm = () => {
                   id="age"
                   className="form-control"
                   placeholder="Your age"
+                  value={age}
+                  onChange={(e) => setAge(Number(e.target.value))}
                 />
               </div>
               {/* Gender */}
               <br />
               <div className="col-auto">
-                <select className="form-select form-control">
+                <select
+                  className="form-select form-control"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                >
                   <option selected>Select your gender</option>
-                  <option value="1">Male</option>
-                  <option value="2">Female</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
                 </select>
               </div>
               {/* Weight */}
@@ -55,6 +95,8 @@ const UserForm = () => {
                   id="weight"
                   className="form-control"
                   placeholder="Your Weight"
+                  value={weight}
+                  onChange={(e) => setWeight(Number(e.target.value))}
                 />
               </div>
 
@@ -70,28 +112,42 @@ const UserForm = () => {
                   id="height"
                   className="form-control"
                   placeholder="Your Height"
+                  value={height}
+                  onChange={(e) => setHeight(Number(e.target.value))}
                 />
               </div>
 
               {/* Goal */}
               <br />
               <div className="col-auto">
-                <select className="form-select form-control">
+                <select
+                  className="form-select form-control"
+                  value={goal}
+                  onChange={(e) => setGoal(e.target.value)}
+                >
                   <option selected>Select your goal</option>
-                  <option value="1">Loose Weight</option>
-                  <option value="2">Maintain Weight</option>
-                  <option value="3">Gain Muscle</option>
+                  <option value="loose_weight">Loose Weight</option>
+                  <option value="maintain_weight">Maintain Weight</option>
+                  <option value="gain_muscle">Gain Muscle</option>
                 </select>
               </div>
 
               {/* Gender */}
               <br />
               <div className="col-auto">
-                <select className="form-select form-control">
+                <select
+                  className="form-select form-control"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                >
                   <option selected>Activity Level</option>
-                  <option value="1">Sedentary (Low Activity)</option>
-                  <option value="2">Moderately Active (Medium Activity)</option>
-                  <option value="3">Highly Active (High Activity)</option>
+                  <option value="low_activity">Sedentary (Low Activity)</option>
+                  <option value="medium_activity">
+                    Moderately Active (Medium Activity)
+                  </option>
+                  <option value="high_activity">
+                    Highly Active (High Activity)
+                  </option>
                 </select>
               </div>
 
