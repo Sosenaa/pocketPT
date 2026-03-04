@@ -1,43 +1,32 @@
-interface Props {
-  name: string;
-  age: number;
-  weight: number;
-  height: number;
-  gender: string;
-  goal: string;
-  activity: string;
-  setName: (value: string) => void;
-  setAge: (value: number) => void;
-  setWeight: (value: number) => void;
-  setHeight: (value: number) => void;
-  setGender: (value: string) => void;
-  setGoal: (value: string) => void;
-  setActivity: (value: string) => void;
-}
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const UserForm = ({
-  name,
-  age,
-  weight,
-  height,
-  gender,
-  goal,
-  activity,
-  setName,
-  setAge,
-  setWeight,
-  setHeight,
-  setGender,
-  setGoal,
-  setActivity,
-}: Props) => {
+const UserForm = () => {
+  const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [age, setAge] = useState(0);
+  const [weight, setWeight] = useState(0);
+  const [height, setHeight] = useState(0);
+  const [gender, setGender] = useState("");
+  const [goal, setGoal] = useState("");
+  const [activity, setActivity] = useState("");
+
+  const handlePlan = (e: React.SubmitEvent) => {
+    e.preventDefault();
+
+    navigate("/TrainingPlanGen", {
+      state: { name, age, weight, height, gender, goal, activity },
+    });
+  };
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6">
           <div className="card shadow p-4">
             <h1 className="text-center">User details</h1>
-            <form className="col g-3">
+            <form className="col g-3" onSubmit={handlePlan}>
               {/* Name */}
               <div className="col-auto">
                 <label htmlFor="name" className="form-label">
@@ -137,8 +126,8 @@ const UserForm = ({
               <div className="col-auto">
                 <select
                   className="form-select form-control"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
+                  value={activity}
+                  onChange={(e) => setActivity(e.target.value)}
                 >
                   <option selected>Activity Level</option>
                   <option value="low_activity">Sedentary (Low Activity)</option>
