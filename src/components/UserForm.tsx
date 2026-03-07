@@ -21,115 +21,149 @@ const UserForm = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8 col-lg-6">
-          <div className="card shadow p-4">
-            <h1 className="text-center">User details</h1>
-            <form className="col g-3" onSubmit={handlePlan}>
+    <div className="min-h-screen bg-slate-100 px-4 py-10">
+      <div className="mx-auto max-w-2xl">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl md:p-8">
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+              User Details
+            </h1>
+            <p className="mt-2 text-sm text-slate-500">
+              Fill in your information to generate your personalised training
+              plan
+            </p>
+          </div>
+
+          <form onSubmit={handlePlan} className="space-y-6">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {/* Name */}
-              <div className="col-auto">
-                <label htmlFor="name" className="form-label">
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="name"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
                   First Name
                 </label>
-                <div className="col-auto">
-                  <input
-                    type="text"
-                    id="name"
-                    className="form-control"
-                    placeholder="Your first name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-              </div>
-              {/* Age */}
-              <div className="col-auto">
-                <label htmlFor="age" className="form-label">
-                  Age
-                </label>
-              </div>
-              <div className="col-auto">
                 <input
                   type="text"
+                  id="name"
+                  placeholder="Your first name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                />
+              </div>
+
+              {/* Age */}
+              <div>
+                <label
+                  htmlFor="age"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Age
+                </label>
+                <input
+                  type="number"
                   id="age"
-                  className="form-control"
                   placeholder="Your age"
                   value={age}
                   onChange={(e) => setAge(Number(e.target.value))}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
+
               {/* Gender */}
-              <br />
-              <div className="col-auto">
+              <div>
+                <label
+                  htmlFor="gender"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Gender
+                </label>
                 <select
-                  className="form-select form-control"
+                  id="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 >
-                  <option selected>Select your gender</option>
+                  <option value="">Select your gender</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
               </div>
+
               {/* Weight */}
-              <div className="col-auto">
-                <label htmlFor="weight" className="col-form-label">
+              <div>
+                <label
+                  htmlFor="weight"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
                   Weight
                 </label>
-              </div>
-              <div className="col-auto">
                 <input
-                  type="text"
+                  type="number"
                   id="weight"
-                  className="form-control"
-                  placeholder="Your Weight"
+                  placeholder="Your weight"
                   value={weight}
                   onChange={(e) => setWeight(Number(e.target.value))}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
 
               {/* Height */}
-              <div className="col-auto">
-                <label htmlFor="height" className="col-form-label">
+              <div>
+                <label
+                  htmlFor="height"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
                   Height
                 </label>
-              </div>
-              <div className="col-auto">
                 <input
-                  type="text"
+                  type="number"
                   id="height"
-                  className="form-control"
-                  placeholder="Your Height"
+                  placeholder="Your height"
                   value={height}
                   onChange={(e) => setHeight(Number(e.target.value))}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
 
               {/* Goal */}
-              <br />
-              <div className="col-auto">
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="goal"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Goal
+                </label>
                 <select
-                  className="form-select form-control"
+                  id="goal"
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 >
-                  <option selected>Select your goal</option>
-                  <option value="loose_weight">Loose Weight</option>
+                  <option value="">Select your goal</option>
+                  <option value="lose_weight">Lose Weight</option>
                   <option value="maintain_weight">Maintain Weight</option>
                   <option value="gain_muscle">Gain Muscle</option>
                 </select>
               </div>
 
-              {/* Gender */}
-              <br />
-              <div className="col-auto">
+              {/* Activity */}
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="activity"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Activity Level
+                </label>
                 <select
-                  className="form-select form-control"
+                  id="activity"
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 >
-                  <option selected>Activity Level</option>
+                  <option value="">Select activity level</option>
                   <option value="low_activity">Sedentary (Low Activity)</option>
                   <option value="medium_activity">
                     Moderately Active (Medium Activity)
@@ -139,14 +173,17 @@ const UserForm = () => {
                   </option>
                 </select>
               </div>
+            </div>
 
-              <div className="col-12 d-grid mt-4">
-                <button type="submit" className="btn btn-primary">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+              >
+                Generate Training Plan
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
