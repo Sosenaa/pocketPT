@@ -21,14 +21,14 @@ const UserForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-4 py-10">
+    <div className="min-h-screen  bg-gray-500 px-4 py-10">
       <div className="mx-auto max-w-2xl">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl md:p-8">
+        <div className="rounded-3xl border border-slate-200 bg-gray-600 shadow-xl p-6 shadow-xl md:p-8">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-100">
               User Details
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-md text-slate-100 ">
               Fill in your information to generate your personalised training
               plan
             </p>
@@ -40,7 +40,7 @@ const UserForm = () => {
               <div className="md:col-span-2">
                 <label
                   htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   First Name
                 </label>
@@ -50,7 +50,7 @@ const UserForm = () => {
                   placeholder="Your first name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
 
@@ -58,7 +58,7 @@ const UserForm = () => {
               <div>
                 <label
                   htmlFor="age"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   Age
                 </label>
@@ -68,7 +68,7 @@ const UserForm = () => {
                   placeholder="Your age"
                   value={age}
                   onChange={(e) => setAge(Number(e.target.value))}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
 
@@ -76,7 +76,7 @@ const UserForm = () => {
               <div>
                 <label
                   htmlFor="gender"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   Gender
                 </label>
@@ -84,7 +84,7 @@ const UserForm = () => {
                   id="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 >
                   <option value="">Select your gender</option>
                   <option value="male">Male</option>
@@ -96,7 +96,7 @@ const UserForm = () => {
               <div>
                 <label
                   htmlFor="weight"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   Weight
                 </label>
@@ -106,7 +106,7 @@ const UserForm = () => {
                   placeholder="Your weight"
                   value={weight}
                   onChange={(e) => setWeight(Number(e.target.value))}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
 
@@ -114,7 +114,7 @@ const UserForm = () => {
               <div>
                 <label
                   htmlFor="height"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   Height
                 </label>
@@ -124,7 +124,7 @@ const UserForm = () => {
                   placeholder="Your height"
                   value={height}
                   onChange={(e) => setHeight(Number(e.target.value))}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 />
               </div>
 
@@ -132,7 +132,7 @@ const UserForm = () => {
               <div className="md:col-span-2">
                 <label
                   htmlFor="goal"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   Goal
                 </label>
@@ -140,7 +140,7 @@ const UserForm = () => {
                   id="goal"
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 >
                   <option value="">Select your goal</option>
                   <option value="lose_weight">Lose Weight</option>
@@ -153,7 +153,7 @@ const UserForm = () => {
               <div className="md:col-span-2">
                 <label
                   htmlFor="activity"
-                  className="mb-2 block text-sm font-medium text-slate-700"
+                  className="mb-2 block text-sm font-medium text-slate-100"
                 >
                   Activity Level
                 </label>
@@ -161,7 +161,7 @@ const UserForm = () => {
                   id="activity"
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
+                  className="w-full rounded-2xl border border-slate-900 bg-slate-900 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-200"
                 >
                   <option value="">Select activity level</option>
                   <option value="low_activity">Sedentary (Low Activity)</option>
