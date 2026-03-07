@@ -2,10 +2,27 @@ import { useLocation } from "react-router-dom";
 import OpenAI from "openai";
 import { useEffect, useState } from "react";
 
+type Exercise = {
+  name: string;
+  sets: number;
+  reps: number[];
+};
+
+type TrainingPlan = {
+  day: string;
+  focus: string;
+  training_duration: string;
+  exercises: Exercise[];
+};
+
+type TrainingWeek = {
+  days: TrainingPlan[];
+};
+
 const TrainingPlanGen = () => {
   const location = useLocation();
   const userData = location.state;
-  const [output, setOutput] = useState("");
+  const [plan, setPlan] = useState<TrainingWeek | null>(null);
 
   const client = new OpenAI({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -53,19 +70,62 @@ const TrainingPlanGen = () => {
       }`,
       });
 
-      setOutput(response.output_text);
+      let parsedPlan: TrainingWeek;
+
+      try {
+        parsedPlan = JSON.parse(response.output_text) as TrainingWeek;
+      } catch (err) {
+        console.error("Invalid JSON:", response.output_text);
+        return;
+      }
+
+      setPlan(parsedPlan);
     };
     handlePlan();
   }, []);
 
   return (
     <>
-      <div>
-        <h1>Hi {userData.name}</h1>
-        <p>
-          We are working on a training plan that is perfectly suited for you!
-        </p>
-        <p>{output}</p>
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-8 col-lg-6">
+            <div className="card shadow p-4">
+              <h1>Hi {userData.name}</h1>
+
+              <div className="border-2">
+                {plan &&
+                  plan.days.map((d, index) => (
+                    <div key={index}>
+                      <table
+                        className="w-100 table-bordered"
+                        style={{ tableLayout: "fixed" }}
+                      >
+                        <thead className="">
+                          <tr className="">
+                            <th style={{ width: "10%" }}>{d.day}</th>
+                            <th style={{ width: "40%" }}>Exercise</th>
+                            <th style={{ width: "30%" }}>Reps</th>
+                            <th style={{ width: "10%" }}>Sets</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {d.exercises.map((n, index) => (
+                            <tr key={index} className="">
+                              <td></td>
+                              <td>{n.name}</td>
+                              <td>{n.reps.join(" / ")}</td>
+                              <td>{n.sets}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
