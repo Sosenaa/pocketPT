@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+:root{
+     font-family: Bebas Neue;
+     --bg: #080808;
+      --surface: #111;
+      --card: #141414;
+      --border: #1f1f1f;
+      --border2: #2a2a2a;
+      --accent: #C8FF00;
+      --accent2: #9BCC00;
+      --red: #FF4040;
+      --muted: #555;
+      --text: #EFEFEF;
+      --sub: #999;
+
+}

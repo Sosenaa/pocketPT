@@ -6,7 +6,20 @@ import "./App.css";
 
 function App() {
   return (
-    <div className="app-content">
+    <div>
+      <nav className="flex justify-center border-bottom">
+        <div className="flex justify-between items-center w-full max-w-6xl my-2">
+          <h1 id="title">POCKET PT</h1>
+          <ul className="flex">
+            <li className="mx-4 p-2 px-4 border-1 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]">
+              PLAN
+            </li>
+            <li className="mx-4 p-2 px-4 border-1 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]">
+              PROFILE
+            </li>
+          </ul>
+        </div>
+      </nav>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<UserForm />} />
