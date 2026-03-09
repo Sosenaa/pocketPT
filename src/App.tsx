@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserForm from "./components/UserForm";
 import TrainingPlanGen from "./components/TrainingPlanGen";
@@ -5,6 +6,14 @@ import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 
 function App() {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetch("/api/hello")
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message));
+  });
+
   return (
     <div>
       <nav className="flex justify-center border-bottom bg-[#080808]">
@@ -22,6 +31,11 @@ function App() {
           </ul>
         </div>
       </nav>
+
+      <div>
+        <h1>{message}</h1>
+      </div>
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<UserForm />} />
