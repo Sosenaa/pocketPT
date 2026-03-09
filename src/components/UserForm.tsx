@@ -21,9 +21,9 @@ const UserForm = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-10">
-      <div className="mx-auto max-w-2xl">
-        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] shadow-xl p-6 shadow-xl md:p-8">
+    <div className="min-h-screen px-4 py-10 bg-[#080808]">
+      <div className="mx-auto max-w-4xl">
+        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
           <div className="mb-8 text-center text-[#C8FF00]">
             <h1 className="text-3xl font-bold tracking-tight ">User Details</h1>
             <p className="mt-2 text-md text-[#555] ">
