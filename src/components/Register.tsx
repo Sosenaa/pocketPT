@@ -49,7 +49,15 @@ const Register = () => {
   return (
     <div className="min-h-screen px-4 py-10 bg-[#080808]">
       <div className="mx-auto max-w-4xl">
-        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
+        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-4 shadow-xl md:p-8">
+          <div className="flex w-full justify-content-end">
+            <button
+              onClick={() => navigate("/Login")}
+              className="text-center rounded-sm bg-[#C8FF00] px-3 py-2 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800"
+            >
+              Login
+            </button>
+          </div>
           <div className="mb-8 text-center text-[#C8FF00]">
             <h1 className="text-3xl font-bold tracking-tight ">Register</h1>
             <p className="mt-2 text-md text-[#555] ">
@@ -171,7 +179,7 @@ const Register = () => {
             <div className="flex w-full justify-content-center">
               <button
                 type="submit"
-                className="w-full max-w-xl rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 "
+                className="w-full max-w-xl rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 my-4"
               >
                 Register
               </button>
