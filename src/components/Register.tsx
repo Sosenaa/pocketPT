@@ -1,11 +1,50 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (password == confirmPassword) {
+      try {
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            name,
+            lastName,
+            email,
+            password,
+            confirmPassword,
+          }),
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+          alert("Registered successfully");
+          navigate("/Login");
+        } else {
+          alert(data.error);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      alert("Incorrect password");
+    }
+  };
 
   return (
     <div className="min-h-screen px-4 py-10 bg-[#080808]">
@@ -18,8 +57,26 @@ const Register = () => {
             </p>
           </div>
 
-          <form className="space-y-6">
+          <form className="space-y-6" method="POST" onSubmit={handleRegister}>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="username"
+                  className="mb-2 block text-sm font-medium text-[#555]"
+                >
+                  Username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  required
+                  placeholder="Your Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-[#EFEFEF] outline-none transition-colors focus:ring-2 focus:ring-[#c8ff00]"
+                />
+              </div>
+
               {/* Name */}
               <div className="md:col-span-2">
                 <label
@@ -30,7 +87,8 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  id="name"
+                  name="name"
+                  required
                   placeholder="Your first name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -47,7 +105,8 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  id="lastName"
+                  name="lastName"
+                  required
                   placeholder="Your Last name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
@@ -64,7 +123,8 @@ const Register = () => {
                 </label>
                 <input
                   type="email"
-                  id="email"
+                  name="email"
+                  required
                   placeholder="You email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -81,7 +141,8 @@ const Register = () => {
                 </label>
                 <input
                   type="password"
-                  id="password"
+                  name="password"
+                  required
                   placeholder="Your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -98,9 +159,10 @@ const Register = () => {
                 </label>
                 <input
                   type="password"
-                  id="confirmPassword"
+                  name="confirmPassword"
+                  required
                   placeholder="Confirm your password"
-                  value={password}
+                  value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-[#EFEFEF] outline-none transition-colors focus:ring-2 focus:ring-[#c8ff00]"
                 />

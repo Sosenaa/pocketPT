@@ -1,5 +1,3 @@
-import React from "react";
-
 const Nav = () => {
   return (
     <nav className="flex justify-center border-bottom bg-[#080808]">
