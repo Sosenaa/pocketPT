@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 import Nav from "./components/Nav";
 import Register from "./components/Register";
+import Login from "./components/Login";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/UserForm" element={<UserForm />} />
           <Route path="/TrainingPlanGen" element={<TrainingPlanGen />} />
+          <Route path="/Login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </div>
