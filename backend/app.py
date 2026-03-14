@@ -3,6 +3,7 @@ from flask_cors import CORS
 from database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
+from functools import wraps
 
 load_dotenv()
 
@@ -11,6 +12,15 @@ app.secret_key=os.getenv("FLASK_SECRET_KEY")
 CORS(app)
 
 create_tables()
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "id" not in session:
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 @app.route("/")
 def index():
@@ -77,6 +87,26 @@ def login():
     session["id"] = user["id"]
     return jsonify({"Message": "Successful Login"}), 200
 
+
+
+@app.route("/api/userDetails", methods=["POST"])
+@login_required
+def userDetails():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"message": "Data missing"}), 400
+    
+    name = data.get("name")
+    age = data.get("age")
+    weight = data.get("weight")
+    height = data.get("height")
+    gender = data.get("gender")
+    goal = data.get("goal")
+    activity = data.get("activity")
+
+    con = get_db_connection()
+    con.execute("INSERT INTO userDetails ")
 
 
 

@@ -12,14 +12,36 @@ const UserForm = () => {
   const [goal, setGoal] = useState("");
   const [activity, setActivity] = useState("");
 
-  const handlePlan = (e: React.SubmitEvent) => {
+  const submitUserDetails = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      const response = await fetch("/api/userDetails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          age,
+          weight,
+          height,
+          gender,
+          goal,
+          activity,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
 
-    navigate("/TrainingPlanGen", {
-      state: { name, age, weight, height, gender, goal, activity },
-    });
+      if (response.ok) {
+        navigate("/trainingPlanGen");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
-
   return (
     <div className="min-h-screen px-4 py-10 bg-[#080808]">
       <div className="mx-auto max-w-4xl">
@@ -32,7 +54,7 @@ const UserForm = () => {
             </p>
           </div>
 
-          <form onSubmit={handlePlan} className="space-y-6">
+          <form onSubmit={submitUserDetails} className="space-y-6">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {/* Name */}
               <div className="md:col-span-2">
