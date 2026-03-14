@@ -1,9 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+
+      if (response.ok) {
+        alert(`Welcome ${username}`);
+        navigate("/UserForm");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="min-h-screen px-4 py-10 bg-[#080808]">
       <div className="mx-auto max-w-4xl">
@@ -17,7 +47,11 @@ const Login = () => {
             </button>
           </div>
           <div className="flex w-full justify-content-center">
-            <form className="space-y-6 w-full max-w-2xl" method="POST">
+            <form
+              className="space-y-6 w-full max-w-2xl"
+              method="POST"
+              onSubmit={handleLogin}
+            >
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <div className="md:col-span-2">
                   <label
@@ -40,7 +74,7 @@ const Login = () => {
 
               <div className="md:col-span-2">
                 <label
-                  htmlFor="confirmPassword"
+                  htmlFor="password"
                   className="mb-2 block text-sm font-medium text-[#555]"
                 >
                   Password
