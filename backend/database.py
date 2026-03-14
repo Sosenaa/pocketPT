@@ -19,8 +19,9 @@ def create_tables():
                     )
                     ''')
      cursor.execute('''
-CREATE TABLE IF NOT EXISIST userDetails(
+     CREATE TABLE IF NOT EXISTS userDetails(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
                     name TEXT NOT NULL,
                     age NUMBER NOT NULL,
                     weight NUMBER NOT NULL,
@@ -28,8 +29,9 @@ CREATE TABLE IF NOT EXISIST userDetails(
                     gender TEXT NOT NULL,
                     goal TEXT NOT NULL,
                     activity TEXT NOT NULL,
-                    FOREIGN KEY(user_id)REFERENCES users ON DELETE CASCADE
-                    )''')
+                    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+                    )
+                    ''')
      
      con.commit()
      con.close()

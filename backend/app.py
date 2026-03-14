@@ -93,10 +93,12 @@ def login():
 @login_required
 def userDetails():
     data = request.get_json()
-    
+    user_id = session.get("id")
+
     if not data:
         return jsonify({"message": "Data missing"}), 400
     
+
     name = data.get("name")
     age = data.get("age")
     weight = data.get("weight")
@@ -106,7 +108,20 @@ def userDetails():
     activity = data.get("activity")
 
     con = get_db_connection()
-    con.execute("INSERT INTO userDetails ")
+    con.execute('''INSERT INTO userDetails 
+                (name, age, weight, height, gender, goal, activity, user_id) 
+                VALUES(?,?,?,?,?,?,?,?)''',
+                (name, age,weight,height,gender,goal,activity,user_id))
+    con.commit()
+    con.close()
+
+    trainingPlanGen()
+    return jsonify({"message": "Data saved sucessfully"})
+
+@app.route("/api/trainingPlanGen")
+@login_required
+def trainingPlanGen():
+    print("blbalba")
 
 
 
