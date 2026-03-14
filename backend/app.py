@@ -1,9 +1,13 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 from database import get_db_connection, create_tables
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
+app.secret_key=os.getenv("FLASK_SECRET_KEY")
 CORS(app)
 
 create_tables()
@@ -38,7 +42,7 @@ def register():
 
     if userExist :
         con.close()
-        return jsonify({"Message", "This user already exists"}), 400
+        return jsonify({"Message", "User already exists"}), 400
         
     
     con.execute("INSERT INTO users (username, name, lastname, email, password) VALUES(?, ?, ?, ?, ?)", (username, name, lastName, email, password))
@@ -46,7 +50,7 @@ def register():
     print("Registration completes sucessfully ")
     con.close()
 
-    return jsonify({"Message": "Success"}), 200
+    return jsonify({"Message": "Successful Registration"}), 200
     
 
 @app.route("/api/login", methods=["POST"])
@@ -54,7 +58,7 @@ def login():
     data = request.get_json()
 
     if not data:
-        return jsonify({"Messsage": "data missing"}), 400
+        return jsonify({"Messsage": "Data missing"}), 400
     
     username = data.get("username")
     password = data.get("password")
@@ -69,7 +73,16 @@ def login():
     if user["password"] != password:
         return jsonify({"error": "Login or Password incorrect"}), 400
 
-    return jsonify({"Message": "Welcome Back"}), 200
+    session["username"] = user["username"]
+    session["id"] = user["id"]
+    return jsonify({"Message": "Successful Login"}), 200
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
