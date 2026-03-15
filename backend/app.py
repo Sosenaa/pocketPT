@@ -121,7 +121,7 @@ def userDetails():
 @app.route("/api/trainingPlanGen")
 @login_required
 def trainingPlanGen():
-    print("blbalba")
+    print("Here will have training plan generated")
 
 
 
