@@ -4,7 +4,8 @@ from database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
 from functools import wraps
-
+from openai import OpenAI
+import json
 load_dotenv()
 
 app = Flask(__name__)
@@ -115,15 +116,38 @@ def userDetails():
     con.commit()
     con.close()
 
-    trainingPlanGen()
+    trainingPlanGen(age,weight, height, gender,goal,activity)
     return jsonify({"message": "Data saved sucessfully"})
 
 @app.route("/api/trainingPlanGen")
 @login_required
-def trainingPlanGen():
+def trainingPlanGen(age,weight, height, gender,goal,activity):
+    client = OpenAI()
     print("Here will have training plan generated")
+    
+    #get chat gpt reponse
 
+    response = client.responses.create(
+    model="gpt-4o-mini",
+    text={"format":{
+        "type": "json_object"
+    }},
+    instructions="You are a qualified Personal trainer",
+    input=f'''
+    Create a profesional training plan for this user.
 
+    Age: {age}
+    Weight:{weight}
+    Height: {height}
+    Gender: {gender}
+    Goal: {goal}
+    Activity: {activity}
+
+    Return only valid JSON.
+    '''
+    )
+
+    print(response.output_text)
 
 
 
