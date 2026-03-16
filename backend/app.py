@@ -144,6 +144,35 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
     Activity: {activity}
 
     Return only valid JSON.
+    
+
+    {{
+        "plan_name": "Muscle gain",
+        "workouts":[
+        {{
+            "day_name": "Day 1",
+            "focus": "Upper Body",
+            "exercises": [
+                {{"name": "Bench press", "sets": 4, "reps": 10}},
+                {{"name" : "Shoulder press", "sets": 3, "reps": 12}},
+                {{"name" : "Pull ups", "sets": 4, "reps": 15}},
+            ]
+        }}
+
+        {{
+            "day_name": "Day 2",
+            "focus": "Lower body",
+            "exercises": [
+                {{"name": "Squats", "sets": 4, "reps":10}},
+                {{"name" : "Leg press", "sets": 5, "reps": 12}},
+                {{"name" : "Leg extension", "sets": 5, "reps": 12}},
+                {{"name" : "Jog", "sets": 1, "reps": "25 minutes"}},
+            ]
+        }}
+
+        ]
+    }}
+
     '''
     )
 
