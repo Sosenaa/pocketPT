@@ -145,30 +145,31 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
 
     Return only valid JSON.
     
-
     {{
         "plan_name": "Muscle gain",
         "workouts":[
         {{
             "day_name": "Day 1",
             "focus": "Upper Body",
+            "exercise_duration": "75 Min",
             "exercises": [
-                {{"name": "Bench press", "sets": 4, "reps": 10}},
-                {{"name" : "Shoulder press", "sets": 3, "reps": 12}},
-                {{"name" : "Pull ups", "sets": 4, "reps": 15}},
+                {{"name": "Bench press", "sets": "4", "reps": "10"}},
+                {{"name" : "Shoulder press", "sets": "3", "reps": "12"}},
+                {{"name" : "Pull ups", "sets": "4", "reps": "15"}},
             ]
-        }}
+        }},
 
         {{
             "day_name": "Day 2",
             "focus": "Lower body",
+            "exercise_duration": "75 Min",
             "exercises": [
-                {{"name": "Squats", "sets": 4, "reps":10}},
-                {{"name" : "Leg press", "sets": 5, "reps": 12}},
-                {{"name" : "Leg extension", "sets": 5, "reps": 12}},
-                {{"name" : "Jog", "sets": 1, "reps": "25 minutes"}},
+                {{"name": "Squats", "sets": "4", "reps":"10"}},
+                {{"name" : "Leg press", "sets": "5", "reps": "12"}},
+                {{"name" : "Leg extension", "sets": "5", "reps": "12"}},
+                {{"name" : "Jog", "sets": "1", "reps": "25 minutes"}},
             ]
-        }}
+        }},
 
         ]
     }}
@@ -176,10 +177,22 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
     '''
     )
 
-    print(response.output_text)
+    plan = json.loads(response.output_text)
 
 
+    for workout in plan["workouts"]:
+        print(f""" 
+              Day: {workout["day_name"]}, 
+              Focus: {workout["focus"]}, 
+              Duration: {workout["exercise_duration"]} """)
 
+        exerciseNum = 1
+        for exercise in workout["exercises"]:
+            print(f""" {exerciseNum},  
+                  Name: {exercise["name"]}, 
+                  Sets: {exercise["sets"]}, 
+                  Reps: {exercise["reps"]}""")
+            exerciseNum = exerciseNum + 1
 
 
 if __name__ == "__main__":

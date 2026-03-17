@@ -59,9 +59,8 @@ def create_tables():
                     id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     workout_id INTEGER NOT NULL,
                     exercise_name TEXT NOT NULL,
-                    sets INTEGER NOT NULL,
-                    reps INTEGER NOT NULL,
-                    rest_seconds INTEGER,
+                    sets TEXT NOT NULL,
+                    reps TEXT NOT NULL,
                     FOREIGN KEY (workout_id) REFERENCES workouts (id) ON DELETE CASCADE
                     )
 ''')
