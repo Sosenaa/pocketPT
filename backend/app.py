@@ -119,8 +119,7 @@ def userDetails():
     trainingPlanGen(age,weight, height, gender,goal,activity)
     return jsonify({"message": "Data saved sucessfully"})
 
-@app.route("/api/trainingPlanGen")
-@login_required
+
 def trainingPlanGen(age,weight, height, gender,goal,activity):
     client = OpenAI()
     print("Here will have training plan generated")
@@ -179,7 +178,6 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
 
     plan = json.loads(response.output_text)
 
-
     for workout in plan["workouts"]:
         print(f""" 
               Day: {workout["day_name"]}, 
@@ -193,6 +191,27 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
                   Sets: {exercise["sets"]}, 
                   Reps: {exercise["reps"]}""")
             exerciseNum = exerciseNum + 1
+
+    if plan:
+        user_id = session.get("id")
+        con = get_db_connection()
+        cursor = con.cursor()
+        cursor.execute("INSERT INTO training_plans (user_id, plan_name) VALUES (?,?)", (user_id, plan["plan_name"]))
+
+        plan_id = cursor.lastrowid
+
+        for workout in plan["workouts"]:
+            cursor.execute("INSERT INTO workouts (plan_id, day_name, focus, exercise_duration) VALUES (?,?,?,?)",
+                        (plan_id, workout["day_name"], workout["focus"], workout["exercise_duration"]))
+            
+            workout_id = cursor.lastrowid
+
+            for exercise in workout["exercises"]:
+                cursor.execute("INSERT INTO exercises (workout_id, exercise_name, sets, reps) VALUES (?,?,?,?)",
+                            (workout_id, exercise["name"], exercise["sets"], exercise["reps"]))
+
+        con.commit()
+        con.close()
 
 
 if __name__ == "__main__":
