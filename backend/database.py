@@ -50,6 +50,8 @@ def create_tables():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     plan_id INTEGER NOT NULL,
                     day_name TEXT NOT NULL, 
+                    focus TEXT NOT NULL,
+                    exercise_duration TEXT NOT NULL,
                     FOREIGN KEY (plan_id) REFERENCES training_plans (id) ON DELETE CASCADE
                     ) 
 ''')
