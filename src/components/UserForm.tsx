@@ -16,6 +16,7 @@ const UserForm = () => {
     e.preventDefault();
     try {
       const response = await fetch("/api/userDetails", {
+        credentials: "include",
         method: "POST",
         headers: {
           "Content-Type": "application/json",

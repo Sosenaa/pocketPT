@@ -1,8 +1,26 @@
 import { useEffect, useState } from "react";
 import "../App.css";
 
+type Exercise = {
+  name: string;
+  sets: string;
+  reps: string;
+};
+
+type Workout = {
+  day_name: string;
+  focus: string;
+  exercise_duration: string;
+  exercises: Exercise[];
+};
+
+type TrainingPlanData = {
+  plan_name: string;
+  workouts: Workout[];
+};
+
 const TrainingPlan = () => {
-  const [plan, setPlan] = useState(null);
+  const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   useEffect(() => {
     fetch("/api/getTrainingPlan", {
       credentials: "include",
@@ -15,8 +33,6 @@ const TrainingPlan = () => {
   }, []);
 
   return (
-    <p>{plan}</p>
-    /* 
     <div className="min-h-screen bg-[#080808] px-4 py-10">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
@@ -35,7 +51,7 @@ const TrainingPlan = () => {
             {plan && (
               <>
                 <div className="text-[#EFEFEF]">
-                  <h1 className="text-3xl font-bold">Your Training Plan</h1>
+                  <h1 className="text-3xl font-bold">{plan.plan_name}</h1>
                 </div>
                 <p className="mt-2 text-md text-[#555]">
                   Here is your personalised weekly training structure
@@ -55,7 +71,7 @@ const TrainingPlan = () => {
             </div>
           ) : (
             <div className="space-y-6">
-              {plan.days.map((d, index) => (
+              {plan.workouts.map((d, index) => (
                 <div
                   key={index}
                   className="overflow-hidden rounded-sm border-2 border-[#2a2a2a] bg-[#0E0E0E]"
@@ -63,13 +79,13 @@ const TrainingPlan = () => {
                   <div className="flex flex-col gap-3 border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 md:flex-row md:items-center md:justify-between">
                     <div>
                       <div className="text-[#c8ff00]">
-                        <h2 className="text-xl font-semibold ">{d.day}</h2>
+                        <h2 className="text-xl font-semibold ">{d.day_name}</h2>
                       </div>
                       <p className="text-sm text-[#555]">{d.focus}</p>
                     </div>
 
                     <div className="inline-flex w-fit rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
-                      {d.training_duration}
+                      {d.exercise_duration}
                     </div>
                   </div>
 
@@ -96,15 +112,13 @@ const TrainingPlan = () => {
                             className="hover:bg-[#151515] transition"
                           >
                             <td className="px-5 py-4 text-sm font-medium text-slate-100">
-                              {n.name ?? "Unknown exercise"}
+                              {n.name}
                             </td>
                             <td className="px-5 py-4 text-center text-sm text-slate-300">
-                              {Array.isArray(n.reps)
-                                ? n.reps.join(" / ")
-                                : String(n.reps ?? "N/A")}
+                              {n.reps}
                             </td>
                             <td className="px-5 py-4 text-center text-sm text-slate-300">
-                              {typeof n.sets === "number" ? n.sets : "N/A"}
+                              {n.sets}
                             </td>
                           </tr>
                         ))}
@@ -118,8 +132,6 @@ const TrainingPlan = () => {
         </div>
       </div>
     </div>
-*/
   );
 };
-
 export default TrainingPlan;

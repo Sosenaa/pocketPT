@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserForm from "./components/UserForm";
-import TrainingPlanGen from "./components/TrainingPlan";
+import TrainingPlan from "./components/TrainingPlan";
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 import Nav from "./components/Nav";
@@ -17,7 +17,7 @@ function App() {
           <Route path="/" element={<Register />} />
           <Route path="/Register" element={<Register />} />
           <Route path="/UserForm" element={<UserForm />} />
-          <Route path="/TrainingPlanGen" element={<TrainingPlanGen />} />
+          <Route path="/TrainingPlan" element={<TrainingPlan />} />
           <Route path="/Login" element={<Login />} />
         </Routes>
       </BrowserRouter>

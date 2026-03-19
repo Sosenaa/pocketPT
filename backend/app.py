@@ -117,11 +117,11 @@ def userDetails():
     con.commit()
     con.close()
 
-    trainingPlanGen(age,weight, height, gender,goal,activity)
+    trainingPlanGen(age, weight, height, gender, goal, activity)
     return jsonify({"message": "Data saved sucessfully"})
 
 
-def trainingPlanGen(age,weight, height, gender,goal,activity):
+def trainingPlanGen(age, weight, height, gender, goal, activity):
     client = OpenAI()
     print("Here will have training plan generated")
     
@@ -185,13 +185,13 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
               Focus: {workout["focus"]}, 
               Duration: {workout["exercise_duration"]} """)
 
-        exerciseNum = 1
+
         for exercise in workout["exercises"]:
-            print(f""" {exerciseNum},  
+            print(f"""  
                   Name: {exercise["name"]}, 
                   Sets: {exercise["sets"]}, 
-                  Reps: {exercise["reps"]}""")
-            exerciseNum = exerciseNum + 1
+                  Reps: {exercise["reps"]}
+                  """)
 
     if plan:
         user_id = session.get("id")
@@ -224,13 +224,13 @@ def getTrainingPlan():
     cursor = con.cursor()
 
     #Get plan
-    plan = cursor.execute("SELECT training_plans WHERE user_id = ?", (user_id,)).fetchone()
+    plan = cursor.execute("SELECT * FROM training_plans WHERE user_id = ? ORDER BY id DESC LIMIT 1", (user_id,)).fetchone()
 
     if not plan:
         return jsonify({"message": "There are no plans"}), 404
 
     #get all workout that belong to this plan
-    workouts = cursor.execute("SELECT workouts WHERE id = ? ",(plan["id"])).fetchall()
+    workouts = cursor.execute("SELECT * FROM workouts WHERE plan_id = ? ",(plan["id"],)).fetchall()
 
     result = {
         "plan_name": plan["plan_name"],
@@ -239,24 +239,24 @@ def getTrainingPlan():
     
     #Get all exercises for each workout
     for workout in workouts:
-        exercises = cursor.execute("SELECT exercises WHERE workout_id = ? ", (workout["id"])).fetchall()
+        exercises = cursor.execute("SELECT * FROM exercises WHERE workout_id = ? ", (workout["id"],)).fetchall()
     
     #building aworkout object
-    workout_data = {
-        "day_name": workout["day_name"],
-        "focus" : workout["focus"],
-        "exercise_duration" : workout["exercise_duration"],
-        "exercises":[]
-    }
+        workout_data = {
+            "day_name": workout["day_name"],
+            "focus" : workout["focus"],
+            "exercise_duration" : workout["exercise_duration"],
+            "exercises":[]
+        }
 
     for exercise in exercises:
         workout_data["exercises"].append({
-            "exercise_name": exercise["exercise_name"],
+            "name": exercise["exercise_name"],
             "sets" : exercise["sets"],
             "reps" : exercise["reps"],
         })
 
-    result["workouts"].append("workout_data")
+    result["workouts"].append(workout_data)
 
     con.close()
 
