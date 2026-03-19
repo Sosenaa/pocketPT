@@ -256,11 +256,9 @@ def getTrainingPlan():
                 "reps" : exercise["reps"],
             })
 
-    result["workouts"].append(workout_data)
+        result["workouts"].append(workout_data)
 
     con.close()
-
-    print(result)
 
     return jsonify(result), 200
 
