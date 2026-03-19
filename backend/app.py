@@ -109,7 +109,8 @@ def userDetails():
     activity = data.get("activity")
 
     con = get_db_connection()
-    con.execute('''INSERT INTO userDetails 
+    cursor = con.cursor()
+    cursor.execute('''INSERT INTO user_details 
                 (name, age, weight, height, gender, goal, activity, user_id) 
                 VALUES(?,?,?,?,?,?,?,?)''',
                 (name, age,weight,height,gender,goal,activity,user_id))
@@ -212,6 +213,56 @@ def trainingPlanGen(age,weight, height, gender,goal,activity):
 
         con.commit()
         con.close()
+
+
+@app.route("/api/getTrainingPlan", methods=["GET"])
+@login_required
+def getTrainingPlan():
+    user_id = session.get("id")
+
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    #Get plan
+    plan = cursor.execute("SELECT training_plans WHERE user_id = ?", (user_id,)).fetchone()
+
+    if not plan:
+        return jsonify({"message": "There are no plans"}), 404
+
+    #get all workout that belong to this plan
+    workouts = cursor.execute("SELECT workouts WHERE id = ? ",(plan["id"])).fetchall()
+
+    result = {
+        "plan_name": plan["plan_name"],
+        "workouts" : []
+              }
+    
+    #Get all exercises for each workout
+    for workout in workouts:
+        exercises = cursor.execute("SELECT exercises WHERE workout_id = ? ", (workout["id"])).fetchall()
+    
+    #building aworkout object
+    workout_data = {
+        "day_name": workout["day_name"],
+        "focus" : workout["focus"],
+        "exercise_duration" : workout["exercise_duration"],
+        "exercises":[]
+    }
+
+    for exercise in exercises:
+        workout_data["exercises"].append({
+            "exercise_name": exercise["exercise_name"],
+            "sets" : exercise["sets"],
+            "reps" : exercise["reps"],
+        })
+
+    result["workouts"].append("workout_data")
+
+    con.close()
+
+    print(result)
+
+    return jsonify(result), 200
 
 
 if __name__ == "__main__":

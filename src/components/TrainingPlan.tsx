@@ -1,91 +1,22 @@
-import { useLocation } from "react-router-dom";
-import OpenAI from "openai";
 import { useEffect, useState } from "react";
 import "../App.css";
 
-type Exercise = {
-  name: string;
-  sets: number;
-  reps: number[];
-};
-
-type TrainingPlan = {
-  day: string;
-  focus: string;
-  training_duration: string;
-  exercises: Exercise[];
-};
-
-type TrainingWeek = {
-  days: TrainingPlan[];
-};
-
-const TrainingPlanGen = () => {
-  const location = useLocation();
-  const userData = location.state;
-  const [plan, setPlan] = useState<TrainingWeek | null>(null);
-
-  const client = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  });
-
+const TrainingPlan = () => {
+  const [plan, setPlan] = useState(null);
   useEffect(() => {
-    const handlePlan = async () => {
-      const response = await client.responses.create({
-        model: "gpt-4o-mini",
-        input: `
-      Generate training 7 day plan for client 
-      name:${userData.name} 
-      age:${userData.age} 
-      goal:${userData.goal}
-      weight:${userData.weight}
-      height:${userData.height}
-      gender:${userData.gender}
-      activity:${userData.activity}
-
-      Return ONLY valid JSON.
-      Do not use markdown. Do not wrap in triple backticks.
-      No explanations. No extra text.
-
-      Return only valid JSON.
-      No explanations.
-      No extra text
-      
-      Forma Example: 
-      {
-        "days": [
-        {  
-            "day": "Day 1",
-            "focus": "Upper body",
-            "training_duration": "70 min",
-            "exercises": [
-              {
-                "name": "Bench press",
-                "sets": 4,
-                "reps": [12,15,15,12]
-              }
-            ]
-        }
-        ]
-      }`,
-      });
-
-      let parsedPlan: TrainingWeek;
-
-      try {
-        parsedPlan = JSON.parse(response.output_text) as TrainingWeek;
-      } catch (err) {
-        console.error("Invalid JSON:", response.output_text);
-        return;
-      }
-
-      setPlan(parsedPlan);
-    };
-    handlePlan();
+    fetch("/api/getTrainingPlan", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setPlan(data);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
+    <p>{plan}</p>
+    /* 
     <div className="min-h-screen bg-[#080808] px-4 py-10">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
@@ -187,7 +118,8 @@ const TrainingPlanGen = () => {
         </div>
       </div>
     </div>
+*/
   );
 };
 
-export default TrainingPlanGen;
+export default TrainingPlan;

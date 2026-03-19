@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UserForm from "./components/UserForm";
-import TrainingPlanGen from "./components/TrainingPlanGen";
+import TrainingPlanGen from "./components/TrainingPlan";
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
 import Nav from "./components/Nav";

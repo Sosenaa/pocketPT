@@ -34,7 +34,7 @@ const UserForm = () => {
       console.log(data);
 
       if (response.ok) {
-        navigate("/trainingPlanGen");
+        navigate("/trainingPlan");
       } else {
         alert(data.error);
       }
