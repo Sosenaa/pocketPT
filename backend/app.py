@@ -249,12 +249,12 @@ def getTrainingPlan():
             "exercises":[]
         }
 
-    for exercise in exercises:
-        workout_data["exercises"].append({
-            "name": exercise["exercise_name"],
-            "sets" : exercise["sets"],
-            "reps" : exercise["reps"],
-        })
+        for exercise in exercises:
+            workout_data["exercises"].append({
+                "name": exercise["exercise_name"],
+                "sets" : exercise["sets"],
+                "reps" : exercise["reps"],
+            })
 
     result["workouts"].append(workout_data)
 
