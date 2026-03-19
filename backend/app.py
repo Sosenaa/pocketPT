@@ -6,11 +6,12 @@ from dotenv import load_dotenv
 from functools import wraps
 from openai import OpenAI
 import json
+
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key=os.getenv("FLASK_SECRET_KEY")
-CORS(app)
+CORS(app ,supports_credentials=True)
 
 create_tables()
 
