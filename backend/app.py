@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from database import get_db_connection, create_tables
+from .database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
 from functools import wraps
@@ -12,6 +12,10 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key=os.getenv("FLASK_SECRET_KEY")
 CORS(app ,supports_credentials=True)
+
+@app.route("/")
+def home():
+    return "Waking up backend"
 
 create_tables()
 
