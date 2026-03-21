@@ -12,7 +12,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key=os.getenv("FLASK_SECRET_KEY")
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.copnfig["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
 CORS(app ,supports_credentials=True, origins=["https://pocket-pt-kappa.vercel.app"])
 
 @app.route("/")
