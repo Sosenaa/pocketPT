@@ -15,20 +15,23 @@ const Register = () => {
 
     if (password == confirmPassword) {
       try {
-        const response = await fetch("/api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          "https://pocketpt.onrender.com/api/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username,
+              name,
+              lastName,
+              email,
+              password,
+              confirmPassword,
+            }),
           },
-          body: JSON.stringify({
-            username,
-            name,
-            lastName,
-            email,
-            password,
-            confirmPassword,
-          }),
-        });
+        );
         const data = await response.json();
         console.log(data);
 

@@ -22,7 +22,7 @@ type TrainingPlanData = {
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   useEffect(() => {
-    fetch("/api/getTrainingPlan", {
+    fetch("https://pocketpt.onrender.com/api/getTrainingPlan", {
       credentials: "include",
     })
       .then((res) => res.json())
