@@ -13,7 +13,10 @@ app = Flask(__name__)
 app.secret_key=os.getenv("FLASK_SECRET_KEY")
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True
-CORS(app ,supports_credentials=True, origins=["https://pocket-pt-kappa.vercel.app","https://pocket-la05alfy5-sosenaas-projects.vercel.app"])
+CORS(app ,supports_credentials=True, origins=
+     ["https://pocket-pt-kappa.vercel.app",
+      "https://pocket-.*-sosenaas-projects.vercel.app"]
+    )
 
 @app.route("/")
 def home():
