@@ -8,7 +8,7 @@ def get_db_connection():
 def create_tables():
      con = get_db_connection()
      cursor = con.cursor()
-     cursor.execute('''
+     cursor.execute('''sdrhjfglkjhASGEF;I7UQtyew3rfiuGZASDSA,MHFGp87a3=
      CREATE TABLE IF NOT EXISTS users(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,

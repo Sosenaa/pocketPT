@@ -21,6 +21,8 @@ type TrainingPlanData = {
 
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetch("https://pocketpt.onrender.com/api/getTrainingPlan", {
       credentials: "include",
@@ -28,8 +30,10 @@ const TrainingPlan = () => {
       .then((res) => res.json())
       .then((data) => {
         setPlan(data);
+        setLoading(false);
       })
       .catch((err) => console.log(err));
+    setLoading(false);
   }, []);
 
   return (
@@ -37,7 +41,7 @@ const TrainingPlan = () => {
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
           <div className="mb-8 text-center">
-            {!plan && (
+            {loading && (
               <>
                 <h1 className="text-3xl font-bold tracking-tight text-[#C8FF00]">
                   Generating Plan

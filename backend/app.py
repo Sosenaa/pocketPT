@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from .database import get_db_connection, create_tables
+from database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
 from functools import wraps
@@ -14,8 +14,10 @@ app.secret_key=os.getenv("FLASK_SECRET_KEY")
 app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True
 CORS(app ,supports_credentials=True, origins=
-     ["https://pocket-pt-kappa.vercel.app",
-      "https://pocket-.*-sosenaas-projects.vercel.app"]
+     ["http://localhost:5173",
+      "https://pocket-pt-kappa.vercel.app",
+      "https://pocket-.*-sosenaas-projects.vercel.app",
+      ]
     )
 
 @app.route("/")
