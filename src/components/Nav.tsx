@@ -12,6 +12,9 @@ const Nav = () => {
           <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]">
             Dashboard
           </li>
+          <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]">
+            Logout
+          </li>
         </ul>
       </div>
     </nav>

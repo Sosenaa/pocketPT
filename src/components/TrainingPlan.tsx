@@ -41,9 +41,9 @@ const TrainingPlan = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#080808] px-4 py-10">
+    <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
       <div className="mx-auto max-w-4xl">
-        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
+        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
           <div className="mb-8 text-center">
             {loading ? (
               <>
@@ -103,13 +103,13 @@ const TrainingPlan = () => {
                     <table className="min-w-full">
                       <thead className="bg-[#161616]">
                         <tr>
-                          <th className="px-5 py-4 text-left text-sm font-semibold text-slate-100">
+                          <th className="pl-5 py-4 text-left text-sm font-semibold text-slate-100">
                             Exercise
                           </th>
-                          <th className="px-5 py-4 text-center text-sm font-semibold text-slate-100">
+                          <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
                             Reps
                           </th>
-                          <th className="px-5 py-4 text-center text-sm font-semibold text-slate-100">
+                          <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
                             Sets
                           </th>
                         </tr>
@@ -121,13 +121,13 @@ const TrainingPlan = () => {
                             key={index}
                             className="hover:bg-[#151515] transition"
                           >
-                            <td className="px-5 py-4 text-sm font-medium text-slate-100">
+                            <td className="pl-5 py-4 text-sm font-medium text-slate-100">
                               {n.name}
                             </td>
-                            <td className="px-5 py-4 text-center text-sm text-slate-300">
+                            <td className="px-2 py-4 text-center text-sm text-slate-300">
                               {n.reps}
                             </td>
-                            <td className="px-5 py-4 text-center text-sm text-slate-300">
+                            <td className="px-2 py-4 text-center text-sm text-slate-300">
                               {n.sets}
                             </td>
                           </tr>
