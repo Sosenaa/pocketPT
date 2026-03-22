@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { API_BASE_URL } from "../api";
 const UserForm = () => {
   const navigate = useNavigate();
 
@@ -15,25 +15,22 @@ const UserForm = () => {
   const submitUserDetails = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "https://pocketpt.onrender.com/api/userDetails",
-        {
-          credentials: "include",
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            age,
-            weight,
-            height,
-            gender,
-            goal,
-            activity,
-          }),
+      const response = await fetch(`${API_BASE_URL}/api/userDetails`, {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          name,
+          age,
+          weight,
+          height,
+          gender,
+          goal,
+          activity,
+        }),
+      });
       const data = await response.json();
       console.log(data);
 

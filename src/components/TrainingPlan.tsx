@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../App.css";
-
+import { API_BASE_URL } from "../api";
 type Exercise = {
   name: string;
   sets: string;
@@ -24,16 +24,20 @@ const TrainingPlan = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://pocketpt.onrender.com/api/getTrainingPlan", {
+    setLoading(true);
+    fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
         setPlan(data);
-        setLoading(false);
       })
-      .catch((err) => console.log(err));
-    setLoading(false);
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -41,7 +45,7 @@ const TrainingPlan = () => {
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
           <div className="mb-8 text-center">
-            {loading && (
+            {loading ? (
               <>
                 <h1 className="text-3xl font-bold tracking-tight text-[#C8FF00]">
                   Generating Plan
@@ -50,9 +54,7 @@ const TrainingPlan = () => {
                   We are building your personalised training plan
                 </p>
               </>
-            )}
-
-            {plan && (
+            ) : plan ? (
               <>
                 <div className="text-[#EFEFEF]">
                   <h1 className="text-3xl font-bold">{plan.plan_name}</h1>
@@ -61,6 +63,10 @@ const TrainingPlan = () => {
                   Here is your personalised weekly training structure
                 </p>
               </>
+            ) : (
+              <h1 className="text-3xl font-bold text-red-500">
+                No training plan found
+              </h1>
             )}
           </div>
 

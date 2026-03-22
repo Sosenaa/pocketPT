@@ -8,7 +8,7 @@ def get_db_connection():
 def create_tables():
      con = get_db_connection()
      cursor = con.cursor()
-     cursor.execute('''sdrhjfglkjhASGEF;I7UQtyew3rfiuGZASDSA,MHFGp87a3=
+     cursor.execute('''
      CREATE TABLE IF NOT EXISTS users(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,
@@ -17,7 +17,7 @@ def create_tables():
                     email TEXT NOT NULL,
                     password TEXT NOT NULL
                     )
-                    ''')
+     ''')
      cursor.execute('''
      CREATE TABLE IF NOT EXISTS user_details(
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +31,7 @@ def create_tables():
                     activity TEXT NOT NULL,
                     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                     )
-''')
+     ''')
      
      #Training plans (Allow users to have multiple plans)
      cursor.execute('''
@@ -42,7 +42,7 @@ def create_tables():
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                     )     
-''')
+     ''')
      
      #Workouts (Each plan should contain workout day)
      cursor.execute('''
@@ -54,7 +54,7 @@ def create_tables():
                     exercise_duration TEXT NOT NULL,
                     FOREIGN KEY (plan_id) REFERENCES training_plans (id) ON DELETE CASCADE
                     ) 
-''')
+     ''')
      #Exercises (Exercises should belong to a workout)
      cursor.execute('''
      CREATE TABLE IF NOT EXISTS exercises(
@@ -65,7 +65,7 @@ def create_tables():
                     reps TEXT NOT NULL,
                     FOREIGN KEY (workout_id) REFERENCES workouts (id) ON DELETE CASCADE
                     )
-''')
+     ''')
      
      #Training plan 
 
