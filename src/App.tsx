@@ -6,19 +6,21 @@ import "./App.css";
 import Nav from "./components/Nav";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
     <div>
-      <Nav />
-
       <BrowserRouter>
+        <Nav />
+
         <Routes>
           <Route path="/" element={<Register />} />
           <Route path="/Register" element={<Register />} />
           <Route path="/UserForm" element={<UserForm />} />
           <Route path="/TrainingPlan" element={<TrainingPlan />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </div>

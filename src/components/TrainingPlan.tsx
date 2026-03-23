@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "../App.css";
 import { API_BASE_URL } from "../api";
+import { useNavigate } from "react-router-dom";
 type Exercise = {
   name: string;
   sets: string;
@@ -21,13 +22,21 @@ type TrainingPlanData = {
 
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
-    console.log("fetchstart");
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) {
+          navigate("/login");
+          return null;
+        }
+        if (!res.ok) {
+          throw new Error("Failed to fetch training plan");
+        }
+        return res.json();
+      })
       .then((data) => {
         setPlan(data);
       })

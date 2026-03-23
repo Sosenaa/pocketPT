@@ -36,7 +36,10 @@ const UserForm = () => {
       });
       const data = await response.json();
       console.log(data);
-
+      if (response.status === 401) {
+        navigate("/login");
+        return null;
+      }
       if (response.ok) {
         navigate("/trainingPlan");
       } else {

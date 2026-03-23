@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from .database import get_db_connection, create_tables
+from database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
 from functools import wraps
@@ -27,7 +27,7 @@ CORS(app ,supports_credentials=True,
 
 @app.route("/")
 def home():
-    return "Waking up backend"
+    return "Backend is alive"
 
 create_tables()
 
@@ -39,12 +39,6 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-
-@app.route("/")
-def index():
-    if 'username' in session:
-        return f'Logged in as {session["username"]}'
-    return 'You are not logged in'
 
 @app.route("/api/register", methods=["POST"])
 def register():
@@ -105,6 +99,12 @@ def login():
     session["id"] = user["id"]
     return jsonify({"Message": "Successful Login"}), 200
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    session.pop(session.get("user_id"), None)
+    session.clear()
+    return({"message": "Logged out successfully"}),200
+    
 
 
 @app.route("/api/userDetails", methods=["POST"])
