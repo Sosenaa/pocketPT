@@ -12,8 +12,11 @@ const UserForm = () => {
   const [goal, setGoal] = useState("");
   const [activity, setActivity] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const submitUserDetails = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/userDetails`, {
         credentials: "include",
@@ -41,8 +44,26 @@ const UserForm = () => {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen px-4 py-10 bg-[#080808]">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <p className="mb-4 text-sm text-slate-300">
+            I am currently working on a plan that is perfectly suited to you
+          </p>
+          <div className="spinner-border text-[#C8FF00]" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen px-4 py-10 bg-[#080808]">
       <div className="mx-auto max-w-4xl">

@@ -1,4 +1,3 @@
-import React from "react";
 import TrainingPlan from "./TrainingPlan";
 
 const Dashboard = () => {

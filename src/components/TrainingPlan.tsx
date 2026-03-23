@@ -21,10 +21,9 @@ type TrainingPlanData = {
 
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
+    console.log("fetchstart");
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
     })
@@ -34,9 +33,6 @@ const TrainingPlan = () => {
       })
       .catch((err) => {
         console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, []);
 
@@ -45,16 +41,7 @@ const TrainingPlan = () => {
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
           <div className="mb-8 text-center">
-            {loading ? (
-              <>
-                <h1 className="text-3xl font-bold tracking-tight text-[#C8FF00]">
-                  Generating Plan
-                </h1>
-                <p className="mt-2 text-md text-[#555]">
-                  We are building your personalised training plan
-                </p>
-              </>
-            ) : plan ? (
+            {plan ? (
               <>
                 <div className="text-[#EFEFEF]">
                   <h1 className="text-3xl font-bold">{plan.plan_name}</h1>
@@ -70,16 +57,7 @@ const TrainingPlan = () => {
             )}
           </div>
 
-          {!plan ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <p className="mb-4 text-sm text-slate-300">
-                I am currently working on a plan that is perfectly suited to you
-              </p>
-              <div className="spinner-border text-[#C8FF00]" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          ) : (
+          {plan ? (
             <div className="space-y-6">
               {plan.workouts.map((d, index) => (
                 <div
@@ -137,6 +115,12 @@ const TrainingPlan = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-sm text-slate-300">
+                Could not load training plan.
+              </p>
             </div>
           )}
         </div>
