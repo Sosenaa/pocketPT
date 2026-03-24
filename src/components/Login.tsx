@@ -24,7 +24,6 @@ const Login = () => {
       });
       const data = await response.json();
       console.log(data);
-
       if (response.ok) {
         alert(`Welcome ${username}`);
         navigate("/UserForm");

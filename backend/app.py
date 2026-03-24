@@ -61,15 +61,13 @@ def register():
     
     #check if user already exists?
     userExist = con.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
-
     if userExist :
         con.close()
-        return jsonify({"Message", "User already exists"}), 400
+        return jsonify({"message", "This User already exists"}), 400
         
-    
+    #Add new user to database
     con.execute("INSERT INTO users (username, name, lastname, email, password) VALUES(?, ?, ?, ?, ?)", (username, name, lastName, email, password))
     con.commit()
-    print("Registration completes sucessfully ")
     con.close()
 
     return jsonify({"Message": "Successful Registration"}), 200
@@ -86,24 +84,27 @@ def login():
     password = data.get("password")
 
     con = get_db_connection()
+    
     user = con.execute("SELECT id, username, password FROM users WHERE username = ?",  (username,)).fetchone()
     con.close()
 
+    #Check if the user exists ?
     if not user:
         return jsonify({"error": "User not found"}),400
 
     if user["password"] != password:
-        return jsonify({"error": "Login or Password incorrect"}), 400
+        return jsonify({"error": "Invalid username or password."}), 400
 
+    #Create a flask session
     session["username"] = user["username"]
     session["id"] = user["id"]
-    return jsonify({"Message": "Successful Login"}), 200
+    return jsonify({"message": "Successfully logged in."}), 200
 
 @app.route("/api/logout", methods=["POST"])
 def logout():
     session.pop(session.get("user_id"), None)
     session.clear()
-    return({"message": "Logged out successfully"}),200
+    return({"message": "Successfully logged out"}),200
     
 
 
@@ -116,7 +117,7 @@ def userDetails():
     if not data:
         return jsonify({"message": "Data missing"}), 400
     
-
+    #Fetching data from the form
     name = data.get("name")
     age = data.get("age")
     weight = data.get("weight")
@@ -125,6 +126,13 @@ def userDetails():
     goal = data.get("goal")
     activity = data.get("activity")
 
+    required_fields = [name,age,weight,height, gender,goal,activity]
+
+    #Ensure all fields are completed
+    if any(field is None or field == "" for field in required_fields):
+        return jsonify({"message": "All fields are required."}), 400
+    
+    #Writing form data into the database
     con = get_db_connection()
     cursor = con.cursor()
     cursor.execute('''INSERT INTO user_details 
@@ -134,16 +142,16 @@ def userDetails():
     con.commit()
     con.close()
 
+    #Triger plan generation after submiting the form
     trainingPlanGen(age, weight, height, gender, goal, activity)
-    return jsonify({"message": "Data saved sucessfully"})
+    return jsonify({"message": "Data saved successfully."}),200
 
 
 def trainingPlanGen(age, weight, height, gender, goal, activity):
     client = OpenAI()
-    print("Here will have training plan generated")
+    print("Working on the training plan")
     
     #get chat gpt reponse
-
     response = client.responses.create(
     model="gpt-4o-mini",
     text={"format":{
@@ -151,8 +159,10 @@ def trainingPlanGen(age, weight, height, gender, goal, activity):
     }},
     instructions="You are a qualified Personal trainer",
     input=f'''
-    Create a profesional training plan for this user.
-
+    Create a professional, science-based gym training plan.
+    Ensure the program is balanced across all major muscle groups, 
+    while considering general training preferences often observed in males and females.
+    
     Age: {age}
     Weight:{weight}
     Height: {height}
@@ -160,19 +170,24 @@ def trainingPlanGen(age, weight, height, gender, goal, activity):
     Goal: {goal}
     Activity: {activity}
 
-    Return only valid JSON.
-    
+    Return ONLY raw JSON. 
+    Do not include markdown, 
+    code blocks, 
+    explanations, 
+    comments, 
+    or any text outside the JSON structure.
+
     {{
-        "plan_name": "Muscle gain",
+        "plan_name": "string",
         "workouts":[
         {{
-            "day_name": "Day 1",
-            "focus": "Upper Body",
-            "exercise_duration": "75 Min",
+            "day_name": "string",
+            "focus": "string",
+            "exercise_duration": "string",
             "exercises": [
-                {{"name": "Bench press", "sets": "4", "reps": "10"}},
-                {{"name" : "Shoulder press", "sets": "3", "reps": "12"}},
-                {{"name" : "Pull ups", "sets": "4", "reps": "15"}},
+                {{"name": "string", "sets": "string", "reps": "string"}},
+                {{"name" : "string", "sets": "string", "reps": "string"}},
+                {{"name" : "string", "sets": "string", "reps": "string"}}
             ]
         }},
 
@@ -184,9 +199,9 @@ def trainingPlanGen(age, weight, height, gender, goal, activity):
                 {{"name": "Squats", "sets": "4", "reps":"10"}},
                 {{"name" : "Leg press", "sets": "5", "reps": "12"}},
                 {{"name" : "Leg extension", "sets": "5", "reps": "12"}},
-                {{"name" : "Jog", "sets": "1", "reps": "25 minutes"}},
+                {{"name" : "Jog", "sets": "1", "reps": "25 minutes"}}
             ]
-        }},
+        }}
 
         ]
     }}
@@ -194,45 +209,37 @@ def trainingPlanGen(age, weight, height, gender, goal, activity):
     '''
     )
 
-    plan = json.loads(response.output_text)
+    try:
+        plan = json.loads(response.output_text)
+        print("Valid Json")
 
-    for workout in plan["workouts"]:
-        print(f""" 
-              Day: {workout["day_name"]}, 
-              Focus: {workout["focus"]}, 
-              Duration: {workout["exercise_duration"]} """)
+        if plan:
+            user_id = session.get("id")
+            con = get_db_connection()
+            cursor = con.cursor()
+            cursor.execute("INSERT INTO training_plans (user_id, plan_name) VALUES (?,?)", (user_id, plan["plan_name"]))
 
+            plan_id = cursor.lastrowid
 
-        for exercise in workout["exercises"]:
-            print(f"""  
-                  Name: {exercise["name"]}, 
-                  Sets: {exercise["sets"]}, 
-                  Reps: {exercise["reps"]}
-                  """)
+            for workout in plan["workouts"]:
+                cursor.execute("INSERT INTO workouts (plan_id, day_name, focus, exercise_duration) VALUES (?,?,?,?)",
+                                (plan_id, workout["day_name"], workout["focus"], workout["exercise_duration"]))
+                    
+                workout_id = cursor.lastrowid
 
-    if plan:
-        user_id = session.get("id")
-        con = get_db_connection()
-        cursor = con.cursor()
-        cursor.execute("INSERT INTO training_plans (user_id, plan_name) VALUES (?,?)", (user_id, plan["plan_name"]))
+                for exercise in workout["exercises"]:
+                    cursor.execute("INSERT INTO exercises (workout_id, exercise_name, sets, reps) VALUES (?,?,?,?)",
+                                (workout_id, exercise["name"], exercise["sets"], exercise["reps"]))
 
-        plan_id = cursor.lastrowid
+            con.commit()
+            con.close()
 
-        for workout in plan["workouts"]:
-            cursor.execute("INSERT INTO workouts (plan_id, day_name, focus, exercise_duration) VALUES (?,?,?,?)",
-                        (plan_id, workout["day_name"], workout["focus"], workout["exercise_duration"]))
-            
-            workout_id = cursor.lastrowid
-
-            for exercise in workout["exercises"]:
-                cursor.execute("INSERT INTO exercises (workout_id, exercise_name, sets, reps) VALUES (?,?,?,?)",
-                            (workout_id, exercise["name"], exercise["sets"], exercise["reps"]))
-
-        con.commit()
-        con.close()
-
-        return jsonify({"Message": "Successful Login"}), 200
-
+            return jsonify({"message": "Training plan generated successfully"}), 200
+        
+    
+    except json.decoder.JSONDecodeError:
+        print("Invalid Json")
+        return jsonify({"error": "failed to generate JSON format"}), 500
 
 
 
@@ -250,7 +257,7 @@ def getTrainingPlan():
     if not plan:
         return jsonify({"message": "There are no plans"}), 404
 
-    #get all workout that belong to this plan
+    #get all workouts that belong to this plan
     workouts = cursor.execute("SELECT * FROM workouts WHERE plan_id = ? ",(plan["id"],)).fetchall()
 
     result = {
