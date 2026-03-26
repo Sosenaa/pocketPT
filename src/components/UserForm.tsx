@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
+import "../App.css";
 const UserForm = () => {
   const navigate = useNavigate();
 
@@ -68,7 +69,7 @@ const UserForm = () => {
   }
 
   return (
-    <div className="min-h-screen px-4 py-10 bg-[#080808]">
+    <div className="min-h-screen px-1 py-10 bg-[#080808]">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] p-6 shadow-xl md:p-8">
           <div className="mb-8 text-center text-[#C8FF00]">
@@ -80,7 +81,7 @@ const UserForm = () => {
           </div>
 
           <form onSubmit={submitUserDetails} className="space-y-6">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {/* Name */}
               <div className="md:col-span-2">
                 <label
@@ -95,7 +96,7 @@ const UserForm = () => {
                   placeholder="Your first name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-[#EFEFEF] outline-none transition-colors focus:ring-2 focus:ring-[#c8ff00]"
+                  className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3  text-[#EFEFEF] outline-none transition-colors focus:ring-2 focus:ring-[#c8ff00]"
                 />
               </div>
 
