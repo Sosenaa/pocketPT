@@ -23,11 +23,20 @@ type TrainingPlanData = {
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   const navigate = useNavigate();
+  const [exercisesComplete, setExercisesComplete] = useState<number[]>([]);
 
   const [cardIndex, setCardIndex] = useState<number | null>(null);
 
-  const cardCollapse = (index) => {
+  const cardCollapse = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
+  };
+
+  const toggleCompleted = (index: number) => {
+    setExercisesComplete((prev) =>
+      prev.includes(index)
+        ? prev.filter((row) => row !== index)
+        : [...prev, index],
+    );
   };
 
   useEffect(() => {
@@ -99,6 +108,7 @@ const TrainingPlan = () => {
                       </div>
                     </div>
                   </button>
+
                   {cardIndex === index && (
                     <div className="overflow-x-auto">
                       <table className="min-w-full">
@@ -120,7 +130,8 @@ const TrainingPlan = () => {
                           {d.exercises.map((n, index) => (
                             <tr
                               key={index}
-                              className="hover:bg-[#151515] transition"
+                              onClick={() => toggleCompleted(index)}
+                              className={`${exercisesComplete.includes(index) ? "bg-green-900" : null}`}
                             >
                               <td className="pl-5 py-4 text-sm font-medium text-slate-100">
                                 {n.name}
