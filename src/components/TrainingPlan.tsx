@@ -23,6 +23,13 @@ type TrainingPlanData = {
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   const navigate = useNavigate();
+
+  const [cardIndex, setCardIndex] = useState<number | null>(null);
+
+  const cardCollapse = (index) => {
+    setCardIndex((prev) => (prev === index ? null : index));
+  };
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
@@ -73,55 +80,63 @@ const TrainingPlan = () => {
                   key={index}
                   className="overflow-hidden rounded-sm border-2 border-[#2a2a2a] bg-[#0E0E0E]"
                 >
-                  <div className="flex flex-col gap-3 border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <div className="text-[#c8ff00]">
-                        <h2 className="text-xl font-semibold ">{d.day_name}</h2>
+                  <button
+                    className="w-full"
+                    onClick={() => cardCollapse(index)}
+                  >
+                    <div className="flex flex-col gap-3 border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <div className="text-[#c8ff00]">
+                          <h2 className="text-xl font-semibold ">
+                            {d.day_name}
+                          </h2>
+                        </div>
+                        <p className="text-sm text-[#555]">{d.focus}</p>
                       </div>
-                      <p className="text-sm text-[#555]">{d.focus}</p>
+
+                      <div className="inline-flex w-fit rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
+                        {d.exercise_duration}
+                      </div>
                     </div>
-
-                    <div className="inline-flex w-fit rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
-                      {d.exercise_duration}
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full">
-                      <thead className="bg-[#161616]">
-                        <tr>
-                          <th className="pl-5 py-4 text-left text-sm font-semibold text-slate-100">
-                            Exercise
-                          </th>
-                          <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
-                            Reps
-                          </th>
-                          <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
-                            Sets
-                          </th>
-                        </tr>
-                      </thead>
-
-                      <tbody className="divide-y divide-[#2a2a2a] bg-[#0E0E0E]">
-                        {d.exercises.map((n, index) => (
-                          <tr
-                            key={index}
-                            className="hover:bg-[#151515] transition"
-                          >
-                            <td className="pl-5 py-4 text-sm font-medium text-slate-100">
-                              {n.name}
-                            </td>
-                            <td className="px-2 py-4 text-center text-sm text-slate-300">
-                              {n.reps}
-                            </td>
-                            <td className="px-2 py-4 text-center text-sm text-slate-300">
-                              {n.sets}
-                            </td>
+                  </button>
+                  {cardIndex === index && (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full">
+                        <thead className="bg-[#161616]">
+                          <tr>
+                            <th className="pl-5 py-4 text-left text-sm font-semibold text-slate-100">
+                              Exercise
+                            </th>
+                            <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
+                              Reps
+                            </th>
+                            <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
+                              Sets
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+
+                        <tbody className="divide-y divide-[#2a2a2a] bg-[#0E0E0E]">
+                          {d.exercises.map((n, index) => (
+                            <tr
+                              key={index}
+                              className="hover:bg-[#151515] transition"
+                            >
+                              <td className="pl-5 py-4 text-sm font-medium text-slate-100">
+                                {n.name}
+                              </td>
+                              <td className="px-2 py-4 text-center text-sm text-slate-300">
+                                {n.reps}
+                              </td>
+                              <td className="px-2 py-4 text-center text-sm text-slate-300">
+                                {n.sets}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
