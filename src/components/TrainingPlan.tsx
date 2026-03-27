@@ -23,22 +23,21 @@ type TrainingPlanData = {
 const TrainingPlan = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   const navigate = useNavigate();
-  const [exercisesComplete, setExercisesComplete] = useState<number[]>([]);
 
   const [cardIndex, setCardIndex] = useState<number | null>(null);
+
+  const [exercisesComplete, setExercisesComplete] = useState<string[]>([]);
 
   const cardCollapse = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
 
-  const toggleCompleted = (index: number) => {
+  const toggleCompleted = (workoutIndex: number, exerciseIndex: number) => {
+    const key = `${workoutIndex}-${exerciseIndex}`;
     setExercisesComplete((prev) =>
-      prev.includes(index)
-        ? prev.filter((row) => row !== index)
-        : [...prev, index],
+      prev.includes(key) ? prev.filter((row) => row !== key) : [...prev, key],
     );
   };
-
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
@@ -55,6 +54,15 @@ const TrainingPlan = () => {
       })
       .then((data) => {
         setPlan(data);
+        console.log(data);
+        const names: string[] = [];
+
+        for (let i = 0; i < data.workouts.length; i++) {
+          for (let j = 0; j < data.workouts[i].exercises.length; j++) {
+            names.push(data.workouts[i].exercises[j].name);
+          }
+        }
+        console.log(names);
       })
       .catch((err) => {
         console.log(err);
@@ -84,16 +92,16 @@ const TrainingPlan = () => {
 
           {plan ? (
             <div className="space-y-6">
-              {plan.workouts.map((d, index) => (
+              {plan.workouts.map((d, workoutIndex) => (
                 <div
-                  key={index}
+                  key={workoutIndex}
                   className="overflow-hidden rounded-sm border-2 border-[#2a2a2a] bg-[#0E0E0E]"
                 >
                   <button
                     className="w-full"
-                    onClick={() => cardCollapse(index)}
+                    onClick={() => cardCollapse(workoutIndex)}
                   >
-                    <div className="flex flex-col gap-3 border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 md:flex-row md:items-center md:justify-between">
+                    <div className=" border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <div className="text-[#c8ff00]">
                           <h2 className="text-xl font-semibold ">
@@ -109,7 +117,7 @@ const TrainingPlan = () => {
                     </div>
                   </button>
 
-                  {cardIndex === index && (
+                  {cardIndex === workoutIndex && (
                     <div className="overflow-x-auto">
                       <table className="min-w-full">
                         <thead className="bg-[#161616]">
@@ -123,15 +131,18 @@ const TrainingPlan = () => {
                             <th className="px-2 py-4 text-center text-sm font-semibold text-slate-100">
                               Sets
                             </th>
+                            <th></th>
                           </tr>
                         </thead>
 
                         <tbody className="divide-y divide-[#2a2a2a] bg-[#0E0E0E]">
-                          {d.exercises.map((n, index) => (
+                          {d.exercises.map((n, exerciseIndex) => (
                             <tr
-                              key={index}
-                              onClick={() => toggleCompleted(index)}
-                              className={`${exercisesComplete.includes(index) ? "bg-green-900" : null}`}
+                              key={exerciseIndex}
+                              onClick={() => {
+                                toggleCompleted(workoutIndex, exerciseIndex);
+                              }}
+                              className={`${exercisesComplete.includes(`${workoutIndex}-${exerciseIndex}`) ? "bg-green-900" : null}`}
                             >
                               <td className="pl-5 py-4 text-sm font-medium text-slate-100">
                                 {n.name}
@@ -141,6 +152,9 @@ const TrainingPlan = () => {
                               </td>
                               <td className="px-2 py-4 text-center text-sm text-slate-300">
                                 {n.sets}
+                              </td>
+                              <td className="px-2 py-4 text-center text-sm text-slate-300">
+                                |||
                               </td>
                             </tr>
                           ))}
