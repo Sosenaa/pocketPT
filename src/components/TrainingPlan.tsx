@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import "../App.css";
 import { API_BASE_URL } from "../api";
 import { useNavigate } from "react-router-dom";
@@ -26,18 +26,39 @@ const TrainingPlan = () => {
 
   const [cardIndex, setCardIndex] = useState<number | null>(null);
 
-  const [exercisesComplete, setExercisesComplete] = useState<string[]>([]);
+  const [openExercise, setOpenExercise] = useState<string | null>(null);
+  const [eVideoId, setEvideoId] = useState<Record<string, string>>({});
 
   const cardCollapse = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
 
-  const toggleCompleted = (workoutIndex: number, exerciseIndex: number) => {
+  const toggleExercise = (workoutIndex: number, exerciseIndex: number) => {
     const key = `${workoutIndex}-${exerciseIndex}`;
-    setExercisesComplete((prev) =>
-      prev.includes(key) ? prev.filter((row) => row !== key) : [...prev, key],
-    );
+    setOpenExercise((prev) => (prev === key ? null : key));
+    console.log(key);
   };
+
+  async function getVideo(name: string, rowKey: string) {
+    console.log(name);
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(name)}form&key=REMOVED`;
+
+      console.log();
+      const response = await fetch(url);
+      const data = await response.json();
+
+      console.log(data.items[0].id.videoId);
+      const videoId = data.items[0].id.videoId;
+      setEvideoId((prev) => ({
+        ...prev,
+        [rowKey]: `https://www.youtube.com/embed/${videoId}`,
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
@@ -136,28 +157,56 @@ const TrainingPlan = () => {
                         </thead>
 
                         <tbody className="divide-y divide-[#2a2a2a] bg-[#0E0E0E]">
-                          {d.exercises.map((n, exerciseIndex) => (
-                            <tr
-                              key={exerciseIndex}
-                              onClick={() => {
-                                toggleCompleted(workoutIndex, exerciseIndex);
-                              }}
-                              className={`${exercisesComplete.includes(`${workoutIndex}-${exerciseIndex}`) ? "bg-green-900" : null}`}
-                            >
-                              <td className="pl-5 py-4 text-sm font-medium text-slate-100">
-                                {n.name}
-                              </td>
-                              <td className="px-2 py-4 text-center text-sm text-slate-300">
-                                {n.reps}
-                              </td>
-                              <td className="px-2 py-4 text-center text-sm text-slate-300">
-                                {n.sets}
-                              </td>
-                              <td className="px-2 py-4 text-center text-sm text-slate-300">
-                                |||
-                              </td>
-                            </tr>
-                          ))}
+                          {d.exercises.map((n, exerciseIndex) => {
+                            const rowKey = `${workoutIndex}-${exerciseIndex}`;
+                            const isOpen = openExercise === rowKey;
+
+                            return (
+                              <Fragment key={rowKey}>
+                                <tr
+                                  onClick={() => {
+                                    toggleExercise(workoutIndex, exerciseIndex);
+                                    getVideo(n.name, rowKey);
+                                  }}
+                                  className={"hover:bg-[#181818]"}
+                                >
+                                  <td className="pl-5 py-4 text-sm font-medium text-slate-100">
+                                    {n.name}
+                                  </td>
+                                  <td className="px-2 py-4 text-center text-sm text-slate-300">
+                                    {n.reps}
+                                  </td>
+                                  <td className="px-2 py-4 text-center text-sm text-slate-300">
+                                    {n.sets}
+                                  </td>
+                                  <td className="px-2 py-4 text-center text-sm text-slate-300">
+                                    |||
+                                  </td>
+                                </tr>
+
+                                {isOpen && (
+                                  <tr>
+                                    <td className="px-2 py-4 " colSpan={4}>
+                                      {eVideoId[rowKey] ? (
+                                        <iframe
+                                          width="560"
+                                          height="315"
+                                          src={`${eVideoId[rowKey]}`}
+                                          title="YouTube video player"
+                                          allow="accelerometer; 
+                                      autoplay; clipboard-write; 
+                                      encrypted-media; gyroscope; 
+                                      picture-in-picture; web-share"
+                                        ></iframe>
+                                      ) : (
+                                        <p>Loading...</p>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )}
+                              </Fragment>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
