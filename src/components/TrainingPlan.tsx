@@ -42,6 +42,7 @@ const TrainingPlan = () => {
   async function getVideo(name: string, rowKey: string) {
     console.log(name);
     try {
+      /* Getting video data from youtube max result set to 1. */
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(name)}form&key=REMOVED`;
 
       console.log();
@@ -49,7 +50,10 @@ const TrainingPlan = () => {
       const data = await response.json();
 
       console.log(data.items[0].id.videoId);
+
+      /* Getting videoID of the first video*/
       const videoId = data.items[0].id.videoId;
+      /* Setting state based on the exercise card open*/
       setEvideoId((prev) => ({
         ...prev,
         [rowKey]: `https://www.youtube.com/embed/${videoId}`,
@@ -60,6 +64,7 @@ const TrainingPlan = () => {
   }
 
   useEffect(() => {
+    /* Fetching training plan from database*/
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
     })
@@ -78,6 +83,7 @@ const TrainingPlan = () => {
         console.log(data);
         const names: string[] = [];
 
+        /* Getting all exercise names. ====NOT USED AT THE MOMENT=== */
         for (let i = 0; i < data.workouts.length; i++) {
           for (let j = 0; j < data.workouts[i].exercises.length; j++) {
             names.push(data.workouts[i].exercises[j].name);
@@ -189,8 +195,9 @@ const TrainingPlan = () => {
                                     <td className="px-2 py-4 " colSpan={4}>
                                       {eVideoId[rowKey] ? (
                                         <iframe
-                                          width="560"
-                                          height="315"
+                                          className={
+                                            "w-full max-w-xl aspect-video"
+                                          }
                                           src={`${eVideoId[rowKey]}`}
                                           title="YouTube video player"
                                           allow="accelerometer; 
@@ -199,7 +206,14 @@ const TrainingPlan = () => {
                                       picture-in-picture; web-share"
                                         ></iframe>
                                       ) : (
-                                        <p>Loading...</p>
+                                        <div
+                                          className="spinner-border text-[#C8FF00]"
+                                          role="status"
+                                        >
+                                          <span className="visually-hidden">
+                                            Loading...
+                                          </span>
+                                        </div>
                                       )}
                                     </td>
                                   </tr>
