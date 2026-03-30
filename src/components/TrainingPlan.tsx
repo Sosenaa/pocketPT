@@ -28,6 +28,7 @@ const TrainingPlan = () => {
 
   const [openExercise, setOpenExercise] = useState<string | null>(null);
   const [eVideoId, setEvideoId] = useState<Record<string, string>>({});
+  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
 
   const cardCollapse = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
@@ -43,7 +44,7 @@ const TrainingPlan = () => {
     console.log(name);
     try {
       /* Getting video data from youtube max result set to 1. */
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(name)}form&key=REMOVED`;
+      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(name)}form&key=${apiKey}`;
 
       console.log();
       const response = await fetch(url);

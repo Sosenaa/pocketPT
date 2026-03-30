@@ -1,11 +1,7 @@
 import TrainingPlan from "./TrainingPlan";
 
 const Dashboard = () => {
-  return (
-    <div>
-      <TrainingPlan />
-    </div>
-  );
+  return <div></div>;
 };
 
 export default Dashboard;
