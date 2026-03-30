@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from database import get_db_connection, create_tables
+from .database import get_db_connection, create_tables
 import os
-from .dotenv import load_dotenv
+from dotenv import load_dotenv
 from functools import wraps
 from openai import OpenAI
 import json
