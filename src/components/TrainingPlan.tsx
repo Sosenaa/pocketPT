@@ -119,20 +119,20 @@ const TrainingPlan = () => {
           </div>
 
           {plan ? (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {plan.workouts.map((d, workoutIndex) => (
                 <div
                   key={workoutIndex}
-                  className="overflow-hidden rounded-sm border-2 border-[#2a2a2a] bg-[#0E0E0E]"
+                  className="overflow-hidden rounded-sm border-2 border-[#2a2a2a] bg-[#0E0E0E] "
                 >
                   <button
                     className="w-full"
                     onClick={() => cardCollapse(workoutIndex)}
                   >
-                    <div className=" border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 items-center justify-between">
                       <div>
                         <div className="text-[#c8ff00]">
-                          <h2 className="text-xl font-semibold ">
+                          <h2 className="text-xl font-semibold text-left">
                             {d.day_name}
                           </h2>
                         </div>
