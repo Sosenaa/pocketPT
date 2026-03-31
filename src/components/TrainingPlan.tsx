@@ -34,6 +34,7 @@ const TrainingPlan = () => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
 
+  /*open exercise card to see video */
   const toggleExercise = (workoutIndex: number, exerciseIndex: number) => {
     const key = `${workoutIndex}-${exerciseIndex}`;
     setOpenExercise((prev) => (prev === key ? null : key));
