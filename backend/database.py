@@ -67,6 +67,19 @@ def create_tables():
                     )
      ''')
      
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS exercise_logs(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                         exercise_id INTEGER NOT NULL,
+                         user_id INTEGER NOT NULL,
+                         weight INTEGER NOT NULL,
+                         reps INTEGER NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         FOREIGN KEY (exercise_id) REFERENCES exercises (id) ON DELETE CASCADE,
+                         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+                         )
+     ''')
+     
      #Training plan 
 
      con.commit()
