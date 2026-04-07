@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 /* Type file to be created in the future */
 type Exercise = {
+  exercise_id: number;
   name: string;
   sets: string;
   reps: string;
@@ -32,7 +33,10 @@ const Dashboard = () => {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((data) => setPlan(data))
+      .then((data) => {
+        setPlan(data);
+        console.log(data);
+      })
       .catch(console.error);
   }, []);
 

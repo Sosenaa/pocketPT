@@ -279,6 +279,7 @@ def getTrainingPlan():
 
         for exercise in exercises:
             workout_data["exercises"].append({
+                "exercise_id": exercise["id"],
                 "name": exercise["exercise_name"],
                 "sets" : exercise["sets"],
                 "reps" : exercise["reps"],
@@ -289,6 +290,31 @@ def getTrainingPlan():
     con.close()
 
     return jsonify(result), 200
+
+
+@app.route("/api/createLog", methods=["POST"])
+@login_required
+def createLog():
+    data = request.get_json()
+    if not data:
+        return ({"message": "Data missing"}), 400
+    print("this works")
+    userId = session.get("id")
+    exerciseId = data.get("exerciseIndex")
+    newWeight = data.get("weight")
+    newReps = data.get("reps")
+    
+    if not userId or not exerciseId or not newWeight or not newReps:
+        print("missing data")
+        return jsonify({"message": "Missing data"}), 400
+    
+    con = get_db_connection()
+    cursor = con.cursor()
+    cursor.execute("INSERT INTO exercise_logs (exercise_id, user_id, weight, reps) VALUES (?,?,?,?)", (exerciseId, userId, newWeight, newReps))
+    con.commit()
+    con.close()
+    return jsonify({"message": "Log added successfully "}), 201
+    
 
 
 if __name__ == "__main__":

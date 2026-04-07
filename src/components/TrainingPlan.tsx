@@ -3,6 +3,7 @@ import "../App.css";
 import { API_BASE_URL } from "../api";
 import { useNavigate } from "react-router-dom";
 type Exercise = {
+  exercise_id: number;
   name: string;
   sets: string;
   reps: string;

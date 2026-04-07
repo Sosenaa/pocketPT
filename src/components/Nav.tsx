@@ -19,7 +19,7 @@ const Nav = () => {
   };
 
   return (
-    <nav className="flex items-center border-b bg-[#080808] py-2">
+    <nav className="relative flex items-center border-b bg-[#080808] py-2">
       <div className="flex w-full items-center justify-between  px-4 my-2 ">
         <div className="">
           <a href="/" id="title">
@@ -27,15 +27,15 @@ const Nav = () => {
           </a>
         </div>
 
-        <div className="">
+        <div>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400 md:hidden"
+            className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400 lg:hidden"
           >
             |||
           </button>
 
-          <ul className="hidden md:flex m-0 p-0">
+          <ul className="hidden lg:flex m-0 p-0 ">
             <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
               <Link to={"/Plan"} className="!no-underline !text-inherit">
                 PLAN
@@ -44,6 +44,11 @@ const Nav = () => {
             <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
               <Link to={"/Dashboard"} className="!no-underline !text-inherit">
                 DASHBOARD
+              </Link>
+            </li>
+            <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
+              <Link to={"/UserForm"} className="!no-underline !text-inherit">
+                USERFORM
               </Link>
             </li>
             <a>
@@ -56,7 +61,7 @@ const Nav = () => {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden flex flex-col w-full position-absolute mt-95 bg-[#080808] border-bottom">
+        <div className="lg:hidden flex flex-col w-full absolute top-full bg-[#080808] border-b">
           <ul className="p-4 m-4">
             <li className="m-4  text-slate-400">
               <Link
@@ -75,6 +80,15 @@ const Nav = () => {
                 onClick={closeMenu}
               >
                 DASHBOARD
+              </Link>
+            </li>
+            <li className="m-4  text-slate-400">
+              <Link
+                to={"/UserForm"}
+                className="block !no-underline !text-inherit p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                onClick={closeMenu}
+              >
+                USERFORM
               </Link>
             </li>
 
