@@ -23,14 +23,18 @@ type todayWorkout = {
 const TodayWorkout = ({ workout }: todayWorkout) => {
   const navigate = useNavigate();
   const [cardIndex, setCardIndex] = useState<number | null>(null);
-  const [exerciseIndex, setExerciseIndex] = useState<number | null>(null);
+
   const [weight, setWeight] = useState<number | null>(null);
   const [reps, setReps] = useState<number | null>(null);
   const showExerciseCard = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
 
-  const createLog = async () => {
+  const createLog = async (
+    e: React.FormEvent<HTMLElement>,
+    exerciseId: number,
+  ) => {
+    e.preventDefault();
     try {
       const response = await fetch(`${API_BASE_URL}/api/createLog`, {
         credentials: "include",
@@ -39,7 +43,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          exerciseIndex,
+          exerciseId,
           weight,
           reps,
         }),
@@ -47,15 +51,19 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
       const data = await response.json();
       if (response.status === 401) {
         navigate("/Login");
-        return null;
+        return;
       }
-      if (response.ok) {
-        console.log(data);
-        alert("New log created");
+      if (!response.ok) {
+        alert(data.message || "Failed to create log");
+        return;
       }
+      console.log(data);
+      alert("New log created");
+
+      setWeight(null);
+      setReps(null);
     } catch (error) {
       console.error(error);
-    } finally {
     }
   };
   return (
@@ -119,7 +127,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                       >
                         <form
                           className="grid grid-cols-3 gap-4"
-                          onSubmit={createLog}
+                          onSubmit={(e) => createLog(e, exercise.exercise_id)}
                         >
                           <div className="flex flex-col">
                             <h5 className="text-xs text-slate-400 mb-1">
@@ -158,9 +166,6 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                             <button
                               type="submit"
                               className="inline-flex w-fit rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]"
-                              onClick={() =>
-                                setExerciseIndex(exercise.exercise_id)
-                              }
                             >
                               Save
                             </button>

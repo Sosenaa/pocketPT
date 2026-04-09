@@ -26,7 +26,7 @@ const Login = () => {
       console.log(data);
       if (response.ok) {
         alert(`Welcome ${username}`);
-        navigate("/Dashboard");
+        navigate("/UserForm");
       } else {
         alert(data.error);
       }

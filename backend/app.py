@@ -300,11 +300,11 @@ def createLog():
         return ({"message": "Data missing"}), 400
     print("this works")
     userId = session.get("id")
-    exerciseId = data.get("exerciseIndex")
+    exerciseId = data.get("exerciseId")
     newWeight = data.get("weight")
     newReps = data.get("reps")
     
-    if not userId or not exerciseId or not newWeight or not newReps:
+    if userId is None or exerciseId is None or newWeight is None or newReps is None:
         print("missing data")
         return jsonify({"message": "Missing data"}), 400
     
