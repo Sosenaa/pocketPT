@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { API_BASE_URL } from "../api";
 import { useNavigate } from "react-router-dom";
 
@@ -20,15 +20,45 @@ type todayWorkout = {
   workout: Workout | undefined;
 };
 
+type LatestLogs = {
+  weight: number;
+  reps: number;
+  created_at: string;
+};
+
 const TodayWorkout = ({ workout }: todayWorkout) => {
   const navigate = useNavigate();
   const [cardIndex, setCardIndex] = useState<number | null>(null);
-
-  const [weight, setWeight] = useState<number | null>(null);
-  const [reps, setReps] = useState<number | null>(null);
+  const [latestLogs, setLatestLogs] = useState<Record<number, LatestLogs>>({});
+  const [weight, setWeight] = useState("");
+  const [reps, setReps] = useState("");
   const showExerciseCard = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
+  useEffect(() => {
+    const fetchLatestLogs = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/getLatestLogs`, {
+          credentials: "include",
+        });
+
+        if (response.status === 401) {
+          navigate("/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch latest logs");
+        }
+
+        const data = await response.json();
+        setLatestLogs(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchLatestLogs();
+  }, [navigate]);
 
   const createLog = async (
     e: React.FormEvent<HTMLElement>,
@@ -60,8 +90,8 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
       console.log(data);
       alert("New log created");
 
-      setWeight(null);
-      setReps(null);
+      setWeight("");
+      setReps("");
     } catch (error) {
       console.error(error);
     }
@@ -133,11 +163,15 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                             <h5 className="text-xs text-slate-400 mb-1">
                               Last week weight
                             </h5>
-                            <p className="text-lg text-slate-400 mb-1">0kg</p>
+                            <p className="text-lg text-slate-400 mb-1">
+                              {latestLogs[exercise.exercise_id]?.weight ?? 0}kg
+                            </p>
                             <h5 className="text-xs text-slate-400 mb-1">
                               Last week reps
                             </h5>
-                            <p className="text-lg text-slate-400 mb-1">0</p>
+                            <p className="text-lg text-slate-400 mb-1">
+                              {latestLogs[exercise.exercise_id]?.reps ?? 0}
+                            </p>
                           </div>
                           <div className="flex flex-col">
                             <label className="text-lg text-slate-100 mb-1">
@@ -146,10 +180,8 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                             <input
                               type="number"
                               className="px-2 py-1 bg-[#0E0E0E] border border-[#2a2a2a] rounded text-slate-100 focus:outline-none focus:border-[#C8FF00] max-w-[50%] "
-                              value={Number(weight)}
-                              onChange={(e) =>
-                                setWeight(Number(e.target.value))
-                              }
+                              value={weight}
+                              onChange={(e) => setWeight(e.target.value)}
                             />
 
                             <label className="text-lg text-slate-100 mb-1">
@@ -158,8 +190,8 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                             <input
                               type="number"
                               className="px-2 py-1 bg-[#0E0E0E] border border-[#2a2a2a] rounded text-slate-100 focus:outline-none focus:border-[#C8FF00] max-w-[50%] "
-                              value={Number(reps)}
-                              onChange={(e) => setReps(Number(e.target.value))}
+                              value={reps}
+                              onChange={(e) => setReps(e.target.value)}
                             />
                           </div>
                           <div className="flex flex-col justify-center items-end">

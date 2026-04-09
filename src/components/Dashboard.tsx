@@ -35,7 +35,6 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((data) => {
         setPlan(data);
-        console.log(data);
       })
       .catch(console.error);
   }, []);

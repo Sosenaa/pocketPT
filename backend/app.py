@@ -314,8 +314,38 @@ def createLog():
     con.commit()
     con.close()
     return jsonify({"message": "Log added successfully "}), 201
-    
 
+@app.route("/api/getLatestLogs", methods=["GET"])
+@login_required
+def getLatestLogs():
+    user_id = session.get("id")
+    con = get_db_connection()
+    cursor = con.cursor()
+    
+    rows = cursor.execute("""
+        SELECT el.exercise_id, el.weight, el.reps, el.created_at
+        FROM exercise_logs el
+        INNER JOIN (
+            SELECT exercise_id, MAX(id) as max_id
+            FROM exercise_logs
+            WHERE user_id = ?
+            GROUP BY exercise_id
+        ) latest
+        ON el.id = latest.max_id
+    """, (user_id,)).fetchall()
+
+    con.close()  
+
+
+    result = {}
+    for row in rows:
+        result[row["exercise_id"]] = {
+            "weight": row["weight"],
+            "reps": row["reps"],
+            "created_at": row["created_at"]
+        }
+
+    return jsonify(result), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
