@@ -25,7 +25,7 @@ type TrainingPlanData = {
 const Dashboard = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
 
-  const today = new Date().getDay();
+  const today = new Date().getDay() - 1;
 
   useEffect(() => {
     /* Fetching training plan from database*/
@@ -50,11 +50,38 @@ const Dashboard = () => {
 
       {/* Today's / Next Workout */}
       {/* Fetch lates workout -> today's workout */}
+      {/* TodayWorkout - potentially create new button in nav Today Workout + today Plan and keep them separate */}
       <TodayWorkout workout={todayWorkout} />
       {/* Quick stats */}
       {/* Derived from db */}
 
       {/* Progression tracking */}
+      <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-4 gap-4 mx-auto max-w-4xl text-slate-200">
+          <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6 ">
+            <div className="mb-8 text-center">
+              <p>Workouts this month</p>
+            </div>
+          </div>
+          <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
+            <div className="mb-8 text-center">
+              <p>Current Streak</p>
+            </div>
+          </div>
+
+          <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
+            <div className="mb-8 text-center">
+              <p>Weekly Volume (Reps)</p>
+            </div>
+          </div>
+
+          <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
+            <div className="mb-8 text-center">
+              <p>Latest PR</p>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* User can input after each workout */}
 
       {/* Workout history */}

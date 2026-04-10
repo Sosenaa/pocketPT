@@ -96,8 +96,34 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
       console.error(error);
     }
   };
+
+  const submitWorkoutComplete = async (day_name: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/workoutComplete`, {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ day_name }),
+      });
+      const data = await response.json();
+      if (response.status === 401) {
+        navigate("/Login");
+        return;
+      }
+      if (!response.ok) {
+        alert(data.message || "Failed");
+        return;
+      }
+      alert("Workout completed submitted");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
+    <div className="bg-[#080808] sm:px-4 sm:py-10 ">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-2 shadow-xl pt-2">
           <div className="flex border-b-2 border-[#2a2a2a] bg-[#111] px-4 py-1 items-center justify-between">
@@ -149,6 +175,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                       <button onClick={() => showExerciseCard(index)}>▼</button>
                     </td>
                   </tr>
+
                   {cardIndex === index && (
                     <tr className={"hover:bg-[#181818] border-2  "}>
                       <td
@@ -159,14 +186,14 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                           className="grid grid-cols-3 gap-4"
                           onSubmit={(e) => createLog(e, exercise.exercise_id)}
                         >
-                          <div className="flex flex-col">
-                            <h5 className="text-xs text-slate-400 mb-1">
+                          <div className="flex flex-col ">
+                            <h5 className="!text-lg !text-slate-300 mb-1 ">
                               Last week weight
                             </h5>
                             <p className="text-lg text-slate-400 mb-1">
                               {latestLogs[exercise.exercise_id]?.weight ?? 0}kg
                             </p>
-                            <h5 className="text-xs text-slate-400 mb-1">
+                            <h5 className="mt-2 !text-lg !text-slate-300 mb-1 font-light">
                               Last week reps
                             </h5>
                             <p className="text-lg text-slate-400 mb-1">
@@ -174,7 +201,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                             </p>
                           </div>
                           <div className="flex flex-col">
-                            <label className="text-lg text-slate-100 mb-1">
+                            <label className="text-lg text-slate-300 mb-1">
                               This week weight
                             </label>
                             <input
@@ -184,7 +211,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
                               onChange={(e) => setWeight(e.target.value)}
                             />
 
-                            <label className="text-lg text-slate-100 mb-1">
+                            <label className="mt-2 text-lg text-slate-300 mb-1">
                               This week reps
                             </label>
                             <input
@@ -210,21 +237,19 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
               ))}
             </tbody>
           </table>
+          <div className="inline-flex w-full justify-end my-2 px-2">
+            <div className="w-fit text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
+              <button onClick={() => submitWorkoutComplete(workout!.day_name)}>
+                Workout complete
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Add toggle card at each exercise. User should be able to add weight 
       ifted at the current workout at current exercise. 
       ****optional add algorithm to calculate next weeks target weight to be lifted for progression   */}
-
-      <div className="mx-auto max-w-4xl mt-4">
-        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-2 shadow-xl pt-2">
-          <div className="flex border-[#2a2a2a] bg-[#111] px-4 py-1 items-center justify-between"></div>
-          <div className="text-[#c8ff00]">
-            <h2 className="text-xl font-semibold text-left">Today's Macros</h2>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
