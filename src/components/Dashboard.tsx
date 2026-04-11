@@ -28,8 +28,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
 
-  const today = new Date().getDay() - 3;
-
+  const today = new Date().getDay() - 2;
   useEffect(() => {
     /* Fetching training plan from database*/
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
@@ -38,10 +37,12 @@ const Dashboard = () => {
       .then((res) => {
         if (res.status === 401) {
           navigate("/Login");
-          return res.json();
+          return;
         }
+        return res.json();
       })
       .then((data) => {
+        if (!data) return;
         setPlan(data);
       })
       .catch(console.error);

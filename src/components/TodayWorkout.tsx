@@ -54,6 +54,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
 
         const data = await response.json();
         setLatestLogs(data);
+        console.log(data);
       } catch (error) {
         console.error(error);
       }
