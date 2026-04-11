@@ -10,6 +10,7 @@ type Exercise = {
 };
 
 type Workout = {
+  id: number;
   day_name: string;
   focus: string;
   exercise_duration: string;
@@ -97,7 +98,8 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
     }
   };
 
-  const submitWorkoutComplete = async (day_name: string) => {
+  const workoutComplete = async (workout_id: number) => {
+    console.log(workout_id);
     try {
       const response = await fetch(`${API_BASE_URL}/api/workoutComplete`, {
         credentials: "include",
@@ -105,7 +107,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ day_name }),
+        body: JSON.stringify({ workout_id }),
       });
       const data = await response.json();
       if (response.status === 401) {
@@ -116,7 +118,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
         alert(data.message || "Failed");
         return;
       }
-      alert("Workout completed submitted");
+      alert("Workout completed");
     } catch (error) {
       console.error(error);
     }
@@ -239,7 +241,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
           </table>
           <div className="inline-flex w-full justify-end my-2 px-2">
             <div className="w-fit text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
-              <button onClick={() => submitWorkoutComplete(workout!.day_name)}>
+              <button onClick={() => workoutComplete(workout!.id)}>
                 Workout complete
               </button>
             </div>

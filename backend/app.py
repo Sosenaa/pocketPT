@@ -118,7 +118,6 @@ def userDetails():
         return jsonify({"message": "Data missing"}), 400
     
     #Fetching data from the form
-    name = data.get("name")
     age = data.get("age")
     weight = data.get("weight")
     height = data.get("height")
@@ -126,7 +125,7 @@ def userDetails():
     goal = data.get("goal")
     activity = data.get("activity")
 
-    required_fields = [name,age,weight,height, gender,goal,activity]
+    required_fields = [age,weight,height, gender,goal,activity]
 
     #Ensure all fields are completed
     if any(field is None or field == "" for field in required_fields):
@@ -136,9 +135,9 @@ def userDetails():
     con = get_db_connection()
     cursor = con.cursor()
     cursor.execute('''INSERT INTO user_details 
-                (name, age, weight, height, gender, goal, activity, user_id) 
-                VALUES(?,?,?,?,?,?,?,?)''',
-                (name, age,weight,height,gender,goal,activity,user_id))
+                (age, weight, height, gender, goal, activity, user_id) 
+                VALUES(?,?,?,?,?,?,?)''',
+                (age,weight,height,gender,goal,activity,user_id))
     con.commit()
     con.close()
 
@@ -271,6 +270,7 @@ def getTrainingPlan():
     
     #building aworkout object
         workout_data = {
+            "id": workout["id"],
             "day_name": workout["day_name"],
             "focus" : workout["focus"],
             "exercise_duration" : workout["exercise_duration"],
@@ -347,5 +347,19 @@ def getLatestLogs():
 
     return jsonify(result), 200
 
+
+@app.route("/api/workoutComplete", methods=["POST"])
+@login_required
+def workoutComplete():
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "Missing data"}),400
+    
+    user_id = session.get("id")
+    workout_id = data.get("workout_id")
+    print(workout_id)
+    return jsonify({"message": "Workout complete"}),201
+    
+    
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

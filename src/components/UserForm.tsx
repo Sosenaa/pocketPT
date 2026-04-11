@@ -5,7 +5,6 @@ import "../App.css";
 const UserForm = () => {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
   const [age, setAge] = useState(0);
   const [weight, setWeight] = useState(0);
   const [height, setHeight] = useState(0);
@@ -26,7 +25,6 @@ const UserForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
           age,
           weight,
           height,
@@ -83,22 +81,7 @@ const UserForm = () => {
           <form onSubmit={submitUserDetails} className="space-y-6">
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {/* Name */}
-              <div className="md:col-span-2">
-                <label
-                  htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-[#555]"
-                >
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  placeholder="Your first name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3  text-[#EFEFEF] outline-none transition-colors focus:ring-2 focus:ring-[#c8ff00]"
-                />
-              </div>
+              <div className="md:col-span-2"></div>
 
               {/* Age */}
               <div>

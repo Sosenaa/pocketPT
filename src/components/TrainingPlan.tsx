@@ -10,6 +10,7 @@ type Exercise = {
 };
 
 type Workout = {
+  id: number;
   day_name: string;
   focus: string;
   exercise_duration: string;

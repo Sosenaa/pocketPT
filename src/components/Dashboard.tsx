@@ -1,6 +1,7 @@
 import TodayWorkout from "./TodayWorkout";
 import { API_BASE_URL } from "../api";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /* Type file to be created in the future */
 type Exercise = {
@@ -11,6 +12,7 @@ type Exercise = {
 };
 
 type Workout = {
+  id: number;
   day_name: string;
   focus: string;
   exercise_duration: string;
@@ -23,16 +25,22 @@ type TrainingPlanData = {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
 
-  const today = new Date().getDay() - 1;
+  const today = new Date().getDay() - 3;
 
   useEffect(() => {
     /* Fetching training plan from database*/
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status === 401) {
+          navigate("/Login");
+          return res.json();
+        }
+      })
       .then((data) => {
         setPlan(data);
       })
