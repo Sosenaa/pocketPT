@@ -79,6 +79,16 @@ def create_tables():
                          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                          )
      ''')
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS completed_workouts(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          workout_id  INTEGER NOT NULL,
+          user_id INTEGER NOT NULL,
+          create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (workout_id) REFERENCES workouts (id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+          )               
+     ''')
      
      #Training plan 
 
