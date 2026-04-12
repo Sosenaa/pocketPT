@@ -27,8 +27,10 @@ type TrainingPlanData = {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
+  const [workoutSelection, setWorkoutSelection] = useState(0);
 
-  const today = new Date().getDay() - 2;
+  const today = new Date().getDay() + workoutSelection;
+
   useEffect(() => {
     /* Fetching training plan from database*/
     fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
@@ -52,6 +54,11 @@ const Dashboard = () => {
     (w) => w.day_name === `Day ${today}`,
   );
 
+  if (workoutSelection >= 6) {
+    setWorkoutSelection(0);
+  }
+
+  console.log(workoutSelection);
   return (
     <div>
       {/* Nav */}
@@ -60,7 +67,11 @@ const Dashboard = () => {
       {/* Today's / Next Workout */}
       {/* Fetch lates workout -> today's workout */}
       {/* TodayWorkout - potentially create new button in nav Today Workout + today Plan and keep them separate */}
-      <TodayWorkout workout={todayWorkout} />
+      <TodayWorkout
+        workout={todayWorkout}
+        workoutSelection={workoutSelection}
+        setWorkoutSelection={setWorkoutSelection}
+      />
       {/* Quick stats */}
       {/* Derived from db */}
 

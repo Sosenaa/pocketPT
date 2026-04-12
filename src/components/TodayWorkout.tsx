@@ -17,17 +17,23 @@ type Workout = {
   exercises: Exercise[];
 };
 
-type todayWorkout = {
-  workout: Workout | undefined;
-};
-
 type LatestLogs = {
   weight: number;
   reps: number;
   created_at: string;
 };
 
-const TodayWorkout = ({ workout }: todayWorkout) => {
+type todayWorkoutProps = {
+  workout: Workout | undefined;
+  workoutSelection: number;
+  setWorkoutSelection: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const TodayWorkout = ({
+  workout,
+  workoutSelection,
+  setWorkoutSelection,
+}: todayWorkoutProps) => {
   const navigate = useNavigate();
   const [cardIndex, setCardIndex] = useState<number | null>(null);
   const [latestLogs, setLatestLogs] = useState<Record<number, LatestLogs>>({});
@@ -54,7 +60,6 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
 
         const data = await response.json();
         setLatestLogs(data);
-        console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -89,7 +94,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
         alert(data.message || "Failed to create log");
         return;
       }
-      console.log(data);
+
       alert("New log created");
 
       setWeight("");
@@ -100,7 +105,6 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
   };
 
   const workoutComplete = async (workout_id: number) => {
-    console.log(workout_id);
     try {
       const response = await fetch(`${API_BASE_URL}/api/workoutComplete`, {
         credentials: "include",
@@ -142,6 +146,11 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
             </div>
             <div className="inline-flex w-fit rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
               {workout?.exercise_duration}
+            </div>
+            <div className="w-fit text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
+              <button onClick={() => setWorkoutSelection((prev) => prev + 1)}>
+                Next workout
+              </button>
             </div>
           </div>
 
@@ -241,7 +250,7 @@ const TodayWorkout = ({ workout }: todayWorkout) => {
             </tbody>
           </table>
           <div className="inline-flex w-full justify-end my-2 px-2">
-            <div className="w-fit text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
+            <div className="w-fit my-2 text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
               <button onClick={() => workoutComplete(workout!.id)}>
                 Workout complete
               </button>
