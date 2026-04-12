@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
 
@@ -10,6 +10,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [backendLive, setBackendLive] = useState(false);
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,6 +47,38 @@ const Register = () => {
       alert("Incorrect password");
     }
   };
+
+  useEffect(() => {
+    const wakeBackend = async () => {
+      for (let i = 0; i < 10; i++) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/health`);
+          if (response.ok) {
+            setBackendLive(true);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      }
+    };
+    wakeBackend();
+  }, []);
+
+  if (!backendLive) {
+    return (
+      <div className="min-h-screen px-1 sm:px-4 py-10 bg-[#080808]">
+        <div className="spinner-border text-[#C8FF00] m-8" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="m-8 ">Please wait... Setting up the server.</p>
+        <p className="m-8 ">This might take up to 1 min</p>
+        <p className="m-8 ">
+          Website will refresh automaticly every 10 seconds.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen px-1 sm:px-4 py-10 bg-[#080808]">

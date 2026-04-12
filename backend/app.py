@@ -25,9 +25,9 @@ CORS(app ,supports_credentials=True,
     }
 )
 
-@app.route("/")
-def home():
-    return "Backend is alive"
+@app.route("/api/health")
+def health():
+    return {"status": "ok"}, 200
 
 create_tables()
 
