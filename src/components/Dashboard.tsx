@@ -69,7 +69,6 @@ const Dashboard = () => {
       {/* TodayWorkout - potentially create new button in nav Today Workout + today Plan and keep them separate */}
       <TodayWorkout
         workout={todayWorkout}
-        workoutSelection={workoutSelection}
         setWorkoutSelection={setWorkoutSelection}
       />
       {/* Quick stats */}

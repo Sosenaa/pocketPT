@@ -25,13 +25,13 @@ type LatestLogs = {
 
 type todayWorkoutProps = {
   workout: Workout | undefined;
-  workoutSelection: number;
+
   setWorkoutSelection: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const TodayWorkout = ({
   workout,
-  workoutSelection,
+
   setWorkoutSelection,
 }: todayWorkoutProps) => {
   const navigate = useNavigate();
