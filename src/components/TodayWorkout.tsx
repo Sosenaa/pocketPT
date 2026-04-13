@@ -50,7 +50,7 @@ const TodayWorkout = ({
         });
 
         if (response.status === 401) {
-          navigate("/login");
+          navigate("/Login");
           return;
         }
 
@@ -141,12 +141,11 @@ const TodayWorkout = ({
                 </h2>
               </div>
               <p className="text-sm text-slate-200">
-                {workout?.focus || "Rest day"}
+                {workout?.focus || "Rest day"} -{" "}
+                {workout?.exercise_duration || "0 Min"}
               </p>
             </div>
-            <div className="inline-flex w-fit rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
-              {workout?.exercise_duration}
-            </div>
+
             <div className="w-fit text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
               <button onClick={() => setWorkoutSelection((prev) => prev + 1)}>
                 Next workout
@@ -212,6 +211,7 @@ const TodayWorkout = ({
                               {latestLogs[exercise.exercise_id]?.reps ?? 0}
                             </p>
                           </div>
+                          {/* #FUTURE - Add suggested weight / reps / time this week */}
                           <div className="flex flex-col">
                             <label className="text-lg text-slate-300 mb-1">
                               This week weight

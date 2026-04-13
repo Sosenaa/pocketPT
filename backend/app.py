@@ -7,6 +7,7 @@ from functools import wraps
 from openai import OpenAI
 import json
 
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -264,11 +265,11 @@ def getTrainingPlan():
         "workouts" : []
               }
     
-    #Get all exercises for each workout
+    #Get all exercises for each workout.... Refactor SQL query..  remove *
     for workout in workouts:
         exercises = cursor.execute("SELECT * FROM exercises WHERE workout_id = ? ", (workout["id"],)).fetchall()
     
-    #building aworkout object
+    #building a workout object
         workout_data = {
             "id": workout["id"],
             "day_name": workout["day_name"],
@@ -357,8 +358,37 @@ def workoutComplete():
     
     user_id = session.get("id")
     workout_id = data.get("workout_id")
-    print(workout_id)
+    con = get_db_connection()
+    cursor = con.cursor()
+    cursor.execute("""
+    INSERT INTO completed_workouts (workout_id, user_id ) 
+    VALUES (?,?)""", (workout_id, user_id))
+    con.commit()
+    con.close()
+    
     return jsonify({"message": "Workout complete"}),201
+    
+    
+@app.route("/api/getCompletedThisMonth", methods=["POST"])
+@login_required
+def getCompletedThisMonth():
+    con = get_db_connection()
+    cursor = con.cursor()
+    user_id = session.get("id")
+    
+    completedWorkouts = cursor.execute("""
+    SELECT create_at 
+    FROM completed_workouts 
+    WHERE user_id = ?
+    AND strftime('%Y-%m', create_at) = strftime('%Y-%m', 'now')""", 
+    (user_id,)).fetchall()
+    
+    workoutsNum = 0
+    for cw in completedWorkouts:
+        workoutsNum = workoutsNum + 1
+            
+    con.close()
+    return jsonify({"result": workoutsNum}),200
     
     
 if __name__ == "__main__":

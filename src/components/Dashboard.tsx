@@ -28,6 +28,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   const [workoutSelection, setWorkoutSelection] = useState(0);
+  const [workoutsThisMonth, setWorkoutsThisMonth] = useState("");
 
   const today = new Date().getDay() + workoutSelection;
 
@@ -48,6 +49,36 @@ const Dashboard = () => {
         setPlan(data);
       })
       .catch(console.error);
+  }, []);
+
+  /* Keep useEffect fetch separate for now. Later refactor into single function */
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/getCompletedThisMonth`,
+          {
+            credentials: "include",
+            method: "POST",
+          },
+        );
+        if (response.status === 401) {
+          navigate("/Login");
+          return;
+        }
+        if (!response.ok) {
+          throw new Error("Failed to fetch This Months completed workouts");
+        }
+        const data = await response.json();
+
+        setWorkoutsThisMonth(data.result);
+
+        console.log(data.result);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchStats();
   }, []);
 
   const todayWorkout: Workout | undefined = plan?.workouts.find(
@@ -80,6 +111,7 @@ const Dashboard = () => {
           <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6 ">
             <div className="mb-8 text-center">
               <p>Workouts this month</p>
+              <h1>{workoutsThisMonth}</h1>
             </div>
           </div>
           <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
