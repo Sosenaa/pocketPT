@@ -29,8 +29,7 @@ const Dashboard = () => {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   const [workoutSelection, setWorkoutSelection] = useState(1);
   const [workoutsThisMonth, setWorkoutsThisMonth] = useState("");
-
-  const today = new Date().getDay() + workoutSelection;
+  const [weeklyVolume, setWeeklyVolume] = useState("");
 
   useEffect(() => {
     /* Fetching training plan from database*/
@@ -81,10 +80,33 @@ const Dashboard = () => {
   }, [navigate]);
 
   const todayIndex = (workoutSelection % (plan?.workouts.length ?? 1)) + 1;
-
   const todayWorkout: Workout | undefined = plan?.workouts.find(
     (w) => w.day_name === `Day ${todayIndex}`,
   );
+
+  useState(() => {
+    const fetchWeeklyVolume = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/getWeeklyVolume`, {
+          credentials: "include",
+          method: "GET",
+        });
+        if (response.status === 401) {
+          navigate("/Login");
+          return;
+        }
+        if (!response.ok) {
+          throw new Error("Failed to fetch Weekly volume");
+        }
+        const data = await response.json();
+        console.log(data.result);
+        setWeeklyVolume(data.result);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchWeeklyVolume();
+  });
 
   return (
     <div>
@@ -110,21 +132,11 @@ const Dashboard = () => {
               <h1>{workoutsThisMonth}</h1>
             </div>
           </div>
-          <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
-            <div className="mb-8 text-center">
-              <p>Current Streak</p>
-            </div>
-          </div>
 
           <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
             <div className="mb-8 text-center">
               <p>Weekly Volume (Reps)</p>
-            </div>
-          </div>
-
-          <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
-            <div className="mb-8 text-center">
-              <p>Latest PR</p>
+              <h2>{weeklyVolume}</h2>
             </div>
           </div>
         </div>

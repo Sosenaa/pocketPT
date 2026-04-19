@@ -401,6 +401,40 @@ def getCompletedThisMonth():
             
     con.close()
     return jsonify({"result": workoutsNum}),200
+
+@app.route("/api/getWeeklyVolume", methods=["GET"])
+@login_required
+def getWeeklyVolume():
+    user_id = session.get("id")
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    
+    #incase reps are stored as seconds - 30 seconds = 1. 
+    result = cursor.execute("""
+    SELECT SUM(
+        CAST(sets AS INTEGER) * 
+        
+        CASE 
+            WHEN reps LIKE '%seconds%' THEN 1
+            ELSE CAST(reps AS INTEGER)
+        END
+    )
+    
+    FROM exercises
+    WHERE workout_id IN (
+
+        SELECT workout_id
+        FROM completed_workouts
+        WHERE user_id = ?
+        AND strftime('%Y-%W', create_at) = strftime('%Y-%W', 'now')
+
+    )
+    """, (user_id,)).fetchone()
+
+    weeklyVolume = result[0] or 0
+    
+    return jsonify({"result": weeklyVolume}), 200
     
     
 if __name__ == "__main__":

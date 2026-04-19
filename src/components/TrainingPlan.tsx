@@ -74,7 +74,7 @@ const TrainingPlan = () => {
     })
       .then((res) => {
         if (res.status === 401) {
-          navigate("/login");
+          navigate("/Login");
           return null;
         }
         if (!res.ok) {

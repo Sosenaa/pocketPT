@@ -11,7 +11,7 @@ const Nav = () => {
       method: "POST",
       credentials: "include",
     });
-    navigate("/login");
+    navigate("/Login");
   };
 
   const closeMenu = () => {
@@ -48,7 +48,7 @@ const Nav = () => {
             </li>
             <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
               <Link to={"/UserForm"} className="!no-underline !text-inherit">
-                USERFORM
+                CREATE PLAN
               </Link>
             </li>
             <a>
@@ -88,7 +88,7 @@ const Nav = () => {
                 className="block !no-underline !text-inherit p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]"
                 onClick={closeMenu}
               >
-                USERFORM
+                CREATE PLAN
               </Link>
             </li>
 
