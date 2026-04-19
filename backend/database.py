@@ -27,6 +27,7 @@ def create_tables():
                          height INTEGER NOT NULL,
                          gender TEXT NOT NULL,
                          goal TEXT NOT NULL,
+                         trainingEnvironment TEXT NOT NULL,
                          activity TEXT NOT NULL,
                          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
                          )

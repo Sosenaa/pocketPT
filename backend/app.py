@@ -124,9 +124,11 @@ def userDetails():
     height = data.get("height")
     gender = data.get("gender")
     goal = data.get("goal")
+    trainingEnvironment = data.get("trainingEnvironment")
     activity = data.get("activity")
+    
 
-    required_fields = [age,weight,height, gender,goal,activity]
+    required_fields = [age,weight,height, gender,goal, trainingEnvironment ,activity]
 
     #Ensure all fields are completed
     if any(field is None or field == "" for field in required_fields):
@@ -136,18 +138,18 @@ def userDetails():
     con = get_db_connection()
     cursor = con.cursor()
     cursor.execute('''INSERT INTO user_details 
-                (age, weight, height, gender, goal, activity, user_id) 
-                VALUES(?,?,?,?,?,?,?)''',
-                (age,weight,height,gender,goal,activity,user_id))
+                (age, weight, height, gender, goal, trainingEnvironment, activity, user_id) 
+                VALUES(?,?,?,?,?,?,?,?)''',
+                (age,weight,height,gender,goal, trainingEnvironment, activity, user_id))
     con.commit()
     con.close()
 
     #Triger plan generation after submiting the form
-    trainingPlanGen(age, weight, height, gender, goal, activity)
+    trainingPlanGen(age, weight, height, gender, goal,trainingEnvironment, activity)
     return jsonify({"message": "Data saved successfully."}),200
 
 
-def trainingPlanGen(age, weight, height, gender, goal, activity):
+def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity):
     client = OpenAI()
     print("Working on the training plan")
     
@@ -168,6 +170,7 @@ def trainingPlanGen(age, weight, height, gender, goal, activity):
     Height: {height}
     Gender: {gender}
     Goal: {goal}
+    Training_Environment: {trainingEnvironment}
     Activity: {activity}
 
     Return ONLY raw JSON. 

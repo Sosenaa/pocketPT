@@ -11,6 +11,7 @@ const UserForm = () => {
   const [gender, setGender] = useState("");
   const [goal, setGoal] = useState("");
   const [activity, setActivity] = useState("");
+  const [trainingEnvironment, setTrainingEnvironment] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -30,6 +31,7 @@ const UserForm = () => {
           height,
           gender,
           goal,
+          trainingEnvironment,
           activity,
         }),
       });
@@ -175,6 +177,30 @@ const UserForm = () => {
                   <option value="lose_weight">Lose Weight</option>
                   <option value="maintain_weight">Maintain Weight</option>
                   <option value="gain_muscle">Gain Muscle</option>
+                  <option value="increase_strength">Increase Strength</option>
+                  <option value="improve_endurance">Improve Endurance</option>
+                </select>
+              </div>
+
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="training_enviroment"
+                  className="mb-2 block text-sm font-medium text-[#555]"
+                >
+                  Training Environment
+                </label>
+                <select
+                  id="training_enviroment"
+                  value={trainingEnvironment}
+                  onChange={(e) => setTrainingEnvironment(e.target.value)}
+                  className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-slate-100 outline-none transition focus:ring-2 focus:ring-[#c8ff00]"
+                >
+                  <option value="">Select your environment</option>
+                  <option value="full_gym">Full gym</option>
+                  <option value="basic_gym">Basic gym</option>
+                  <option value="home_gym">Home gym</option>
+                  <option value="home_bodyweight">Home bodyweight</option>
+                  <option value="mixed">Mixed</option>
                 </select>
               </div>
 
