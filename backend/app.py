@@ -360,6 +360,18 @@ def workoutComplete():
     workout_id = data.get("workout_id")
     con = get_db_connection()
     cursor = con.cursor()
+    
+    already_exists = cursor.execute("""
+        SELECT 1
+        FROM completed_workouts
+        WHERE workout_id = ? 
+        AND user_id = ?
+        AND date(create_at) = date('now') 
+        LIMIT 1
+        """, (workout_id, user_id)).fetchone()
+    if already_exists:
+        return({"message": "This workout is already completed."}), 409
+    
     cursor.execute("""
     INSERT INTO completed_workouts (workout_id, user_id ) 
     VALUES (?,?)""", (workout_id, user_id))

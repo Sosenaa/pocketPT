@@ -29,11 +29,7 @@ type todayWorkoutProps = {
   setWorkoutSelection: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const TodayWorkout = ({
-  workout,
-
-  setWorkoutSelection,
-}: todayWorkoutProps) => {
+const TodayWorkout = ({ workout, setWorkoutSelection }: todayWorkoutProps) => {
   const navigate = useNavigate();
   const [cardIndex, setCardIndex] = useState<number | null>(null);
   const [latestLogs, setLatestLogs] = useState<Record<number, LatestLogs>>({});
@@ -124,6 +120,7 @@ const TodayWorkout = ({
         return;
       }
       alert("Workout completed");
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }

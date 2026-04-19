@@ -27,7 +27,7 @@ type TrainingPlanData = {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
-  const [workoutSelection, setWorkoutSelection] = useState(0);
+  const [workoutSelection, setWorkoutSelection] = useState(1);
   const [workoutsThisMonth, setWorkoutsThisMonth] = useState("");
 
   const today = new Date().getDay() + workoutSelection;
@@ -70,7 +70,6 @@ const Dashboard = () => {
           throw new Error("Failed to fetch This Months completed workouts");
         }
         const data = await response.json();
-
         setWorkoutsThisMonth(data.result);
 
         console.log(data.result);
@@ -79,17 +78,14 @@ const Dashboard = () => {
       }
     };
     fetchStats();
-  }, []);
+  }, [navigate]);
+
+  const todayIndex = (workoutSelection % (plan?.workouts.length ?? 1)) + 1;
 
   const todayWorkout: Workout | undefined = plan?.workouts.find(
-    (w) => w.day_name === `Day ${today}`,
+    (w) => w.day_name === `Day ${todayIndex}`,
   );
 
-  if (workoutSelection >= 6) {
-    setWorkoutSelection(0);
-  }
-
-  console.log(workoutSelection);
   return (
     <div>
       {/* Nav */}

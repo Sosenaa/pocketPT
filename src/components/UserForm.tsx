@@ -5,9 +5,9 @@ import "../App.css";
 const UserForm = () => {
   const navigate = useNavigate();
 
-  const [age, setAge] = useState(0);
-  const [weight, setWeight] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [age, setAge] = useState("");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
   const [gender, setGender] = useState("");
   const [goal, setGoal] = useState("");
   const [activity, setActivity] = useState("");
@@ -96,7 +96,7 @@ const UserForm = () => {
                   id="age"
                   placeholder="Your age"
                   value={age}
-                  onChange={(e) => setAge(Number(e.target.value))}
+                  onChange={(e) => setAge(e.target.value)}
                   className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-slate-100 outline-none transition focus:ring-2 focus:ring-[#c8ff00]"
                 />
               </div>
@@ -134,7 +134,7 @@ const UserForm = () => {
                   id="weight"
                   placeholder="Your weight"
                   value={weight}
-                  onChange={(e) => setWeight(Number(e.target.value))}
+                  onChange={(e) => setWeight(e.target.value)}
                   className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-slate-100 outline-none transition focus:ring-2 focus:ring-[#c8ff00]"
                 />
               </div>
@@ -152,7 +152,7 @@ const UserForm = () => {
                   id="height"
                   placeholder="Your height"
                   value={height}
-                  onChange={(e) => setHeight(Number(e.target.value))}
+                  onChange={(e) => setHeight(e.target.value)}
                   className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-slate-100 outline-none transition focus:ring-2 focus:ring-[#c8ff00]"
                 />
               </div>
