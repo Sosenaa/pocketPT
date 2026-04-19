@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
 import "../App.css";
@@ -39,7 +39,7 @@ const UserForm = () => {
       console.log(data);
       if (response.status === 401) {
         navigate("/Login");
-        return null;
+        return;
       }
       if (response.ok) {
         navigate("/trainingPlan");

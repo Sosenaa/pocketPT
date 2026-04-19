@@ -5,6 +5,21 @@ import { API_BASE_URL } from "../api";
 const Nav = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loginButton, setLoginButton] = useState("Login");
+
+  useState(() => {
+    const CheckAuth = async () => {
+      const response = await fetch(`${API_BASE_URL}/api/checkAuth`, {
+        credentials: "include",
+        method: "GET",
+      });
+      if (response.status === 200) {
+        setLoginButton("Logout");
+        console.log(response.status);
+      }
+    };
+    CheckAuth();
+  });
 
   const handleLogOut = async () => {
     await fetch(`${API_BASE_URL}/api/logout`, {
@@ -12,6 +27,7 @@ const Nav = () => {
       credentials: "include",
     });
     navigate("/Login");
+    setLoginButton("Login");
   };
 
   const closeMenu = () => {
@@ -53,7 +69,7 @@ const Nav = () => {
             </li>
             <a>
               <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
-                <button onClick={handleLogOut}>Logout</button>
+                <button onClick={handleLogOut}>{loginButton}</button>
               </li>
             </a>
           </ul>
@@ -97,7 +113,7 @@ const Nav = () => {
                 className="p-2 px-4 text-left border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] w-full"
                 onClick={handleLogOut}
               >
-                LOGOUT
+                {loginButton}
               </button>
             </li>
           </ul>

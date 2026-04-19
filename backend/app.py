@@ -40,6 +40,12 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.route("/api/checkAuth", methods=["GET"])
+@login_required
+def checkAuth():
+    return jsonify({"authenticated": True}), 200
+    
+
 
 @app.route("/api/register", methods=["POST"])
 def register():
