@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
+# PocketPT
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PocketPT is an AI-powered personal training web app that generates personalised workout plans based on a user's goals, body data, activity level, and training environment.
 
-Currently, two official plugins are available:
+Users can register, log in, enter their training details, generate a plan with AI, view their workouts, log exercise performance, and track simple training stats through a dashboard.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Live Demo
 
-## React Compiler
+https://pocket-pt-kappa.vercel.app
+- Wait for server(Render) to initiate. (+-1 Min)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+### Frontend
+- React
+- TypeScript
+- Vite
+- React Router
+- Tailwind CSS
+- Bootstrap
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend
+- Flask
+- SQLite
+- Flask sessions
+- Flask-CORS
+- OpenAI API
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- User registration and login
+- Session-based authentication
+- Personal details form for training preferences
+- AI-generated training plans
+- Plans stored in SQLite database
+- Workout and exercise breakdown by day
+- Exercise logging (weight and reps)
+- Latest log retrieval per exercise
+- Workout completion tracking
+- Dashboard stats:
+  - workouts completed this month
+  - weekly training volume
+- YouTube exercise video lookup inside the training plan view
+- Backend health check for cold-start handling
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## How It Works
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. A user creates an account and logs in.
+2. The user fills in a form with:
+   - age
+   - weight
+   - height
+   - gender
+   - goal
+   - activity level
+   - training environment
+3. The backend sends this information to the OpenAI API.
+4. A structured JSON training plan is generated.
+5. The app stores the plan, workouts, and exercises in SQLite.
+6. The frontend fetches and displays the latest saved plan.
+7. The user can log exercise performance and track progress.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# Project Structure 
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+PocketPT
+├── backend
+│   ├── app.py                
+│   ├── database.py           
+│   └── requirements.txt      
+│
+├── src
+│   ├── components
+│   │   ├── Dashboard.tsx
+│   │   ├── Login.tsx
+│   │   ├── Nav.tsx
+│   │   ├── Plan.tsx
+│   │   ├── Register.tsx
+│   │   ├── TodayWorkout.tsx
+│   │   ├── TrainingPlan.tsx
+│   │   └── UserForm.tsx
+│   │
+│   ├── helpers
+│   ├── api.ts                
+│   ├── App.tsx               
+│   ├── main.tsx              
+│   └── index.css
+│
+├── public
+├── .env
+├── .env.production
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── vercel.json               
+└── README.md
+
+
+  
