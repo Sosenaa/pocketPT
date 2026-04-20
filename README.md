@@ -8,6 +8,20 @@ Users can register, log in, enter their training details, generate a plan with A
 ## Login
 ![Login](screenshots/LoginPage.png)
 
+## Register
+![Register](screenshots/RegisterPage.png)
+
+## User Form
+![User Form](screenshots/UserForm.png)
+
+## Training Plan
+![Generated Plan](screenshots/GeneratedPlan.png)
+
+## Exercise Video
+![Exercise Video](screenshots/ExerciseVideo.png)
+
+## Dashboard + tracking
+![Exercise Video](screenshots/DashboardTracking.png)
 
 ## Live Demo
 
