@@ -7,7 +7,7 @@ Users can register, log in, enter their training details, generate a plan with A
 ## Live Demo
 
 https://pocket-pt-kappa.vercel.app
-- Wait for server(Render) to initiate. 
+- Wait for server(Render) to initiate. (+-1 Min)
 
 ## Tech Stack
 
@@ -60,3 +60,39 @@ https://pocket-pt-kappa.vercel.app
 6. The frontend fetches and displays the latest saved plan.
 7. The user can log exercise performance and track progress.
 
+# Project Structure 
+
+PocketPT
+├── backend
+│   ├── app.py                
+│   ├── database.py           
+│   └── requirements.txt      
+│
+├── src
+│   ├── components
+│   │   ├── Dashboard.tsx
+│   │   ├── Login.tsx
+│   │   ├── Nav.tsx
+│   │   ├── Plan.tsx
+│   │   ├── Register.tsx
+│   │   ├── TodayWorkout.tsx
+│   │   ├── TrainingPlan.tsx
+│   │   └── UserForm.tsx
+│   │
+│   ├── helpers
+│   ├── api.ts                
+│   ├── App.tsx               
+│   ├── main.tsx              
+│   └── index.css
+│
+├── public
+├── .env
+├── .env.production
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── vercel.json               
+└── README.md
+
+
+  
