@@ -81,6 +81,7 @@ https://pocket-pt-kappa.vercel.app
 
 # Project Structure 
 
+```text
 PocketPT
 ├── backend
 │   ├── app.py                
@@ -112,6 +113,6 @@ PocketPT
 ├── tsconfig.json
 ├── vercel.json               
 └── README.md
-
+```
 
   
