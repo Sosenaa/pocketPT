@@ -12,8 +12,23 @@ const UserForm = () => {
   const [goal, setGoal] = useState("");
   const [activity, setActivity] = useState("");
   const [trainingEnvironment, setTrainingEnvironment] = useState("");
-
   const [loading, setLoading] = useState(false);
+
+  useState(() => {
+    const CheckAuth = async () => {
+      const response = await fetch(`${API_BASE_URL}/api/checkAuth`, {
+        credentials: "include",
+        method: "GET",
+      });
+      if (response.status === 200) {
+        return;
+        console.log(response.status);
+      } else {
+        navigate("/Login");
+      }
+    };
+    CheckAuth();
+  });
 
   const submitUserDetails = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

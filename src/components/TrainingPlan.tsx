@@ -87,12 +87,6 @@ const TrainingPlan = () => {
         console.log(data);
         const names: string[] = [];
 
-        /* Getting all exercise names. ====NOT USED AT THE MOMENT=== */
-        for (let i = 0; i < data.workouts.length; i++) {
-          for (let j = 0; j < data.workouts[i].exercises.length; j++) {
-            names.push(data.workouts[i].exercises[j].name);
-          }
-        }
         console.log(names);
       })
       .catch((err) => {

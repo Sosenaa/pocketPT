@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from functools import wraps
 from openai import OpenAI
 import json
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 load_dotenv()
@@ -52,32 +53,40 @@ def register():
     data = request.get_json()
 
     if not data:
-        return jsonify({"Message", "Invalid data"}), 400 
+        return jsonify({"message": "Invalid data"}), 400 
     
-    username = data.get("username")
+    username = data.get("username","")
     name = data.get("name")
     lastName = data.get("lastName")
     email = data.get("email")
     password = data.get("password")
     confirmPassword = data.get("confirmPassword")
 
+    required_fields = [username, name, lastName, email, password, confirmPassword]
+    
+    if any(field is None or field == "" for field in required_fields):
+        return jsonify({"message": "User data missing"}),400
+    
+
     if password != confirmPassword:
-        return jsonify({"Message": "Incorrect password"}), 400
+        return jsonify({"message": "Password does not match"}), 400
+    
+    username = username.lower().strip()
+    passwordHash = generate_password_hash(password)
     
     con = get_db_connection()
-    
     #check if user already exists?
     userExist = con.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
     if userExist :
         con.close()
-        return jsonify({"message", "This User already exists"}), 400
+        return jsonify({"message": "This User already exists"}), 400
         
     #Add new user to database
-    con.execute("INSERT INTO users (username, name, lastname, email, password) VALUES(?, ?, ?, ?, ?)", (username, name, lastName, email, password))
+    con.execute("INSERT INTO users (username, name, lastname, email, password) VALUES(?, ?, ?, ?, ?)", (username, name, lastName, email, passwordHash))
     con.commit()
     con.close()
 
-    return jsonify({"Message": "Successful Registration"}), 200
+    return jsonify({"message": "Successful Registration"}), 201
     
 
 @app.route("/api/login", methods=["POST"])
@@ -92,6 +101,7 @@ def login():
 
     con = get_db_connection()
     
+        
     user = con.execute("SELECT id, username, password FROM users WHERE username = ?",  (username,)).fetchone()
     con.close()
 
@@ -99,7 +109,7 @@ def login():
     if not user:
         return jsonify({"error": "User not found"}),400
 
-    if user["password"] != password:
+    if not check_password_hash(user["password"], password):
         return jsonify({"error": "Invalid username or password."}), 400
 
     #Create a flask session
