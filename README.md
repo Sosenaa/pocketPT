@@ -25,8 +25,8 @@ Users can register, log in, enter their training details, generate a plan with A
 
 ## Live Demo
 
-https://pocket-pt-kappa.vercel.app
-- Wait for server(Render) to initiate. (+-1 Min)
+![PocketPT Live APP]https://pocket-pt-kappa.vercel.app
+> Note: the backend is hosted on Render and may take around 1 minute to wake up after inactivity.
 
 ## Tech Stack
 
