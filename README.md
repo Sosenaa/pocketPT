@@ -4,6 +4,25 @@ PocketPT is an AI-powered personal training web app that generates personalised 
 
 Users can register, log in, enter their training details, generate a plan with AI, view their workouts, log exercise performance, and track simple training stats through a dashboard.
 
+## Screen Shots
+## Login
+![Login](screenshots/LoginPage.png)
+
+## Register
+![Register](screenshots/RegisterPage.png)
+
+## User Form
+![User Form](screenshots/UserForm.png)
+
+## Training Plan
+![Generated Plan](screenshots/GeneratedPlan.png)
+
+## Exercise Video
+![Exercise Video](screenshots/ExerciseVideo.png)
+
+## Dashboard + tracking
+![Exercise Video](screenshots/DashboardTracking.png)
+
 ## Live Demo
 
 https://pocket-pt-kappa.vercel.app
@@ -62,6 +81,7 @@ https://pocket-pt-kappa.vercel.app
 
 # Project Structure 
 
+```text
 PocketPT
 ├── backend
 │   ├── app.py                
@@ -93,6 +113,6 @@ PocketPT
 ├── tsconfig.json
 ├── vercel.json               
 └── README.md
-
+```
 
   

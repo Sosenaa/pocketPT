@@ -8,7 +8,7 @@ from openai import OpenAI
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
+ 
 load_dotenv()
 
 app = Flask(__name__)
