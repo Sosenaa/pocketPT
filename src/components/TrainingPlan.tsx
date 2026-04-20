@@ -32,6 +32,22 @@ const TrainingPlan = () => {
   const [eVideoId, setEvideoId] = useState<Record<string, string>>({});
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
 
+  useState(() => {
+    const CheckAuth = async () => {
+      const response = await fetch(`${API_BASE_URL}/api/checkAuth`, {
+        credentials: "include",
+        method: "GET",
+      });
+      if (response.status === 200) {
+        return;
+        console.log(response.status);
+      } else {
+        navigate("/Login");
+      }
+    };
+    CheckAuth();
+  });
+
   const cardCollapse = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
