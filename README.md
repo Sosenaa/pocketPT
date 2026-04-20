@@ -4,6 +4,11 @@ PocketPT is an AI-powered personal training web app that generates personalised 
 
 Users can register, log in, enter their training details, generate a plan with AI, view their workouts, log exercise performance, and track simple training stats through a dashboard.
 
+## Screen Shots
+## Login
+![Login](screenshots/LoginPage.png)
+
+
 ## Live Demo
 
 https://pocket-pt-kappa.vercel.app
