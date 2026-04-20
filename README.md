@@ -26,7 +26,8 @@ Users can register, log in, enter their training details, generate a plan with A
 ## Live Demo
 [PocketPT Live APP](pocket-pt-kappa.vercel.app)
 Or use QIR
-![QIR for PocketPT](QIR.png)
+![QIR for PocketPT](screenshots/QIR.png)
+
 > Note: the backend is hosted on Render and may take around 1 minute to wake up after inactivity.
 
 ## Tech Stack
@@ -80,7 +81,7 @@ Or use QIR
 6. The frontend fetches and displays the latest saved plan.
 7. The user can log exercise performance and track progress.
 
-# Project Structure 
+## Project Structure 
 
 ```text
 PocketPT
