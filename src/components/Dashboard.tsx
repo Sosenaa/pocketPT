@@ -40,14 +40,21 @@ const Dashboard = () => {
           navigate("/Login");
           return;
         }
+        if (res.status === 404) {
+          navigate("/UserForm");
+          alert("Complete the form to create training plan");
+        }
         return res.json();
       })
       .then((data) => {
-        if (!data) return;
+        if (!data) {
+          navigate("/UserForm");
+        }
+        return;
         setPlan(data);
       })
       .catch(console.error);
-  }, []);
+  }, [navigate]);
 
   /* Keep useEffect fetch separate for now. Later refactor into single function */
   useEffect(() => {

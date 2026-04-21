@@ -93,17 +93,19 @@ const TrainingPlan = () => {
           navigate("/Login");
           return null;
         }
+        if (res.status === 404) {
+          alert("Complete the form to create training plan");
+          navigate("/UserForm");
+          return;
+        }
         if (!res.ok) {
           throw new Error("Failed to fetch training plan");
         }
+
         return res.json();
       })
       .then((data) => {
         setPlan(data);
-        console.log(data);
-        const names: string[] = [];
-
-        console.log(names);
       })
       .catch((err) => {
         console.log(err);

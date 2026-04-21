@@ -52,7 +52,7 @@ const Nav = () => {
           </button>
 
           <ul className="hidden lg:flex m-0 p-0 ">
-            <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
+            <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400 focus:ring-2 focus:ring-[#c8ff00]">
               <Link to={"/Plan"} className="!no-underline !text-inherit">
                 PLAN
               </Link>
@@ -82,7 +82,7 @@ const Nav = () => {
             <li className="m-4  text-slate-400">
               <Link
                 to={"/Plan"}
-                className="block !no-underline !text-inherit p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                className="block !no-underline !text-inherit p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] "
                 onClick={closeMenu}
               >
                 PLAN

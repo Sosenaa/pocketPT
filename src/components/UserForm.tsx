@@ -4,7 +4,6 @@ import { API_BASE_URL } from "../api";
 import "../App.css";
 const UserForm = () => {
   const navigate = useNavigate();
-
   const [age, setAge] = useState("");
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
@@ -144,7 +143,7 @@ const UserForm = () => {
                   htmlFor="weight"
                   className="mb-2 block text-sm font-medium text-[#555]"
                 >
-                  Weight
+                  Weight (KG)
                 </label>
                 <input
                   type="number"
@@ -162,7 +161,7 @@ const UserForm = () => {
                   htmlFor="height"
                   className="mb-2 block text-sm font-medium text-[#555]"
                 >
-                  Height
+                  Height (CM)
                 </label>
                 <input
                   type="number"
