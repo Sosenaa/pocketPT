@@ -112,6 +112,24 @@ const TrainingPlan = () => {
       });
   }, []);
 
+  const regenerateWorkout = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/regenerateWorkout`, {
+        credentials: "include",
+        method: "GET",
+      });
+      if (response.status === 401) {
+        navigate("/Login");
+        return;
+      }
+      const data = await response.json();
+      console.log("Something should happen");
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
       <div className="mx-auto max-w-4xl">
@@ -251,6 +269,14 @@ const TrainingPlan = () => {
               </p>
             </div>
           )}
+          <div className="my-4">
+            <button
+              onClick={regenerateWorkout}
+              className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+            >
+              Regenerate workout
+            </button>
+          </div>
         </div>
       </div>
     </div>

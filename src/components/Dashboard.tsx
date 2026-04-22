@@ -47,10 +47,6 @@ const Dashboard = () => {
         return res.json();
       })
       .then((data) => {
-        if (!data) {
-          navigate("/UserForm");
-        }
-        return;
         setPlan(data);
       })
       .catch(console.error);
