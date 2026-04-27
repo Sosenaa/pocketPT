@@ -27,7 +27,7 @@ Users can register, log in, enter their training details, generate a plan with A
 [PocketPT Live App](https://pocket-pt-kappa.vercel.app)
 > Note: the backend is hosted on Render and may take around 1 minute to wake up after inactivity.
 
-## Live Demo QIR
+## Live Demo QR
 ![QIR for PocketPT](screenshots/QIR.png)
 
 > Note: the backend is hosted on Render and may take around 1 minute to wake up after inactivity.
