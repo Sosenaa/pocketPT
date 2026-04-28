@@ -231,8 +231,16 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
     try:
         plan = json.loads(response.output_text)
         print("Valid Json")
+        print(type(plan))
+        updatePlan(plan)  
+    
+    except json.decoder.JSONDecodeError:
+        print("Invalid Json")
+        return jsonify({"error": "failed to generate JSON format"}), 500
+    
 
-        if plan:
+def updatePlan(plan):
+    if plan:
             user_id = session.get("id")
             con = get_db_connection()
             cursor = con.cursor()
@@ -254,11 +262,7 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
             con.close()
 
             return jsonify({"message": "Training plan generated successfully"}), 200
-        
-    
-    except json.decoder.JSONDecodeError:
-        print("Invalid Json")
-        return jsonify({"error": "failed to generate JSON format"}), 500
+
 
 @app.route("/api/regenerateWorkout", methods=["GET"])
 @login_required
@@ -291,9 +295,7 @@ def regenerateWorkout():
     #Re-generate training plan. 
     print(age, weight, height, gender, goal, trainingEnvironment, activity)
     #Get latest plan
-    
-    #Return plan new plan to frontend
-  
+
     return jsonify({"message": "success"}), 201
 
 

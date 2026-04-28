@@ -122,6 +122,7 @@ const TrainingPlan = () => {
       }
       const data = await response.json();
       console.log(data);
+      setPlan(data);
     } catch (err) {
       console.log(err);
     }
