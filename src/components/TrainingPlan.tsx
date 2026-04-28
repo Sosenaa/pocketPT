@@ -30,6 +30,7 @@ const TrainingPlan = () => {
 
   const [openExercise, setOpenExercise] = useState<string | null>(null);
   const [eVideoId, setEvideoId] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
 
   useState(() => {
@@ -110,11 +111,11 @@ const TrainingPlan = () => {
   }, []);
 
   const regenerateWorkout = async () => {
-    setPlan(null);
+    setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/regenerateWorkout`, {
         credentials: "include",
-        method: "GET",
+        method: "POST",
       });
       if (response.status === 401) {
         navigate("/Login");
@@ -122,11 +123,23 @@ const TrainingPlan = () => {
       }
       const data = await response.json();
       console.log(data);
-      setPlan(data);
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading === true) {
+    return (
+      <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
+        <h1>Working on a new Plan</h1>
+        <div className="spinner-border text-[#C8FF00]" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
@@ -272,7 +285,7 @@ const TrainingPlan = () => {
               onClick={regenerateWorkout}
               className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
             >
-              Regenerate workout
+              Regenerate New Plan
             </button>
           </div>
         </div>

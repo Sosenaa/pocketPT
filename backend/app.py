@@ -232,7 +232,7 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
         plan = json.loads(response.output_text)
         print("Valid Json")
         print(type(plan))
-        updatePlan(plan)  
+        return updatePlan(plan)  
     
     except json.decoder.JSONDecodeError:
         print("Invalid Json")
@@ -264,7 +264,7 @@ def updatePlan(plan):
             return jsonify({"message": "Training plan generated successfully"}), 200
 
 
-@app.route("/api/regenerateWorkout", methods=["GET"])
+@app.route("/api/regenerateWorkout", methods=["POST"])
 @login_required
 def regenerateWorkout():
     con = get_db_connection()
@@ -295,7 +295,8 @@ def regenerateWorkout():
     #Re-generate training plan. 
     print(age, weight, height, gender, goal, trainingEnvironment, activity)
     #Get latest plan
-
+    trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity)
+    
     return jsonify({"message": "success"}), 201
 
 
