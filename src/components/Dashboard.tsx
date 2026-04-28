@@ -81,9 +81,20 @@ const Dashboard = () => {
     fetchStats();
   }, [navigate]);
 
-  const todayIndex = (workoutSelection % (plan?.workouts.length ?? 1)) + 1;
+  const weekday = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const dayIndex = new Date();
+  const day = weekday[dayIndex.getDay()];
+  console.log(`Today is: ${day}`);
   const todayWorkout: Workout | undefined = plan?.workouts.find(
-    (w) => w.day_name === `Day ${todayIndex}`,
+    (w) => w.day_name === day,
   );
 
   useState(() => {

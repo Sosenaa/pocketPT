@@ -211,7 +211,7 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
         }},
 
         {{
-            "day_name": "Day 2",
+            "day_name": "Monday",
             "focus": "Lower body",
             "exercise_duration": "75 Min",
             "exercises": [
@@ -260,6 +260,41 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
         print("Invalid Json")
         return jsonify({"error": "failed to generate JSON format"}), 500
 
+@app.route("/api/regenerateWorkout", methods=["GET"])
+@login_required
+def regenerateWorkout():
+    con = get_db_connection()
+    cursor = con.cursor()
+    user_id = session.get("id")
+    
+    user_details = cursor.execute("""
+        SELECT 
+            ud.age, 
+            ud.weight, 
+            ud.height, 
+            ud.gender, 
+            ud.goal, 
+            ud.trainingEnvironment, 
+            ud.activity
+        FROM user_details ud
+        WHERE user_id = ?""", (user_id,)).fetchone()
+    con.close()
+    
+    age = user_details["age"]
+    weight = user_details["weight"]
+    height = user_details["height"]
+    gender = user_details["gender"]
+    goal = user_details["goal"]
+    trainingEnvironment = user_details["trainingEnvironment"]
+    activity = user_details["activity"]
+  
+    #Re-generate training plan. 
+    print(age, weight, height, gender, goal, trainingEnvironment, activity)
+    #Get latest plan
+    
+    #Return plan new plan to frontend
+  
+    return jsonify({"message": "success"}), 201
 
 
 @app.route("/api/getTrainingPlan", methods=["GET"])

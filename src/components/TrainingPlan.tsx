@@ -65,11 +65,8 @@ const TrainingPlan = () => {
       /* Getting video data from youtube max result set to 1. */
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(name)}form&key=${apiKey}`;
 
-      console.log();
       const response = await fetch(url);
       const data = await response.json();
-
-      console.log(data.items[0].id.videoId);
 
       /* Getting videoID of the first video*/
       const videoId = data.items[0].id.videoId;
@@ -113,6 +110,7 @@ const TrainingPlan = () => {
   }, []);
 
   const regenerateWorkout = async () => {
+    setPlan(null);
     try {
       const response = await fetch(`${API_BASE_URL}/api/regenerateWorkout`, {
         credentials: "include",
@@ -123,7 +121,6 @@ const TrainingPlan = () => {
         return;
       }
       const data = await response.json();
-      console.log("Something should happen");
       console.log(data);
     } catch (err) {
       console.log(err);
