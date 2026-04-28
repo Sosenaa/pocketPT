@@ -26,7 +26,7 @@ type TrainingPlanData = {
 const Dashboard = () => {
   const navigate = useNavigate();
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
-  const [workoutSelection, setWorkoutSelection] = useState(1);
+  const [workoutSelection, setWorkoutSelection] = useState(0);
   const [workoutsThisMonth, setWorkoutsThisMonth] = useState("");
   const [weeklyVolume, setWeeklyVolume] = useState("");
 
@@ -82,17 +82,21 @@ const Dashboard = () => {
   }, [navigate]);
 
   const weekday = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
+    "Sunday",
+    "New",
   ];
   const dayIndex = new Date();
-  const day = weekday[dayIndex.getDay()];
-  console.log(`Today is: ${day}`);
+  const day = weekday[dayIndex.getDay() + workoutSelection];
+
+  if (day === "New") {
+    setWorkoutSelection(0);
+  }
   const todayWorkout: Workout | undefined = plan?.workouts.find(
     (w) => w.day_name === day,
   );
@@ -121,6 +125,7 @@ const Dashboard = () => {
     fetchWeeklyVolume();
   });
 
+  console.log(`This is workout selection ${workoutSelection}`);
   return (
     <div>
       {/* Nav */}
