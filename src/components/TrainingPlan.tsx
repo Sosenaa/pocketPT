@@ -285,7 +285,7 @@ const TrainingPlan = () => {
               onClick={regenerateWorkout}
               className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
             >
-              Regenerate New Plan
+              Generate New Plan
             </button>
           </div>
         </div>

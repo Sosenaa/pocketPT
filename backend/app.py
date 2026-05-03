@@ -98,6 +98,7 @@ def login():
     
     username = data.get("username")
     password = data.get("password")
+    username = username.lower().strip()
 
     con = get_db_connection()
     
