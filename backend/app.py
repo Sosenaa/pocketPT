@@ -239,6 +239,107 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
         print("Invalid Json")
         return jsonify({"error": "failed to generate JSON format"}), 500
     
+@app.route("/api/dietPlanGen", methods=["POST"])
+def dietPlanGen():
+    client = OpenAI()
+    print("Working on your diet plan")
+    
+    data = request.get_json()
+    user_id = session.get("id")
+
+    if not data:
+        return jsonify({"message": "Data missing"}), 400
+    
+    #Fetching data from the form
+    age = data.get("age")
+    weight = data.get("weight")
+    height = data.get("height")
+    gender = data.get("gender")
+    goal = data.get("goal")
+    trainingEnvironment = data.get("trainingEnvironment")
+    activity = data.get("activity")
+    
+    
+    response = client.responses.create(
+        model="gpt-4o-mini",
+    text={
+        "format":{
+        "type": "json_object"
+    }},
+    instructions="You are a qualified nutritionist",
+    input=f'''
+    Create 7 day professional, science-based diet.
+    Design diet to {goal}.
+    Ensure amount, calories add up to the plan.
+    Meal rotation
+    Ensure total calories EXACTLY match macros using:
+    (protein * 4) + (carbs * 4) + (fat * 9) = total calories.
+    
+    
+    
+    Age: {age}
+    Weight:{weight}
+    Height: {height}
+    Gender: {gender}
+    Goal: {goal}
+    Training_Environment: {trainingEnvironment}
+    Activity: {activity}
+
+    Return ONLY raw JSON. 
+    Do not include markdown, 
+    code blocks, 
+    explanations, 
+    comments, 
+    or any text outside the JSON structure.
+    
+    Example....
+    {{
+        "diet_name":[
+        
+            {{
+                "day_name": "Monday",
+                "macros": 
+                    {{"Protein": "200g", "Carbohydrates": "200g", "Fat": "65g", "Calories": "2180" }},
+                "total_meals": "4 meals",
+                "meals": [
+                    {{
+                        "meal_1": "Cicken rice meal",
+                        "ingredients": [
+                            {{ "name": "Chicken", "amount": "250g" }},
+                            {{ "name": "Brown Rice", "amount": "100g"}},
+                            {{ "name": "Broccoli", "amount": "100g" }}
+                        ]
+                    }},
+                    {{
+                        "meal_2": "Beef Sweet Potato Bowl",
+                        "ingredients": [
+                            {{ "name": "Lean Beef", "amount": "200g"}},
+                            {{ "name": "Sweet Potatoes", "amount": "200g" }},
+                            {{"name": "Spinach", "amount": "100g" }}
+                        ]             
+                    }}
+                    ]
+            }}   
+        ],
+ 
+        "shopping_list": [
+            {{"name": "Chicken", "amount": "250g"}},
+            {{"name": "Brown Rice", "amount": "100g"}},
+            {{"name": "Broccoli", "amount": "100g"}}
+            ]
+    }}
+
+    '''
+    )
+    try:
+        diet = json.loads(response.output_text)
+        print(diet)
+        return jsonify(diet)
+    
+    except json.decoder.JSONDecodeError:
+        print("Invalid JSON")
+        return jsonify({"error": "Invalid JSON"})
+        
 
 def updatePlan(plan):
     if plan:
