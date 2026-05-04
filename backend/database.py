@@ -90,8 +90,37 @@ def create_tables():
                          )               
      ''')
      
-     #Training plan 
-
+     #Diet part
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS diets(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         user_id INTEGER NOT NULL,
+                         diet_name TEXT NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+                         )
+                    
+     ''')
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS diet_days(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         diet_id INTEGER NOT NULL,
+                         day_name TEXT NOT NULL,
+                         macros TEXT NOT NULL,
+                         total_meals TEXT NOT NULL,  
+                         FOREIGN KEY (diet_id) REFERENCES diets (id) ON DELETE CASCADE
+                         )               
+     ''')
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS meals(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         diet_day_id INTEGER NOT NULL,
+                         meal_name TEXT NOT NULL,
+                         ingredients TEXT NOT NULL,
+                         FOREIGN KEY (diet_day_id) REFERENCES diet_days (id) ON DELETE CASCADE
+                         )               
+     ''')
+     
      con.commit()
      con.close()
 
