@@ -163,6 +163,7 @@ def userDetails():
 
     #Triger plan generation after submiting the form
     trainingPlanGen(age, weight, height, gender, goal,trainingEnvironment, activity)
+    dietPlanGen(age, weight, height, gender, goal,trainingEnvironment, activity)
     return jsonify({"message": "Data saved successfully."}),200
 
 
@@ -233,14 +234,13 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
         plan = json.loads(response.output_text)
         print("Valid Json")
         print(type(plan))
-        return updatePlan(plan)  
+        return updateTrainingPlan(plan)  
     
     except json.decoder.JSONDecodeError:
         print("Invalid Json")
         return jsonify({"error": "failed to generate JSON format"}), 500
     
-@app.route("/api/dietPlanGen", methods=["POST"])
-def dietPlanGen():
+def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity):
     client = OpenAI()
     print("Working on your diet plan")
     
@@ -294,16 +294,16 @@ def dietPlanGen():
     
     Example....
     {{
-        "diet_name":[
-        
-            {{
+        "diet_name":"string",
+        "diet": [
+        {{
                 "day_name": "Monday",
                 "macros": 
                     {{"Protein": "200g", "Carbohydrates": "200g", "Fat": "65g", "Calories": "2180" }},
                 "total_meals": "4 meals",
                 "meals": [
                     {{
-                        "meal_1": "Cicken rice meal",
+                        "meal":"string",
                         "ingredients": [
                             {{ "name": "Chicken", "amount": "250g" }},
                             {{ "name": "Brown Rice", "amount": "100g"}},
@@ -311,37 +311,52 @@ def dietPlanGen():
                         ]
                     }},
                     {{
-                        "meal_2": "Beef Sweet Potato Bowl",
+                        "meal": "Beef Sweet Potato Bowl",
                         "ingredients": [
                             {{ "name": "Lean Beef", "amount": "200g"}},
                             {{ "name": "Sweet Potatoes", "amount": "200g" }},
                             {{"name": "Spinach", "amount": "100g" }}
                         ]             
                     }}
-                    ]
-            }}   
-        ],
- 
-        "shopping_list": [
-            {{"name": "Chicken", "amount": "250g"}},
-            {{"name": "Brown Rice", "amount": "100g"}},
-            {{"name": "Broccoli", "amount": "100g"}}
-            ]
+                ]
+        }}   
+        ]
     }}
 
     '''
     )
     try:
         diet = json.loads(response.output_text)
-        print(diet)
-        return jsonify(diet)
+        return updateDietPlan(diet)
     
     except json.decoder.JSONDecodeError:
         print("Invalid JSON")
         return jsonify({"error": "Invalid JSON"})
-        
+    
+def updateDietPlan(diet):
+    if diet:
+        #user_id = session.get("id")
+        #con = get_db_connection()
+        #cursor = con.cursor()
+        #cursor.execute("INSERT INTO diets (user_id, diet_name), VALUES (?,?)", (user_id, diet["diet_name"]))
 
-def updatePlan(plan):
+        #diet_id = cursor.lastrowid
+        for d in diet["diet"]:
+            print(d["day_name"]) 
+            print(d["macros"])
+            print(d["total_meals"])
+            
+            
+            for meal in d["meals"]:
+                print(meal["meal"])
+                
+                for ing in meal["ingredients"]:
+                    print(ing["name"])
+                    print(ing["amount"])    
+        
+        
+        
+def updateTrainingPlan(plan):
     if plan:
             user_id = session.get("id")
             con = get_db_connection()
@@ -365,6 +380,8 @@ def updatePlan(plan):
 
             return jsonify({"message": "Training plan generated successfully"}), 200
 
+
+    
 
 @app.route("/api/regenerateWorkout", methods=["POST"])
 @login_required

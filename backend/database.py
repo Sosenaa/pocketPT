@@ -112,13 +112,21 @@ def create_tables():
                          )               
      ''')
      cursor.execute('''
-     CREATE TABLE IF NOT EXISTS meals(
+     CREATE TABLE IF NOT EXISTS meal(
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          diet_day_id INTEGER NOT NULL,
                          meal_name TEXT NOT NULL,
-                         ingredients TEXT NOT NULL,
                          FOREIGN KEY (diet_day_id) REFERENCES diet_days (id) ON DELETE CASCADE
                          )               
+     ''') 
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS ingredients(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    meal_id INTEGER NOT NULL,
+                    name TEXT NOT NULL,
+                    amount TEXT NOT NULL,
+                    FOREIGN KEY (meal_id) REFERENCES meal(id) ON DELETE CASCADE
+                    )
      ''')
      
      con.commit()
