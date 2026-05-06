@@ -67,6 +67,11 @@ const Nav = () => {
                 CREATE PLAN
               </Link>
             </li>
+            <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
+              <Link to={"/DietPlan"} className="!no-underline !text-inherit">
+                Diet Plan
+              </Link>
+            </li>
             <a>
               <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
                 <button onClick={handleLogOut}>{loginButton}</button>

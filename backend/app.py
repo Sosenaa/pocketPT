@@ -163,7 +163,7 @@ def userDetails():
 
     #Triger plan generation after submiting the form
     trainingPlanGen(age, weight, height, gender, goal,trainingEnvironment, activity)
-    dietPlanGen(age, weight, height, gender, goal,trainingEnvironment, activity)
+    dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity)
     return jsonify({"message": "Data saved successfully."}),200
 
 
@@ -270,11 +270,6 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
     input=f'''
     Create 7 day professional, science-based diet.
     Design diet to {goal}.
-    Ensure amount, calories add up to the plan.
-    Meal rotation
-    Ensure total calories EXACTLY match macros using:
-    (protein * 4) + (carbs * 4) + (fat * 9) = total calories.
-    
     
     
     Age: {age}
@@ -298,8 +293,6 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
         "diet": [
         {{
                 "day_name": "Monday",
-                "macros": 
-                    {{"Protein": "200g", "Carbohydrates": "200g", "Fat": "65g", "Calories": "2180" }},
                 "total_meals": "4 meals",
                 "meals": [
                     {{
@@ -335,24 +328,46 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
     
 def updateDietPlan(diet):
     if diet:
-        #user_id = session.get("id")
-        #con = get_db_connection()
-        #cursor = con.cursor()
-        #cursor.execute("INSERT INTO diets (user_id, diet_name), VALUES (?,?)", (user_id, diet["diet_name"]))
+        user_id = session.get("id")
+        con = get_db_connection()
+        cursor = con.cursor()
+        cursor.execute("""
+                       INSERT INTO diets (user_id, diet_name) 
+                       VALUES (?,?)""", 
+                       (user_id, diet["diet_name"]))
 
-        #diet_id = cursor.lastrowid
+        diet_id = cursor.lastrowid
+        
         for d in diet["diet"]:
+            cursor.execute("""
+                           INSERT INTO diet_days (diet_id, day_name, total_meals) 
+                           VALUES (?,?,?) """, 
+                           (diet_id, d["day_name"], d["total_meals"]))
             print(d["day_name"]) 
-            print(d["macros"])
             print(d["total_meals"])
             
+            diet_day_id = cursor.lastrowid
             
             for meal in d["meals"]:
+                cursor.execute("""
+                               INSERT INTO meal(diet_day_id, meal_name) 
+                               VALUES (?,?)""",
+                               (diet_day_id, meal["meal"]))
                 print(meal["meal"])
                 
+                meal_id = cursor.lastrowid
+                
                 for ing in meal["ingredients"]:
+                    cursor.execute("""
+                                   INSERT INTO ingredients (meal_id, name, amount) 
+                                   VALUES (?,?,?)""",
+                                   (meal_id, ing["name"], ing["amount"]))
                     print(ing["name"])
-                    print(ing["amount"])    
+                    print(ing["amount"])   
+                     
+            con.commit()
+            con.close()
+            return jsonify({"message": "Diet plan generated successfully"}), 200
         
         
         

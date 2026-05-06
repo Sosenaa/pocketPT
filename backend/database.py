@@ -106,7 +106,6 @@ def create_tables():
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          diet_id INTEGER NOT NULL,
                          day_name TEXT NOT NULL,
-                         macros TEXT NOT NULL,
                          total_meals TEXT NOT NULL,  
                          FOREIGN KEY (diet_id) REFERENCES diets (id) ON DELETE CASCADE
                          )               
@@ -121,12 +120,12 @@ def create_tables():
      ''') 
      cursor.execute('''
      CREATE TABLE IF NOT EXISTS ingredients(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    meal_id INTEGER NOT NULL,
-                    name TEXT NOT NULL,
-                    amount TEXT NOT NULL,
-                    FOREIGN KEY (meal_id) REFERENCES meal(id) ON DELETE CASCADE
-                    )
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         meal_id INTEGER NOT NULL,
+                         name TEXT NOT NULL,
+                         amount TEXT NOT NULL,
+                         FOREIGN KEY (meal_id) REFERENCES meal(id) ON DELETE CASCADE
+                         )
      ''')
      
      con.commit()

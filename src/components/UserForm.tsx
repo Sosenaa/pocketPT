@@ -57,6 +57,26 @@ const UserForm = () => {
       }
       if (response.ok) {
         navigate("/trainingPlan");
+
+        const dietResponse = await fetch(`${API_BASE_URL}/api/dietPlanGen`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            age,
+            weight,
+            height,
+            gender,
+            goal,
+            trainingEnvironment,
+            activity,
+          }),
+        });
+
+        const dietData = await dietResponse.json();
+        console.log(dietData.diet_name);
       } else {
         alert(data.error);
       }
@@ -243,13 +263,27 @@ const UserForm = () => {
                 </select>
               </div>
             </div>
-
-            <div className="pt-2">
+            <div className="text-slate-200 ">
+              <h2 className="text-center">Create</h2>
+            </div>
+            <div className="pt-2 flex">
               <button
                 type="submit"
-                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
-                Generate Training Plan
+                Just Training Plan
+              </button>
+              <button
+                type="submit"
+                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
+              >
+                Just Diet Plan
+              </button>
+              <button
+                type="submit"
+                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
+              >
+                Diet & Workout
               </button>
             </div>
           </form>

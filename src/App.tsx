@@ -8,6 +8,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Plan from "./components/Plan";
+import DietPlan from "./components/DietPlan";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Plan" element={<Plan />} />
+          <Route path="/DietPlan" element={<DietPlan />} />
         </Routes>
       </BrowserRouter>
     </div>
