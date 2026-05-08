@@ -250,16 +250,6 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
     if not data:
         return jsonify({"message": "Data missing"}), 400
     
-    #Fetching data from the form
-    age = data.get("age")
-    weight = data.get("weight")
-    height = data.get("height")
-    gender = data.get("gender")
-    goal = data.get("goal")
-    trainingEnvironment = data.get("trainingEnvironment")
-    activity = data.get("activity")
-    
-    
     response = client.responses.create(
         model="gpt-4o-mini",
     text={
@@ -320,6 +310,7 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
     )
     try:
         diet = json.loads(response.output_text)
+        print(diet)
         return updateDietPlan(diet)
     
     except json.decoder.JSONDecodeError:
@@ -365,9 +356,9 @@ def updateDietPlan(diet):
                     print(ing["name"])
                     print(ing["amount"])   
                      
-            con.commit()
-            con.close()
-            return jsonify({"message": "Diet plan generated successfully"}), 200
+        con.commit()
+        con.close()
+        return jsonify({"message": "Diet plan generated successfully"}), 200
         
         
         
@@ -396,7 +387,21 @@ def updateTrainingPlan(plan):
             return jsonify({"message": "Training plan generated successfully"}), 200
 
 
+@app.route("/api/getDietPlan", methods=["GET"])
+@login_required
+def getDietPlan():
+    user_id = session.get("id")
+    con = get_db_connection()
+    cursor = con.cursor()
     
+    dietPlan = cursor.execute("SELECT  * FROM diets WHERE user_id = ? ORDER BY id DESC LIMIT 1", (user_id,)).fetchone()
+    
+    if not dietPlan:
+        return jsonify({"message": "No plan has been created"}), 404
+
+    return jsonify(dietPlan)
+    
+    return jsonify({"error": "No plan has been found"}), 400
 
 @app.route("/api/regenerateWorkout", methods=["POST"])
 @login_required

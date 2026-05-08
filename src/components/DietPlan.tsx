@@ -24,7 +24,7 @@ const DietPlan = () => {
   useEffect(() => {
     const fetchDiet = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/dietPlanGen`, {
+        const response = await fetch(`${API_BASE_URL}/api/getDietPlan`, {
           credentials: "include",
           method: "GET",
         });
@@ -47,6 +47,7 @@ const DietPlan = () => {
   return (
     <div className="text-black">
       <h1>Diet plan</h1>
+      <p>{diet?.diet_name}</p>
     </div>
   );
 };
