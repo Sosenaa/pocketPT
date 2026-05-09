@@ -310,7 +310,6 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
     )
     try:
         diet = json.loads(response.output_text)
-        print(diet)
         return updateDietPlan(diet)
     
     except json.decoder.JSONDecodeError:
@@ -394,14 +393,49 @@ def getDietPlan():
     con = get_db_connection()
     cursor = con.cursor()
     
+    #Getting last diet from DB
     dietPlan = cursor.execute("SELECT  * FROM diets WHERE user_id = ? ORDER BY id DESC LIMIT 1", (user_id,)).fetchone()
     
     if not dietPlan:
         return jsonify({"message": "No plan has been created"}), 404
 
-    return jsonify(dietPlan)
+    result = {
+        "diet_name": dietPlan["diet_name"],
+        "diet_days": [], 
+    }
     
-    return jsonify({"error": "No plan has been found"}), 400
+
+    #getting all diet for all days from DB    
+    diet_days = cursor.execute("SELECT * FROM diet_days WHERE diet_id = ? ", (dietPlan["id"],)).fetchall()
+    
+    for day in diet_days:
+        diet_data = {
+            "diet_day" : day["day_name"],
+            "total_meals": day["total_meals"],
+            "meal":[]
+        }
+        
+        #getting meals for each day of the week from DB
+        meals = cursor.execute("SELECT * FROM meal WHERE diet_day_id = ? ", (day["id"],)).fetchall()   
+        for meal in meals:
+            meal_data = {
+                "meal_name": meal["meal_name"],
+                "ingredients":[]
+            }
+            #getting ingredients for each meal
+            ingredients = cursor.execute("SELECT * FROM ingredients WHERE meal_id = ?", (meal["id"],)).fetchall()
+            for ing in ingredients:
+                meal_data["ingredients"].append({
+                    "name": ing["name"],
+                    "amount": ing["amount"],
+                })
+            diet_data["meal"].append(meal_data)
+        
+        result["diet_days"].append(diet_data)
+
+    con.close()
+    
+    return jsonify(result),200
 
 @app.route("/api/regenerateWorkout", methods=["POST"])
 @login_required
