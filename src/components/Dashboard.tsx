@@ -1,4 +1,5 @@
 import TodayWorkout from "./TodayWorkout";
+import TodayDiet from "./TodayDiet";
 import { API_BASE_URL } from "../api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -138,8 +139,8 @@ const Dashboard = () => {
         workout={todayWorkout}
         setWorkoutSelection={setWorkoutSelection}
       />
-      {/* Quick stats */}
-      {/* Derived from db */}
+
+      <TodayDiet />
 
       {/* Progression tracking */}
       <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">

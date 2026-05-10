@@ -77,9 +77,9 @@ const DietPlan = () => {
                       </div>
                     </div>
                     {day.meal.map((meal, mealIndex) => (
-                      <div key={mealIndex} className="">
-                        <div className="flex justify-between my-4">
-                          <p className="text-lg text-left px-5 m-0 font-semibold">
+                      <div key={mealIndex} className="hover:bg-[#2a2a2a]">
+                        <div className="flex justify-between">
+                          <p className="text-lg text-left px-5 m-0 py-2 font-semibold">
                             {meal.meal_name}
                           </p>
                           <button
