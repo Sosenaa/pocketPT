@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { API_BASE_URL } from "../api";
+import DietPlan from "./DietPlan";
 
 const Nav = () => {
   const navigate = useNavigate();
@@ -110,6 +111,15 @@ const Nav = () => {
                 onClick={closeMenu}
               >
                 CREATE PLAN
+              </Link>
+            </li>
+            <li className="m-4  text-slate-400">
+              <Link
+                to={"/DietPlan"}
+                className="block !no-underline !text-inherit p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                onClick={closeMenu}
+              >
+                Diet Plan
               </Link>
             </li>
 
