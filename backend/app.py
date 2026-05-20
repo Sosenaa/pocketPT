@@ -160,16 +160,60 @@ def userDetails():
                 (age,weight,height,gender,goal, trainingEnvironment, activity, user_id))
     con.commit()
     con.close()
-
-    #Triger plan generation after submiting the form
-    trainingPlanGen(age, weight, height, gender, goal,trainingEnvironment, activity)
-    dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity)
+    
+    action = data.get("action")
+    print("action is", action)
+    if action:
+        if action == "full_plan":
+            trainingPlanGen()
+            dietPlanGen()
+            return ({"message": "Full plan has been generated"}), 200
+        elif action == "training_plan":
+            trainingPlanGen()
+            return ({"message": "Training Plan is being generated"}), 200
+        elif action == "diet_plan":
+            dietPlanGen()
+            return ({"message": "Diet Plan is being generated"}), 200
+        
+        return({"error": "Action error"}), 404
+    
     return jsonify({"message": "Data saved successfully."}),200
 
+def getUserData():
+    user_id = session.get("id")
+    
+    con = get_db_connection()
+    user_details = con.execute("""
+        SELECT 
+            ud.age, 
+            ud.weight, 
+            ud.height, 
+            ud.gender, 
+            ud.goal, 
+            ud.trainingEnvironment, 
+            ud.activity
+        FROM user_details ud
+        WHERE user_id = ?""", (user_id,)).fetchone()
+    
+    user = { 
+        "age": user_details["age"],
+        "weight": user_details["weight"],
+        "height": user_details["height"],
+        "gender": user_details["gender"],
+        "goal" :user_details["goal"],
+        "trainingEnvironment" : user_details["trainingEnvironment"],
+        "activity" : user_details["activity"]
+    }
+    return (user)
+        
+    
 
-def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity):
+@app.route("/trainingPlanGen", methods=["POST"])
+def trainingPlanGen():
     client = OpenAI()
     print("Working on the training plan")
+    
+    user_details = getUserData()
     
     #get chat gpt reponse
     response = client.responses.create(
@@ -183,13 +227,13 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
     Ensure the program is balanced across all major muscle groups, 
     while considering general training preferences often observed in males and females.
     
-    Age: {age}
-    Weight:{weight}
-    Height: {height}
-    Gender: {gender}
-    Goal: {goal}
-    Training_Environment: {trainingEnvironment}
-    Activity: {activity}
+    Age: {user_details["age"]}
+    Weight:{user_details["weight"]}
+    Height: {user_details["height"]}
+    Gender: {user_details["gender"]}
+    Goal: {user_details["goal"]}
+    Training_Environment: {user_details["trainingEnvironment"]}
+    Activity: {user_details["activity"]}
 
     Return ONLY raw JSON. 
     Do not include markdown, 
@@ -240,7 +284,7 @@ def trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, acti
         print("Invalid Json")
         return jsonify({"error": "failed to generate JSON format"}), 500
     
-def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity):
+def dietPlanGen():
     client = OpenAI()
     print("Working on your diet plan")
     
@@ -249,6 +293,9 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
 
     if not data:
         return jsonify({"message": "Data missing"}), 400
+    
+    user_details = getUserData()
+  
     
     response = client.responses.create(
         model="gpt-4o-mini",
@@ -259,16 +306,16 @@ def dietPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity
     instructions="You are a qualified nutritionist",
     input=f'''
     Create 7 day professional, science-based diet.
-    Design diet to {goal}.
+    Design diet to {user_details["goal"]}.
     
     
-    Age: {age}
-    Weight:{weight}
-    Height: {height}
-    Gender: {gender}
-    Goal: {goal}
-    Training_Environment: {trainingEnvironment}
-    Activity: {activity}
+    Age: {user_details["age"]}
+    Weight:{user_details["weight"]}
+    Height: {user_details["height"]}
+    Gender: {user_details["gender"]}
+    Goal: {user_details["goal"]}
+    Training_Environment: {user_details["trainingEnvironment"]}
+    Activity: {user_details["activity"]}
 
     Return ONLY raw JSON. 
     Do not include markdown, 

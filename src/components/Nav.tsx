@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { API_BASE_URL } from "../api";
-import DietPlan from "./DietPlan";
 
 const Nav = () => {
   const navigate = useNavigate();

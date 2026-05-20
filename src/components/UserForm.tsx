@@ -12,6 +12,7 @@ const UserForm = () => {
   const [activity, setActivity] = useState("");
   const [trainingEnvironment, setTrainingEnvironment] = useState("");
   const [loading, setLoading] = useState(false);
+  const [action, setAction] = useState("");
 
   useState(() => {
     const CheckAuth = async () => {
@@ -47,6 +48,7 @@ const UserForm = () => {
           goal,
           trainingEnvironment,
           activity,
+          action,
         }),
       });
       const data = await response.json();
@@ -56,27 +58,8 @@ const UserForm = () => {
         return;
       }
       if (response.ok) {
-        navigate("/trainingPlan");
-
-        const dietResponse = await fetch(`${API_BASE_URL}/api/dietPlanGen`, {
-          credentials: "include",
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            age,
-            weight,
-            height,
-            gender,
-            goal,
-            trainingEnvironment,
-            activity,
-          }),
-        });
-
-        const dietData = await dietResponse.json();
-        console.log(dietData.diet_name);
+        if (action === "diet_plan") navigate("/DietPlan");
+        else navigate("/Plan");
       } else {
         alert(data.error);
       }
@@ -114,7 +97,11 @@ const UserForm = () => {
             </p>
           </div>
 
-          <form onSubmit={submitUserDetails} className="space-y-6">
+          <form
+            onSubmit={submitUserDetails}
+            method="POST"
+            className="space-y-6"
+          >
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {/* Name */}
               <div className="md:col-span-2"></div>
@@ -269,18 +256,27 @@ const UserForm = () => {
             <div className="pt-2 overflow-auto sm:flex ">
               <button
                 type="submit"
+                name="action"
+                value={action}
+                onClick={() => setAction("training_plan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Training Plan
               </button>
               <button
                 type="submit"
+                name="action"
+                value={action}
+                onClick={() => setAction("diet_plan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Diet Plan
               </button>
               <button
                 type="submit"
+                name="action"
+                value={action}
+                onClick={() => setAction("full_plan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Diet & Workout
