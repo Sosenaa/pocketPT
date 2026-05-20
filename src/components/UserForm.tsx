@@ -266,22 +266,22 @@ const UserForm = () => {
             <div className="text-slate-200 ">
               <h2 className="text-center">Create</h2>
             </div>
-            <div className="pt-2 flex">
+            <div className="pt-2 overflow-auto sm:flex ">
               <button
                 type="submit"
-                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
+                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Training Plan
               </button>
               <button
                 type="submit"
-                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
+                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Diet Plan
               </button>
               <button
                 type="submit"
-                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
+                className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Diet & Workout
               </button>

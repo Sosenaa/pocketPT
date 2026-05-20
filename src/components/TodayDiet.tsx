@@ -102,7 +102,7 @@ const TodayDiet = () => {
                 <Fragment key={index}>
                   {meal.ingredients.map((ing, ingIndex) => (
                     <tr key={ingIndex} className="">
-                      <td className="pl-5 py-3 text-sm font-medium text-slate-100">
+                      <td className="pl-5 py-3 text-sm font-medium text-slate-100 ">
                         {ingIndex === 0 ? meal.meal_name : ""}
                       </td>
                       <td className="pl-5 py-3 text-sm font-medium text-slate-100">
