@@ -306,17 +306,12 @@ def dietPlanGen():
     client = OpenAI()
     print("Working on your diet plan")
     
-    data = request.get_json()
     user_id = session.get("id")
-
-    if not data:
-        return jsonify({"message": "Data missing"}), 400
-    
     user_details = getUserData()
   
     
     response = client.responses.create(
-        model="gpt-4o-mini",
+    model="gpt-4o-mini",
     text={
         "format":{
         "type": "json_object"

@@ -69,8 +69,13 @@ const UserForm = () => {
         });
         const actionData = await actionResponse.json();
         console.log(actionData);
-        if (response.ok && action === "generateDietPlan") navigate("/DietPlan");
-        else navigate("/Plan");
+        if (response.ok) {
+          if (action === "generateDietPlan") {
+            navigate("/DietPlan");
+          } else {
+            navigate("/Plan");
+          }
+        }
       } else {
         alert(data.error);
       }
