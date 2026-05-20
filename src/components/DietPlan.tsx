@@ -77,9 +77,9 @@ const DietPlan = () => {
                       </div>
                     </div>
                     {day.meal.map((meal, mealIndex) => (
-                      <div key={mealIndex} className="hover:bg-[#2a2a2a]">
-                        <div className="flex justify-between">
-                          <p className="text-lg text-left px-5 m-0 py-2 font-semibold">
+                      <div key={mealIndex} className="hover:bg-[#2a2a2a] py-2">
+                        <div className="flex items-center justify-between ">
+                          <p className="text-lg text-left px-5 m-0 py-2 font-semibold ">
                             {meal.meal_name}
                           </p>
                           <button
@@ -87,8 +87,8 @@ const DietPlan = () => {
                             className="px-5 text-right font-light"
                           >
                             {cardIndex === `${index}-${mealIndex}`
-                              ? `Hide ${meal.meal_name} ▲`
-                              : `Show ${meal.meal_name} ▼`}
+                              ? `Hide ▲`
+                              : `Show ▼`}
                           </button>
                         </div>
                         {cardIndex === `${index}-${mealIndex}` &&
