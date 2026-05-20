@@ -168,33 +168,28 @@ def userDetails():
 @app.route("/api/generateFullPlan", methods=["POST"])
 @login_required
 def generatePlan():
-    data = request.get_json()
-    action = data.get("action")
-    if action == "generateFullPlan":
-        print("Workout on full plan")
-        trainingPlanGen()
-        dietPlanGen()
-        return jsonify({"message": "Full plan has been created"}), 201
+    print("Workout on full plan")
+    trainingPlanGen()
+    dietPlanGen()
+    return jsonify({"message": "Full plan has been created"}), 201
+
 
 @app.route("/api/generateDietPlan", methods=["POST"])
 @login_required
 def generateDietPlan():
-    data = request.get_json()
-    action = data.get("action")
-    if action == "generateDietPlan":
-        print("Workout on diet plan")
-        dietPlanGen()
-        return jsonify({"message": "Diet plan has been created"}), 201    
+    print("Workout on diet plan")
+    dietPlanGen()
+    return jsonify({"message": "Diet plan has been created"}), 201    
+
 
 @app.route("/api/generateTrainingPlan", methods=["POST"])
 @login_required
 def generateTrainingPlan():
-    data = request.get_json()
-    action = data.get("action")
-    if action == "generateTrainingPlan":
-        print("Workout on training plan")
-        trainingPlanGen()
-        return jsonify({"message": "Diet plan has been created"}), 201  
+
+    print("Workout on training plan")
+    trainingPlanGen()
+    return jsonify({"message": "Diet plan has been created"}), 201  
+
     
 
 def getUserData():

@@ -63,13 +63,10 @@ const UserForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            action,
-          }),
         });
         const actionData = await actionResponse.json();
         console.log(actionData);
-        if (response.ok) {
+        if (actionResponse.ok) {
           if (action === "generateDietPlan") {
             navigate("/DietPlan");
           } else {
