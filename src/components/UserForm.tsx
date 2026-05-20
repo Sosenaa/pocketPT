@@ -48,7 +48,6 @@ const UserForm = () => {
           goal,
           trainingEnvironment,
           activity,
-          action,
         }),
       });
       const data = await response.json();
@@ -58,7 +57,19 @@ const UserForm = () => {
         return;
       }
       if (response.ok) {
-        if (action === "diet_plan") navigate("/DietPlan");
+        const actionResponse = await fetch(`${API_BASE_URL}/api/${action}`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action,
+          }),
+        });
+        const actionData = await actionResponse.json();
+        console.log(actionData);
+        if (response.ok && action === "generateDietPlan") navigate("/DietPlan");
         else navigate("/Plan");
       } else {
         alert(data.error);
@@ -258,7 +269,7 @@ const UserForm = () => {
                 type="submit"
                 name="action"
                 value={action}
-                onClick={() => setAction("training_plan")}
+                onClick={() => setAction("generateTrainingPlan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2 text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Training Plan
@@ -267,7 +278,7 @@ const UserForm = () => {
                 type="submit"
                 name="action"
                 value={action}
-                onClick={() => setAction("diet_plan")}
+                onClick={() => setAction("generateDietPlan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Diet Plan
@@ -276,7 +287,7 @@ const UserForm = () => {
                 type="submit"
                 name="action"
                 value={action}
-                onClick={() => setAction("full_plan")}
+                onClick={() => setAction("generateFullPlan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Diet & Workout

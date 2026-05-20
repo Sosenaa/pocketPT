@@ -89,6 +89,8 @@ def register():
     return jsonify({"message": "Successful Registration"}), 201
     
 
+   
+
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -160,24 +162,40 @@ def userDetails():
                 (age,weight,height,gender,goal, trainingEnvironment, activity, user_id))
     con.commit()
     con.close()
-    
-    action = data.get("action")
-    print("action is", action)
-    if action:
-        if action == "full_plan":
-            trainingPlanGen()
-            dietPlanGen()
-            return ({"message": "Full plan has been generated"}), 200
-        elif action == "training_plan":
-            trainingPlanGen()
-            return ({"message": "Training Plan is being generated"}), 200
-        elif action == "diet_plan":
-            dietPlanGen()
-            return ({"message": "Diet Plan is being generated"}), 200
-        
-        return({"error": "Action error"}), 404
-    
+   
     return jsonify({"message": "Data saved successfully."}),200
+
+@app.route("/api/generateFullPlan", methods=["POST"])
+@login_required
+def generatePlan():
+    data = request.get_json()
+    action = data.get("action")
+    if action == "generateFullPlan":
+        print("Workout on full plan")
+        trainingPlanGen()
+        dietPlanGen()
+        return jsonify({"message": "Full plan has been created"}), 201
+
+@app.route("/api/generateDietPlan", methods=["POST"])
+@login_required
+def generateDietPlan():
+    data = request.get_json()
+    action = data.get("action")
+    if action == "generateDietPlan":
+        print("Workout on diet plan")
+        dietPlanGen()
+        return jsonify({"message": "Diet plan has been created"}), 201    
+
+@app.route("/api/generateTrainingPlan", methods=["POST"])
+@login_required
+def generateTrainingPlan():
+    data = request.get_json()
+    action = data.get("action")
+    if action == "generateTrainingPlan":
+        print("Workout on training plan")
+        trainingPlanGen()
+        return jsonify({"message": "Diet plan has been created"}), 201  
+    
 
 def getUserData():
     user_id = session.get("id")
