@@ -13,6 +13,34 @@ export default function Login({ navigation }: any) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const API_BASE_URL = "http://192.168.0.46:5000";
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        alert(`Welcome ${username}`);
+        navigation.navigate("TrainingPlan");
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -38,7 +66,7 @@ export default function Login({ navigation }: any) {
         onChangeText={setPassword}
       ></TextInput>
 
-      <TouchableOpacity style={styles.loginB}>
+      <TouchableOpacity style={styles.loginB} onPress={handleLogin}>
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
 
