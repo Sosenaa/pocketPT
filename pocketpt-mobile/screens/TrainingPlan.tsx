@@ -72,156 +72,243 @@ export default function Register({ navigation }: any) {
   return (
     <ScrollView contentContainerStyle={styles.containerScroll}>
       <View style={styles.container}>
-        <Text style={styles.planName}>{plan?.plan_name}</Text>
+        <View style={styles.header}>
+          <Text style={styles.planLabel}>YOUR PLAN</Text>
+          <Text style={styles.planName}>{plan?.plan_name}</Text>
+          <View style={styles.planDivider} />
+        </View>
 
         {plan?.workouts.map((workout, index) => (
-          <View key={index}>
-            <View style={styles.workout}>
-              <View style={styles.workoutTitle}>
-                <Text style={styles.workoutTitleTextDay}>
-                  {workout?.day_name}
-                </Text>
-                <Text style={styles.workoutTitleTextDuration}>
+          <View key={index} style={styles.workoutCard}>
+            {/* Card Header / Tap to expand */}
+            <TouchableOpacity
+              style={[
+                styles.workoutTitle,
+                cardIndex === index && styles.workoutTitleActive,
+              ]}
+              onPress={() => cardCollapse(index)}
+              activeOpacity={0.85}
+            >
+              <View style={styles.workoutTitleLeft}>
+                <Text style={styles.dayText}>{workout?.day_name}</Text>
+                <Text style={styles.focusText}>{workout?.focus}</Text>
+              </View>
+              <View style={styles.workoutTitleRight}>
+                <Text style={styles.durationText}>
                   {workout?.exercise_duration}
                 </Text>
-                <Text style={styles.workoutTitleTextFocus}>
-                  {workout?.focus}
+                <Text
+                  style={[
+                    styles.chevron,
+                    cardIndex === index && styles.chevronOpen,
+                  ]}
+                >
+                  ›
                 </Text>
-                <TouchableOpacity onPress={() => cardCollapse(index)}>
-                  <Text>▼</Text>
-                </TouchableOpacity>
               </View>
-              {cardIndex === index && (
-                <View>
-                  <View style={styles.exerciseHeader}>
-                    <Text style={styles.exerciseHeaderTextExercise}>
-                      Exercise
-                    </Text>
-                    <Text style={styles.exerciseHeaderText}>Reps</Text>
-                    <Text style={styles.exerciseHeaderText}>Sets</Text>
-                  </View>
+            </TouchableOpacity>
 
-                  {workout?.exercises.map((exercise, exerciseIndex) => (
-                    <View key={exerciseIndex}>
-                      <View style={styles.exercises}>
-                        <Text style={styles.exerciseTextName}>
-                          {exercise?.name}
-                        </Text>
-                        <Text style={styles.exerciseText}>
-                          {exercise?.reps}
-                        </Text>
-                        <Text style={styles.exerciseText}>
-                          {exercise?.sets}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
+            {cardIndex === index && (
+              <View style={styles.exerciseContainer}>
+                {/* Table Header */}
+                <View style={styles.exerciseHeader}>
+                  <Text
+                    style={[styles.exerciseHeaderText, styles.exerciseColName]}
+                  >
+                    EXERCISE
+                  </Text>
+                  <Text
+                    style={[styles.exerciseHeaderText, styles.exerciseColStat]}
+                  >
+                    SETS
+                  </Text>
+                  <Text
+                    style={[styles.exerciseHeaderText, styles.exerciseColStat]}
+                  >
+                    REPS
+                  </Text>
                 </View>
-              )}
-            </View>
+
+                {workout?.exercises.map((exercise, exerciseIndex) => (
+                  <View
+                    key={exerciseIndex}
+                    style={[
+                      styles.exerciseRow,
+                      exerciseIndex % 2 === 0 && styles.exerciseRowAlt,
+                    ]}
+                  >
+                    <Text style={[styles.exerciseText, styles.exerciseColName]}>
+                      {exercise?.name}
+                    </Text>
+                    <Text
+                      style={[styles.exerciseStatText, styles.exerciseColStat]}
+                    >
+                      {exercise?.sets}
+                    </Text>
+                    <Text
+                      style={[styles.exerciseStatText, styles.exerciseColStat]}
+                    >
+                      {exercise?.reps}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         ))}
+
+        <View style={{ height: 80 }} />
       </View>
       <Navbar navigation={navigation} />
     </ScrollView>
   );
 }
 
+const PRIMARY = "#C8FF00";
+const BG = "#0A0A0A";
+const SURFACE = "#141414";
+const SURFACE2 = "#1A1A1A";
+const BORDER = "#222";
+const TEXT = "#FFFFFF";
+const MUTED = "#666";
+
 const styles = StyleSheet.create({
   containerScroll: {
     flexGrow: 1,
-    justifyContent: "center",
-
-    backgroundColor: "black",
+    backgroundColor: BG,
   },
-
   container: {
-    backgroundColor: "black",
+    backgroundColor: BG,
     flex: 1,
-    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingTop: 48,
   },
 
+  header: {
+    marginBottom: 32,
+    paddingHorizontal: 4,
+  },
+  planLabel: {
+    color: PRIMARY,
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 3,
+    marginBottom: 6,
+  },
   planName: {
-    textAlign: "center",
-    color: "white",
-    fontSize: 30,
-    margin: 10,
+    color: TEXT,
+    fontSize: 32,
+    fontWeight: "800",
+    letterSpacing: -0.5,
+    marginBottom: 16,
+  },
+  planDivider: {
+    height: 1,
+    backgroundColor: BORDER,
   },
 
-  exerciseHeader: {
-    flexDirection: "row",
-    marginVertical: 8,
-    paddingHorizontal: 5,
-  },
-
-  exerciseHeaderTextExercise: {
-    color: "white",
-    width: "50%",
-    fontSize: 18,
-    fontWeight: "900",
-  },
-
-  exerciseHeaderText: {
-    color: "white",
-    width: "25%",
-  },
-
-  workout: {
-    marginVertical: 5,
+  workoutCard: {
+    marginBottom: 10,
+    borderRadius: 14,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: BORDER,
   },
 
   workoutTitle: {
     flexDirection: "row",
-    backgroundColor: "#C8FF00",
-    borderRadius: 10,
-    justifyContent: "space-evenly",
-    paddingHorizontal: 10,
-    paddingVertical: 2,
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: SURFACE,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
   },
-  workoutTitleTextDay: {
-    color: "black",
-    width: "25%",
-    fontSize: 15,
+  workoutTitleActive: {
+    backgroundColor: PRIMARY,
   },
-  workoutTitleTextDuration: {
-    color: "black",
-    width: "17%",
-    fontSize: 15,
+  workoutTitleLeft: {
+    flex: 1,
+    gap: 3,
   },
-
-  workoutTitleTextFocus: {
-    color: "black",
-    width: "40%",
-    fontSize: 15,
-  },
-
-  exercises: {
-    borderBottomWidth: 0.2,
-    borderBlockColor: "white",
+  workoutTitleRight: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    padding: 2,
-    margin: 2,
+    alignItems: "center",
+    gap: 12,
+  },
+  dayText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: TEXT,
+  },
+  focusText: {
+    fontSize: 12,
+    color: MUTED,
+    fontWeight: "500",
+  },
+  durationText: {
+    fontSize: 12,
+    color: MUTED,
+    fontWeight: "500",
+  },
+  chevron: {
+    color: MUTED,
+    fontSize: 22,
+    fontWeight: "300",
+    transform: [{ rotate: "90deg" }],
+  },
+  chevronOpen: {
+    color: "#000",
+    transform: [{ rotate: "-90deg" }],
   },
 
-  exerciseTextName: {
-    color: "white",
-    width: "50%",
+  workoutTitleActive_dayText: {
+    color: "#000",
+  },
+
+  exerciseContainer: {
+    backgroundColor: SURFACE2,
+    paddingHorizontal: 18,
+    paddingBottom: 12,
+    paddingTop: 4,
+  },
+  exerciseHeader: {
+    flexDirection: "row",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: BORDER,
+    marginBottom: 4,
+  },
+  exerciseHeaderText: {
+    color: MUTED,
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 1.5,
+  },
+  exerciseRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 11,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+  },
+  exerciseRowAlt: {
+    backgroundColor: "#181818",
+  },
+  exerciseColName: {
+    flex: 1,
+  },
+  exerciseColStat: {
+    width: 52,
+    textAlign: "center",
   },
   exerciseText: {
-    color: "white",
-    width: "25%",
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: "400",
   },
-
-  navbar: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60,
-    backgroundColor: "#C8FF00",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+  exerciseStatText: {
+    color: PRIMARY,
+    fontSize: 14,
+    fontWeight: "700",
   },
 });
