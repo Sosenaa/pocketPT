@@ -10,6 +10,7 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
+import Navbar from "../components/Navbar";
 
 export default function UserForm({ navigation }: any) {
   const API_BASE_URL = "http://192.168.0.46:5000";
@@ -204,6 +205,7 @@ export default function UserForm({ navigation }: any) {
           </View>
         )}
       </View>
+      <Navbar navigation={navigation} />
     </ScrollView>
   );
 }
@@ -229,7 +231,6 @@ const styles = StyleSheet.create({
     paddingVertical: 48,
   },
 
-  /* Progress */
   progressRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -256,7 +257,6 @@ const styles = StyleSheet.create({
     borderRadius: 1,
   },
 
-  /* Question */
   questionText: {
     color: TEXT,
     fontSize: 26,
@@ -266,7 +266,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
   },
 
-  /* Input type */
   inputGroup: {
     gap: 16,
   },
@@ -293,7 +292,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  /* Choice type */
   optionsGroup: {
     gap: 12,
   },

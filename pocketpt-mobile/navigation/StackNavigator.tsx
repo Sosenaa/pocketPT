@@ -7,6 +7,7 @@ import Login from "../screens/Login";
 import Register from "../screens/Register";
 import TrainingPlan from "../screens/TrainingPlan";
 import UserForm from "../screens/UserForm";
+import Dashboard from "../screens/Dashboard";
 
 const Navigation = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ export default function StackNavigator() {
         <Navigation.Screen name="Login" component={Login} />
         <Navigation.Screen name="UserForm" component={UserForm} />
         <Navigation.Screen name="TrainingPlan" component={TrainingPlan} />
+        <Navigation.Screen name="Dashboard" component={Dashboard} />
       </Navigation.Navigator>
     </NavigationContainer>
   );

@@ -32,7 +32,7 @@ export default function Login({ navigation }: any) {
       console.log(data);
       if (response.ok) {
         alert(`Welcome ${username}`);
-        navigation.navigate("UserForm");
+        navigation.navigate("TrainingPlan");
       } else {
         alert(data.error);
       }

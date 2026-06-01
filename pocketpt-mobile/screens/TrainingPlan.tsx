@@ -52,6 +52,7 @@ export default function Register({ navigation }: any) {
         }
         if (res.status === 404) {
           alert("Complete the form to create training plan");
+          navigation.navigate("UserForm");
 
           return;
         }
@@ -159,7 +160,7 @@ export default function Register({ navigation }: any) {
 
         <View style={{ height: 80 }} />
       </View>
-      <Navbar navigation={navigation} />
+      <Navbar navigation={navigation} style={styles.navbar} />
     </ScrollView>
   );
 }
@@ -310,5 +311,9 @@ const styles = StyleSheet.create({
     color: PRIMARY,
     fontSize: 14,
     fontWeight: "700",
+  },
+
+  navbar: {
+    position: "static",
   },
 });

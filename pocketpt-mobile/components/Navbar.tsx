@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 export default function Navbar({ navigation }: any) {
   return (
@@ -11,8 +12,8 @@ export default function Navbar({ navigation }: any) {
         <Text style={styles.link}>Training</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("DietPlan")}>
-        <Text style={styles.link}>Diet</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("Dashboard")}>
+        <Text style={styles.link}>Dashboard</Text>
       </TouchableOpacity>
     </View>
   );
