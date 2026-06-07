@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import Navbar from "../components/Navbar";
 
 type Exercise = {
   exercise_id: number;
@@ -157,10 +156,7 @@ export default function Register({ navigation }: any) {
             )}
           </View>
         ))}
-
-        <View style={{ height: 80 }} />
       </View>
-      <Navbar navigation={navigation} style={styles.navbar} />
     </ScrollView>
   );
 }

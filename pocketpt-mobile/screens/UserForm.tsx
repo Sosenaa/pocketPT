@@ -10,7 +10,6 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import Navbar from "../components/Navbar";
 
 export default function UserForm({ navigation }: any) {
   const API_BASE_URL = "http://192.168.0.46:5000";
@@ -205,7 +204,6 @@ export default function UserForm({ navigation }: any) {
           </View>
         )}
       </View>
-      <Navbar navigation={navigation} />
     </ScrollView>
   );
 }

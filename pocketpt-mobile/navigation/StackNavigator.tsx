@@ -1,30 +1,19 @@
-import {
-  createStaticNavigation,
-  NavigationContainer,
-} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { View, Text, StyleSheet } from "react-native";
+const Stack = createNativeStackNavigator();
 import Login from "../screens/Login";
 import Register from "../screens/Register";
-import TrainingPlan from "../screens/TrainingPlan";
-import UserForm from "../screens/UserForm";
-import Dashboard from "../screens/Dashboard";
-
-const Navigation = createNativeStackNavigator();
+import MyTabs from "../components/MyTabs";
 
 export default function StackNavigator() {
   return (
     <NavigationContainer>
-      <Navigation.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Navigation.Screen name="Register" component={Register} />
-        <Navigation.Screen name="Login" component={Login} />
-        <Navigation.Screen name="UserForm" component={UserForm} />
-        <Navigation.Screen name="TrainingPlan" component={TrainingPlan} />
-        <Navigation.Screen name="Dashboard" component={Dashboard} />
-      </Navigation.Navigator>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="MainTabs" component={MyTabs} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

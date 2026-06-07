@@ -32,7 +32,9 @@ export default function Login({ navigation }: any) {
       console.log(data);
       if (response.ok) {
         alert(`Welcome ${username}`);
-        navigation.navigate("TrainingPlan");
+        navigation.navigate("MainTabs", {
+          screen: "TrainingPlan",
+        });
       } else {
         alert(data.error);
       }
