@@ -109,24 +109,20 @@ export default function UserForm({ navigation }: any) {
         body: JSON.stringify(userData),
       });
       const data = await response.json();
-      console.log(data);
       if (response.status === 401) {
         navigation.navigate("Login");
         return;
       }
       if (response.ok) {
-        const trainingResponse = await fetch(
-          `${API_BASE_URL}/api/generateTrainingPlan`,
-          {
-            credentials: "include",
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+        const fullPlan = await fetch(`${API_BASE_URL}/api/generateFullPlan`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
-        const trainingData = trainingResponse.json();
-        if (trainingResponse.ok) {
+        });
+        const trainingData = fullPlan.json();
+        if (fullPlan.ok) {
           setLoading(false);
           navigation.navigate("TrainingPlan");
         }

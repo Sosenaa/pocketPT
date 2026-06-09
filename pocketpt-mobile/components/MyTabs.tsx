@@ -12,6 +12,7 @@ import Login from "../screens/Login";
 import Register from "../screens/Register";
 import UserForm from "../screens/UserForm";
 import Dashboard from "../screens/Dashboard";
+import DietPlan from "../screens/DietPlan";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
@@ -46,8 +47,9 @@ export default function MyTabs() {
       }}
     >
       <Tab.Screen name="TrainingPlan" component={TrainingPlan} />
-      <Tab.Screen name="UserForm" component={UserForm} />
+      <Tab.Screen name="DietPlan" component={DietPlan} />
       <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="UserForm" component={UserForm} />
     </Tab.Navigator>
   );
 }
