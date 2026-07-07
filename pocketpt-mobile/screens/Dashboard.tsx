@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -34,11 +36,13 @@ type Ingredient = {
 };
 
 type DietMeal = {
+  meal_id: number;
   meal_name: string;
   ingredients: Ingredient[];
 };
 
 type DietDay = {
+  diet_day_id: number;
   diet_day: string;
   total_meals: string;
   meal: DietMeal[];
@@ -57,8 +61,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [dietLoading, setDietLoading] = useState(true);
   const [error, setError] = useState("");
+  const [refreshingExerciseId, setRefreshingExerciseId] = useState<
+    number | null
+  >(null);
+  const [refreshingMealId, setRefreshingMealId] = useState<number | null>(null);
 
   const today = new Date();
+  const todayIndex = today.getDay() === 0 ? 7 : today.getDay();
 
   const todayLabel = today.toLocaleDateString("en-GB", {
     weekday: "long",
@@ -69,8 +78,6 @@ const Dashboard = () => {
   const weekday = today.toLocaleDateString("en-GB", {
     weekday: "long",
   });
-
-  const todayIndex = today.getDay() === 0 ? 7 : today.getDay();
 
   const todayWorkout = useMemo(() => {
     if (!plan?.workouts?.length) return null;
@@ -93,11 +100,7 @@ const Dashboard = () => {
 
   const trainingStats = useMemo(() => {
     if (!todayWorkout) {
-      return {
-        exercises: 0,
-        sets: 0,
-        reps: 0,
-      };
+      return { exercises: 0, sets: 0, reps: 0 };
     }
 
     const sets = todayWorkout.exercises.reduce((total, exercise) => {
@@ -132,63 +135,170 @@ const Dashboard = () => {
   }, [todayDietDay]);
 
   useEffect(() => {
-    const fetchTrainingPlan = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
-          credentials: "include",
-        });
-
-        if (response.status === 401) {
-          navigation.navigate("Login");
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Could not load training plan");
-        }
-
-        const data = await response.json();
-        setPlan(data);
-      } catch (err) {
-        console.error(err);
-        setError("Could not load your dashboard.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTrainingPlan();
-  }, [navigation]);
-
-  useEffect(() => {
-    const fetchDietPlan = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/getDietPlan`, {
-          credentials: "include",
-        });
-
-        if (response.status === 401) {
-          navigation.navigate("Login");
-          return;
-        }
-
-        if (!response.ok) {
-          setDietPlan(null);
-          return;
-        }
-
-        const data = await response.json();
-        setDietPlan(data);
-      } catch (err) {
-        console.error(err);
-        setDietPlan(null);
-      } finally {
-        setDietLoading(false);
-      }
-    };
-
     fetchDietPlan();
-  }, [navigation]);
+  }, []);
+
+  const fetchTrainingPlan = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/getTrainingPlan`, {
+        credentials: "include",
+      });
+
+      if (response.status === 401) {
+        navigation.navigate("Login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Could not load training plan");
+      }
+
+      const data = await response.json();
+      setPlan(data);
+    } catch (err) {
+      console.error(err);
+      setError("Could not load your dashboard.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDietPlan = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/getDietPlan`, {
+        credentials: "include",
+      });
+
+      if (response.status === 401) {
+        navigation.navigate("Login");
+        return;
+      }
+
+      if (!response.ok) {
+        setDietPlan(null);
+        return;
+      }
+
+      const data = await response.json();
+      setDietPlan(data);
+    } catch (err) {
+      console.error(err);
+      setDietPlan(null);
+    } finally {
+      setDietLoading(false);
+    }
+  };
+
+  const substituteExercise = async (workoutId: number, exerciseId: number) => {
+    setRefreshingExerciseId(exerciseId);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/substituteExercise`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workout_id: workoutId,
+          exercise_id: exerciseId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Alert.alert(
+          "Could not refresh exercise",
+          data.message || "Please try again.",
+        );
+        return;
+      }
+
+      setPlan((currentPlan) => {
+        if (!currentPlan) return currentPlan;
+
+        return {
+          ...currentPlan,
+          workouts: currentPlan.workouts.map((workout) => {
+            if (workout.id !== workoutId) return workout;
+
+            return {
+              ...workout,
+              exercises: workout.exercises.map((exercise) => {
+                if (exercise.exercise_id !== exerciseId) return exercise;
+
+                return {
+                  ...exercise,
+                  name: data.name,
+                  sets: data.sets,
+                  reps: data.reps,
+                };
+              }),
+            };
+          }),
+        };
+      });
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setRefreshingExerciseId(null);
+    }
+  };
+
+  const substituteMeal = async (mealId: number) => {
+    setRefreshingMealId(mealId);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/substituteMeal`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meal_id: mealId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Alert.alert(
+          "Could not refresh meal",
+          data.message || "Please try again.",
+        );
+        return;
+      }
+
+      setDietPlan((currentDiet) => {
+        if (!currentDiet) return currentDiet;
+
+        return {
+          ...currentDiet,
+          diet_days: currentDiet.diet_days.map((day) => ({
+            ...day,
+            meal: day.meal.map((meal) => {
+              if (meal.meal_id !== mealId) return meal;
+
+              return {
+                ...meal,
+                meal_name: data.meal_name,
+                ingredients: data.ingredients,
+              };
+            }),
+          })),
+        };
+      });
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setRefreshingMealId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -209,100 +319,139 @@ const Dashboard = () => {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
+      <View style={styles.headerCard}>
         <Text style={styles.kicker}>Today</Text>
         <Text style={styles.title}>{todayLabel}</Text>
-        <Text style={styles.subtitle}>
-          Your training and diet plan for today.
-        </Text>
+        <Text style={styles.subtitle}>Your training and diet for today.</Text>
       </View>
 
       <View style={styles.statsGrid}>
         <StatCard label="Exercises" value={trainingStats.exercises} />
         <StatCard label="Sets" value={trainingStats.sets} />
-        <StatCard label="Est. reps" value={trainingStats.reps} />
         <StatCard
           label="Meals"
           value={dietLoading ? "..." : dietStats.meals || "-"}
         />
+        <StatCard
+          label="Foods"
+          value={dietLoading ? "..." : dietStats.ingredients || "-"}
+        />
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardKicker}>Today's workout</Text>
-        <Text style={styles.cardTitle}>
-          {todayWorkout?.focus || "No workout found"}
-        </Text>
-
-        {todayWorkout && (
-          <Text style={styles.cardSubtitle}>
-            {todayWorkout.day_name}
-            {todayWorkout.exercise_duration
-              ? ` - ${todayWorkout.exercise_duration}`
-              : ""}
-          </Text>
-        )}
+      <View style={styles.sectionCard}>
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionKicker}>Workout</Text>
+            <Text style={styles.sectionTitle}>
+              {todayWorkout?.focus || "No workout found"}
+            </Text>
+            {todayWorkout && (
+              <Text style={styles.sectionSubtitle}>
+                {todayWorkout.day_name} - {todayWorkout.exercise_duration}
+              </Text>
+            )}
+          </View>
+        </View>
 
         {todayWorkout ? (
           <View style={styles.list}>
             {todayWorkout.exercises.map((exercise, index) => (
-              <View key={exercise.exercise_id} style={styles.exerciseCard}>
-                <View style={styles.numberBadge}>
-                  <Text style={styles.numberText}>{index + 1}</Text>
+              <View key={exercise.exercise_id} style={styles.itemCard}>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{index + 1}</Text>
                 </View>
 
-                <View style={styles.exerciseContent}>
-                  <Text style={styles.exerciseName}>{exercise.name}</Text>
-                  <Text style={styles.exerciseMeta}>
+                <View style={styles.itemBody}>
+                  <Text style={styles.itemTitle}>{exercise.name}</Text>
+                  <Text style={styles.itemMeta}>
                     {exercise.sets} sets - {exercise.reps} reps
                   </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    substituteExercise(todayWorkout.id, exercise.exercise_id)
+                  }
+                  disabled={refreshingExerciseId === exercise.exercise_id}
+                  style={[
+                    styles.refreshButton,
+                    refreshingExerciseId === exercise.exercise_id &&
+                      styles.disabledButton,
+                  ]}
+                >
+                  <Text style={styles.refreshButtonText}>
+                    {refreshingExerciseId === exercise.exercise_id
+                      ? "..."
+                      : "Refresh"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <EmptyCard text="Generate a training plan to see today's workout." />
+        )}
+      </View>
+
+      <View style={styles.sectionCard}>
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionKicker}>Diet</Text>
+            <Text style={styles.sectionTitle}>
+              {todayDietDay?.diet_day || "No diet found"}
+            </Text>
+            {todayDietDay && (
+              <Text style={styles.sectionSubtitle}>
+                {todayDietDay.total_meals}
+              </Text>
+            )}
+          </View>
+        </View>
+
+        {dietLoading ? (
+          <Text style={styles.mutedText}>Loading diet...</Text>
+        ) : todayDietDay ? (
+          <View style={styles.list}>
+            {todayDietDay.meal.map((meal) => (
+              <View key={meal.meal_id} style={styles.mealCard}>
+                <View style={styles.mealTopRow}>
+                  <View style={styles.mealTitleWrap}>
+                    <Text style={styles.itemTitle}>{meal.meal_name}</Text>
+                    <Text style={styles.itemMeta}>
+                      {meal.ingredients.length} ingredients
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => substituteMeal(meal.meal_id)}
+                    disabled={refreshingMealId === meal.meal_id}
+                    style={[
+                      styles.refreshButton,
+                      refreshingMealId === meal.meal_id &&
+                        styles.disabledButton,
+                    ]}
+                  >
+                    <Text style={styles.refreshButtonText}>
+                      {refreshingMealId === meal.meal_id ? "..." : "Refresh"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.ingredientsList}>
+                  {meal.ingredients.map((ingredient, index) => (
+                    <Text
+                      key={`${ingredient.name}-${index}`}
+                      style={styles.ingredientText}
+                    >
+                      {ingredient.name} - {ingredient.amount}
+                    </Text>
+                  ))}
                 </View>
               </View>
             ))}
           </View>
         ) : (
-          <EmptyCard text="Generate a training plan to see today's workout here." />
-        )}
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.cardKicker}>Today's diet</Text>
-
-        {dietLoading ? (
-          <Text style={styles.mutedText}>Loading diet...</Text>
-        ) : todayDietDay ? (
-          <>
-            <Text style={styles.cardTitle}>{todayDietDay.diet_day}</Text>
-            <Text style={styles.cardSubtitle}>{todayDietDay.total_meals}</Text>
-
-            <View style={styles.miniStatsGrid}>
-              <MiniStat label="Meals" value={dietStats.meals} />
-              <MiniStat label="Ingredients" value={dietStats.ingredients} />
-            </View>
-
-            <View style={styles.list}>
-              {todayDietDay.meal.map((meal, index) => (
-                <View
-                  key={`${meal.meal_name}-${index}`}
-                  style={styles.mealCard}
-                >
-                  <Text style={styles.mealName}>{meal.meal_name}</Text>
-
-                  <View style={styles.ingredients}>
-                    {meal.ingredients.map((ingredient, ingredientIndex) => (
-                      <Text
-                        key={`${ingredient.name}-${ingredientIndex}`}
-                        style={styles.ingredientText}
-                      >
-                        {ingredient.name} - {ingredient.amount}
-                      </Text>
-                    ))}
-                  </View>
-                </View>
-              ))}
-            </View>
-          </>
-        ) : (
-          <EmptyCard text="No diet plan found for today. Generate a full plan first." />
+          <EmptyCard text="Generate a full plan to see today's diet." />
         )}
       </View>
     </ScrollView>
@@ -319,19 +468,6 @@ const StatCard = ({
   <View style={styles.statCard}>
     <Text style={styles.statLabel}>{label}</Text>
     <Text style={styles.statValue}>{value}</Text>
-  </View>
-);
-
-const MiniStat = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) => (
-  <View style={styles.miniStat}>
-    <Text style={styles.miniStatLabel}>{label}</Text>
-    <Text style={styles.miniStatValue}>{value}</Text>
   </View>
 );
 
@@ -375,13 +511,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
-  header: {
-    marginBottom: 20,
+  headerCard: {
+    backgroundColor: "#111111",
+    borderWidth: 2,
+    borderColor: "#2a2a2e",
+    padding: 18,
+    marginBottom: 14,
   },
   kicker: {
     color: "#C8FF00",
-    fontSize: 13,
-    fontWeight: "700",
+    fontSize: 12,
+    fontWeight: "800",
     textTransform: "uppercase",
     letterSpacing: 1,
   },
@@ -389,10 +529,10 @@ const styles = StyleSheet.create({
     marginTop: 6,
     color: "#F8FAFC",
     fontSize: 30,
-    fontWeight: "800",
+    fontWeight: "900",
   },
   subtitle: {
-    marginTop: 8,
+    marginTop: 6,
     color: "#94A3B8",
     fontSize: 14,
   },
@@ -400,63 +540,68 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
-    marginBottom: 18,
+    marginBottom: 14,
   },
   statCard: {
     width: "48%",
+    minHeight: 82,
+    backgroundColor: "#111111",
     borderWidth: 2,
     borderColor: "#2a2a2e",
-    backgroundColor: "#111111",
     padding: 14,
+    justifyContent: "center",
   },
   statLabel: {
     color: "#64748B",
     fontSize: 11,
-    fontWeight: "700",
+    fontWeight: "800",
     textTransform: "uppercase",
   },
   statValue: {
-    marginTop: 8,
-    color: "#F8FAFC",
-    fontSize: 24,
-    fontWeight: "800",
-  },
-  card: {
-    borderWidth: 2,
-    borderColor: "#2a2a2e",
-    backgroundColor: "#111111",
-    padding: 16,
-    marginBottom: 18,
-  },
-  cardKicker: {
-    color: "#C8FF00",
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  cardTitle: {
     marginTop: 6,
     color: "#F8FAFC",
-    fontSize: 22,
+    fontSize: 24,
+    fontWeight: "900",
+  },
+  sectionCard: {
+    backgroundColor: "#111111",
+    borderWidth: 2,
+    borderColor: "#2a2a2e",
+    padding: 16,
+    marginBottom: 14,
+  },
+  sectionHeader: {
+    marginBottom: 14,
+  },
+  sectionKicker: {
+    color: "#C8FF00",
+    fontSize: 13,
     fontWeight: "800",
   },
-  cardSubtitle: {
+  sectionTitle: {
+    marginTop: 4,
+    color: "#F8FAFC",
+    fontSize: 22,
+    fontWeight: "900",
+  },
+  sectionSubtitle: {
     marginTop: 4,
     color: "#94A3B8",
-    fontSize: 14,
+    fontSize: 13,
   },
   list: {
-    marginTop: 16,
     gap: 10,
   },
-  exerciseCard: {
+  itemCard: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
+    backgroundColor: "#0E0E0E",
     borderWidth: 1,
     borderColor: "#2a2a2a",
-    backgroundColor: "#0E0E0E",
     padding: 12,
+    minHeight: 74,
   },
-  numberBadge: {
+  badge: {
     width: 32,
     height: 32,
     alignItems: "center",
@@ -464,56 +609,56 @@ const styles = StyleSheet.create({
     backgroundColor: "#C8FF00",
     marginRight: 12,
   },
-  numberText: {
+  badgeText: {
     color: "#080808",
-    fontWeight: "800",
+    fontWeight: "900",
   },
-  exerciseContent: {
+  itemBody: {
     flex: 1,
+    paddingRight: 10,
   },
-  exerciseName: {
+  itemTitle: {
     color: "#F8FAFC",
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: "800",
   },
-  exerciseMeta: {
+  itemMeta: {
     marginTop: 4,
     color: "#94A3B8",
-    fontSize: 13,
-  },
-  miniStatsGrid: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 14,
-  },
-  miniStat: {
-    flex: 1,
-    backgroundColor: "#0E0E0E",
-    padding: 12,
-  },
-  miniStatLabel: {
-    color: "#64748B",
     fontSize: 12,
   },
-  miniStatValue: {
-    marginTop: 4,
-    color: "#F8FAFC",
-    fontSize: 18,
-    fontWeight: "800",
+  refreshButton: {
+    backgroundColor: "#C8FF00",
+    paddingVertical: 9,
+    paddingHorizontal: 12,
+    minWidth: 74,
+    alignItems: "center",
+  },
+  refreshButtonText: {
+    color: "#080808",
+    fontSize: 12,
+    fontWeight: "900",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   mealCard: {
+    backgroundColor: "#0E0E0E",
     borderWidth: 1,
     borderColor: "#2a2a2a",
-    backgroundColor: "#0E0E0E",
     padding: 12,
   },
-  mealName: {
-    color: "#F8FAFC",
-    fontSize: 15,
-    fontWeight: "700",
+  mealTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
   },
-  ingredients: {
-    marginTop: 8,
+  mealTitleWrap: {
+    flex: 1,
+  },
+  ingredientsList: {
+    marginTop: 10,
     gap: 4,
   },
   ingredientText: {
@@ -521,12 +666,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   mutedText: {
-    marginTop: 12,
     color: "#94A3B8",
     fontSize: 14,
   },
   emptyCard: {
-    marginTop: 14,
     borderWidth: 1,
     borderStyle: "dashed",
     borderColor: "#2a2a2a",

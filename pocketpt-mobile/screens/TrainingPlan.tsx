@@ -32,7 +32,9 @@ type TrainingPlanData = {
 export default function Register({ navigation }: any) {
   const [plan, setPlan] = useState<TrainingPlanData | null>(null);
   const [cardIndex, setCardIndex] = useState<number | null>(null);
-
+  const [refreshingExerciseId, setRefreshingExerciseId] = useState<
+    number | null
+  >(null);
   const API_BASE_URL = "http://192.168.0.46:5000";
 
   const cardCollapse = (index: number) => {
@@ -68,6 +70,61 @@ export default function Register({ navigation }: any) {
         console.log(err);
       });
   }, []);
+
+  const substituteExercise = async (workoutId: number, exerciseId: number) => {
+    setRefreshingExerciseId(exerciseId);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/substituteExercise`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          workout_id: workoutId,
+          exercise_id: exerciseId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Could not replace exercise.");
+        return;
+      }
+
+      setPlan((currentPlan) => {
+        if (!currentPlan) return currentPlan;
+
+        return {
+          ...currentPlan,
+          workouts: currentPlan.workouts.map((workout) => {
+            if (workout.id !== workoutId) return workout;
+
+            return {
+              ...workout,
+              exercises: workout.exercises.map((exercise) => {
+                if (exercise.exercise_id !== exerciseId) return exercise;
+
+                return {
+                  ...exercise,
+                  name: data.name,
+                  sets: data.sets,
+                  reps: data.reps,
+                };
+              }),
+            };
+          }),
+        };
+      });
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong.");
+    } finally {
+      setRefreshingExerciseId(null);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.containerScroll}>
@@ -128,27 +185,29 @@ export default function Register({ navigation }: any) {
                   </Text>
                 </View>
 
-                {workout?.exercises.map((exercise, exerciseIndex) => (
-                  <View
-                    key={exerciseIndex}
-                    style={[
-                      styles.exerciseRow,
-                      exerciseIndex % 2 === 0 && styles.exerciseRowAlt,
-                    ]}
-                  >
-                    <Text style={[styles.exerciseText, styles.exerciseColName]}>
-                      {exercise?.name}
-                    </Text>
-                    <Text
-                      style={[styles.exerciseStatText, styles.exerciseColStat]}
+                {workout.exercises.map((exercise) => (
+                  <View key={exercise.exercise_id} style={styles.exerciseCard}>
+                    <View style={styles.exerciseInfo}>
+                      <Text style={styles.exerciseName}>{exercise.name}</Text>
+
+                      <Text style={styles.exerciseMeta}>
+                        {exercise.sets} sets - {exercise.reps} reps
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={() =>
+                        substituteExercise(workout.id, exercise.exercise_id)
+                      }
+                      disabled={refreshingExerciseId === exercise.exercise_id}
+                      style={styles.refreshButton}
                     >
-                      {exercise?.sets}
-                    </Text>
-                    <Text
-                      style={[styles.exerciseStatText, styles.exerciseColStat]}
-                    >
-                      {exercise?.reps}
-                    </Text>
+                      <Text style={styles.refreshButtonText}>
+                        {refreshingExerciseId === exercise.exercise_id
+                          ? "..."
+                          : "Refresh"}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 ))}
               </View>
@@ -310,5 +369,44 @@ const styles = StyleSheet.create({
 
   navbar: {
     position: "static",
+  },
+  exerciseCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#0E0E0E",
+    borderWidth: 1,
+    borderColor: "#2a2a2a",
+    padding: 12,
+    marginBottom: 10,
+  },
+
+  exerciseInfo: {
+    flex: 1,
+    paddingRight: 12,
+  },
+
+  exerciseName: {
+    color: "#F8FAFC",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+
+  exerciseMeta: {
+    color: "#94A3B8",
+    fontSize: 13,
+    marginTop: 4,
+  },
+
+  refreshButton: {
+    backgroundColor: "#C8FF00",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+  },
+
+  refreshButtonText: {
+    color: "#080808",
+    fontWeight: "700",
   },
 });
