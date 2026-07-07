@@ -2,7 +2,6 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import StackNavigator from "./navigation/StackNavigator";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Navbar from "./components/Navbar";
 
 export default function App() {
   return (

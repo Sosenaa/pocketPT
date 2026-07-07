@@ -110,7 +110,6 @@ export default function Register({ navigation }: any) {
 
             {cardIndex === index && (
               <View style={styles.exerciseContainer}>
-                {/* Table Header */}
                 <View style={styles.exerciseHeader}>
                   <Text
                     style={[styles.exerciseHeaderText, styles.exerciseColName]}
