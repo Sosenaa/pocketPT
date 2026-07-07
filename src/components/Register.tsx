@@ -6,7 +6,7 @@ const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,7 +25,7 @@ const Register = () => {
           body: JSON.stringify({
             username,
             name,
-            lastName,
+            lastname,
             email,
             password,
             confirmPassword,
@@ -147,18 +147,18 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  name="lastName"
+                  name="lastname"
                   required
                   placeholder="Your Last name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
                   className="w-full rounded-sm border-[#2a2a2a] border-2 bg-[#0E0E0E] px-4 py-3 text-[#EFEFEF] outline-none transition-colors focus:ring-2 focus:ring-[#c8ff00]"
                 />
               </div>
 
               <div className="md:col-span-2">
                 <label
-                  htmlFor="lastName"
+                  htmlFor="lastname"
                   className="mb-2 block text-sm font-medium text-[#555]"
                 >
                   Email

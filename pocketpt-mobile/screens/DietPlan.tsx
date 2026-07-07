@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
+  ActivityIndicator,
+  Alert,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 type Ingredients = {
   name: string;
@@ -15,7 +16,12 @@ type Ingredients = {
 };
 
 type Meals = {
+  meal_id: number;
   meal_name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
   ingredients: Ingredients[];
 };
 
@@ -30,119 +36,252 @@ type Diet = {
   diet_days: DietDay[];
 };
 
+const API_BASE_URL = "http://192.168.0.46:5000";
+
 export default function DietPlan() {
   const [diet, setDiet] = useState<Diet | null>(null);
   const [cardIndex, setCardIndex] = useState<number | null>(null);
-  const API_BASE_URL = "http://192.168.0.46:5000";
+  const [refreshingMealId, setRefreshingMealId] = useState<number | null>(null);
 
   const cardCollapse = (index: number) => {
     setCardIndex((prev) => (prev === index ? null : index));
   };
+
   useEffect(() => {
-    const fetchDiet = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/getDietPlan`, {
-          credentials: "include",
-          method: "GET",
-        });
-        if (response.status === 401) {
-          return;
-        }
-        if (!response.ok) {
-          throw new Error("Failed to fetch diet plan");
-        }
-        const data = await response.json();
-        console.log(data);
-        setDiet(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
     fetchDiet();
   }, []);
 
-  return (
-    <ScrollView contentContainerStyle={styles.containerScroll}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Diet Plan</Text>
-          <View style={styles.planDivider} />
-        </View>
+  const fetchDiet = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/getDietPlan`, {
+        credentials: "include",
+        method: "GET",
+      });
 
-        {diet?.diet_days.map((day, index) => (
-          <View key={index} style={styles.dietDayContainer}>
-            <TouchableOpacity onPress={() => cardCollapse(index)}>
-              <View
-                style={[
-                  styles.dayHeader,
-                  cardIndex === index && { backgroundColor: PRIMARY },
-                ]}
-              >
-                <View>
-                  <Text style={styles.dayText}>{day.diet_day}</Text>
-                  <Text style={styles.mealsText}>{day.total_meals}</Text>
+      if (response.status === 401) {
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch diet plan");
+      }
+
+      const data = await response.json();
+      setDiet(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const substituteMeal = async (mealId: number) => {
+    setRefreshingMealId(mealId);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/substituteMeal`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          meal_id: mealId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Alert.alert(
+          "Could not refresh meal",
+          data.message || "Please try again.",
+        );
+        return;
+      }
+
+      setDiet((currentDiet) => {
+        if (!currentDiet) return currentDiet;
+
+        return {
+          ...currentDiet,
+          diet_days: currentDiet.diet_days.map((day) => ({
+            ...day,
+            meal: day.meal.map((meal) => {
+              if (meal.meal_id !== mealId) return meal;
+
+              return {
+                ...meal,
+                meal_name: data.meal_name,
+                ingredients: data.ingredients,
+              };
+            }),
+          })),
+        };
+      });
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Something went wrong.");
+    } finally {
+      setRefreshingMealId(null);
+    }
+  };
+
+  return (
+    <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.kicker}>Nutrition</Text>
+        <Text style={styles.headerText}>Diet Plan</Text>
+        <Text style={styles.subtitle}>
+          Open a day and refresh any meal you do not like.
+        </Text>
+      </View>
+
+      {diet?.diet_days.map((day, index) => {
+        const isOpen = cardIndex === index;
+        const dayMacros = day.meal.reduce(
+          (total, meal) => ({
+            calories: total.calories + Number(meal.calories || 0),
+            protein: total.protein + Number(meal.protein || 0),
+            carbs: total.carbs + Number(meal.carbs || 0),
+            fats: total.fats + Number(meal.fats || 0),
+          }),
+          {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fats: 0,
+          },
+        );
+        return (
+          <View key={`${day.diet_day}-${index}`} style={styles.dayCard}>
+            <TouchableOpacity
+              onPress={() => cardCollapse(index)}
+              activeOpacity={0.8}
+              style={[styles.dayHeader, isOpen && styles.dayHeaderOpen]}
+            >
+              <View style={styles.dayHeaderContent}>
+                <View style={styles.dayTitleBlock}>
+                  <Text style={[styles.dayText, isOpen && styles.dayTextOpen]}>
+                    {day.diet_day}
+                  </Text>
+
+                  <Text
+                    style={[styles.mealsText, isOpen && styles.mealsTextOpen]}
+                  >
+                    {day.total_meals}
+                  </Text>
                 </View>
-                <Text
-                  style={[
-                    styles.chevron,
-                    cardIndex === index && styles.chevronOpen,
-                  ]}
-                >
-                  ›
-                </Text>
+
+                <View style={styles.dayMacroInline}>
+                  <Text
+                    style={[
+                      styles.dayMacroText,
+                      isOpen && styles.dayMacroTextOpen,
+                    ]}
+                  >
+                    {dayMacros.calories} kcal
+                  </Text>
+
+                  <Text
+                    style={[
+                      styles.dayMacroSubText,
+                      isOpen && styles.dayMacroTextOpen,
+                    ]}
+                  >
+                    P {dayMacros.protein}g • C {dayMacros.carbs}g • F{" "}
+                    {dayMacros.fats}g
+                  </Text>
+                </View>
               </View>
+
+              <Ionicons
+                name={isOpen ? "chevron-up" : "chevron-down"}
+                size={22}
+                color={isOpen ? BG : TEXT}
+              />
             </TouchableOpacity>
-            {cardIndex === index && (
-              <>
-                {day.meal.map((m, mIndex) => (
-                  <View key={mIndex} style={styles.mealContainer}>
+
+            {isOpen && (
+              <View style={styles.mealsWrapper}>
+                {day.meal.map((meal) => (
+                  <View key={meal.meal_id} style={styles.mealCard}>
                     <View style={styles.mealHeader}>
-                      <Text
+                      <View style={styles.mealInfo}>
+                        <Text style={styles.mealName}>{meal.meal_name}</Text>
+                        <Text style={styles.mealMeta}>
+                          {meal.ingredients.length} ingredients
+                        </Text>
+                        <View style={styles.macroRow}>
+                          <View style={styles.macroBox}>
+                            <Text style={styles.macroValue}>
+                              {meal.calories}
+                            </Text>
+                            <Text style={styles.macroLabel}>kcal</Text>
+                          </View>
+
+                          <View style={styles.macroBox}>
+                            <Text style={styles.macroValue}>
+                              {meal.protein}g
+                            </Text>
+                            <Text style={styles.macroLabel}>Protein</Text>
+                          </View>
+
+                          <View style={styles.macroBox}>
+                            <Text style={styles.macroValue}>{meal.carbs}g</Text>
+                            <Text style={styles.macroLabel}>Carbs</Text>
+                          </View>
+
+                          <View style={styles.macroBox}>
+                            <Text style={styles.macroValue}>{meal.fats}g</Text>
+                            <Text style={styles.macroLabel}>Fats</Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      <TouchableOpacity
+                        onPress={() => substituteMeal(meal.meal_id)}
+                        disabled={refreshingMealId === meal.meal_id}
+                        activeOpacity={0.8}
                         style={[
-                          styles.placeHolder,
-                          { color: MUTED, fontSize: 15, fontWeight: 600 },
+                          styles.refreshButton,
+                          refreshingMealId === meal.meal_id &&
+                            styles.disabledButton,
                         ]}
                       >
-                        {m.meal_name}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.ingTextName,
-                          { color: MUTED, fontSize: 15, fontWeight: 600 },
-                        ]}
-                      >
-                        Ingredient
-                      </Text>
-                      <Text
-                        style={[
-                          styles.ingTextAmount,
-                          { color: MUTED, fontSize: 15, fontWeight: 600 },
-                        ]}
-                      >
-                        Amount
-                      </Text>
+                        {refreshingMealId === meal.meal_id ? (
+                          <ActivityIndicator size="small" color={BG} />
+                        ) : (
+                          <Ionicons name="refresh" size={20} color={BG} />
+                        )}
+                      </TouchableOpacity>
                     </View>
 
-                    {m.ingredients.map((ing, ingIndex) => (
-                      <View key={ingIndex} style={styles.ingContainer}>
-                        <Text
-                          style={[styles.placeHolder, { color: TEXT }]}
-                        ></Text>
-                        <Text style={[styles.ingTextName, { color: TEXT }]}>
-                          {ing.name}
+                    <View style={styles.ingredientsHeader}>
+                      <Text style={styles.ingredientsHeaderName}>
+                        Ingredient
+                      </Text>
+                      <Text style={styles.ingredientsHeaderAmount}>Amount</Text>
+                    </View>
+
+                    {meal.ingredients.map((ingredient, ingredientIndex) => (
+                      <View
+                        key={`${ingredient.name}-${ingredientIndex}`}
+                        style={styles.ingredientRow}
+                      >
+                        <Text style={styles.ingredientName}>
+                          {ingredient.name}
                         </Text>
-                        <Text style={[styles.ingTextAmount, { color: TEXT }]}>
-                          {ing.amount}
+                        <Text style={styles.ingredientAmount}>
+                          {ingredient.amount}
                         </Text>
                       </View>
                     ))}
                   </View>
                 ))}
-              </>
+              </View>
             )}
           </View>
-        ))}
-      </View>
+        );
+      })}
     </ScrollView>
   );
 }
@@ -151,108 +290,216 @@ const PRIMARY = "#C8FF00";
 const BG = "#0A0A0A";
 const SURFACE = "#141414";
 const SURFACE2 = "#1A1A1A";
-const BORDER = "#222";
+const BORDER = "#262626";
 const TEXT = "#FFFFFF";
-const MUTED = "#666";
+const MUTED = "#8A8A8A";
 
 const styles = StyleSheet.create({
-  containerScroll: {
-    flexGrow: 1,
+  screen: {
+    flex: 1,
+    backgroundColor: BG,
   },
   container: {
-    backgroundColor: BG,
-    flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingTop: 48,
+    paddingBottom: 110,
   },
-
   header: {
-    marginBottom: 32,
-    paddingHorizontal: 4,
+    marginBottom: 22,
   },
-
+  kicker: {
+    color: PRIMARY,
+    fontSize: 12,
+    fontWeight: "800",
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
   headerText: {
     color: TEXT,
     fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: -0.5,
-    marginBottom: 16,
+    fontWeight: "900",
+    marginTop: 6,
   },
-
-  planDivider: {
-    height: 1,
-    backgroundColor: BORDER,
+  subtitle: {
+    color: MUTED,
+    fontSize: 14,
+    marginTop: 8,
   },
-
-  dietDayContainer: {
-    borderWidth: 0.5,
+  dayCard: {
+    borderWidth: 1,
     borderColor: BORDER,
-    borderRadius: 14,
+    borderRadius: 10,
     overflow: "hidden",
     backgroundColor: SURFACE,
-    marginVertical: 5,
+    marginBottom: 12,
   },
-
   dayHeader: {
-    paddingHorizontal: 25,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     flexDirection: "row",
-    backgroundColor: SURFACE,
-    paddingVertical: 10,
+    alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: SURFACE,
   },
-
+  dayHeaderOpen: {
+    backgroundColor: PRIMARY,
+  },
   dayText: {
-    padding: 2,
     color: TEXT,
     fontSize: 18,
-    fontWeight: 600,
+    fontWeight: "800",
+  },
+  dayTextOpen: {
+    color: BG,
   },
   mealsText: {
-    padding: 2,
     color: MUTED,
+    fontSize: 13,
+    marginTop: 3,
   },
-
-  mealContainer: {
+  mealsTextOpen: {
+    color: BG,
+    opacity: 0.75,
+  },
+  mealsWrapper: {
+    padding: 12,
+  },
+  mealCard: {
+    backgroundColor: SURFACE2,
     borderWidth: 1,
-    marginBottom: 10,
     borderColor: BORDER,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 12,
   },
-
   mealHeader: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  mealInfo: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  mealName: {
+    color: TEXT,
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  mealMeta: {
+    color: MUTED,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  refreshButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 6,
+    backgroundColor: PRIMARY,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  ingredientsHeader: {
+    flexDirection: "row",
+    borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: BORDER,
-    padding: 15,
+    paddingVertical: 8,
+    marginBottom: 6,
   },
-
-  ingContainer: {
+  ingredientsHeaderName: {
+    flex: 1,
+    color: MUTED,
+    fontSize: 12,
+    fontWeight: "800",
+    textTransform: "uppercase",
+  },
+  ingredientsHeaderAmount: {
+    width: 90,
+    color: MUTED,
+    fontSize: 12,
+    fontWeight: "800",
+    textAlign: "right",
+    textTransform: "uppercase",
+  },
+  ingredientRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 15,
-    marginVertical: 5,
+    paddingVertical: 6,
   },
-
-  placeHolder: {
-    width: "30%",
+  ingredientName: {
+    flex: 1,
+    color: TEXT,
+    fontSize: 14,
   },
-
-  ingTextName: {
-    width: "40%",
-    textAlign: "center",
-  },
-  ingTextAmount: {
-    width: "30%",
+  ingredientAmount: {
+    width: 90,
+    color: TEXT,
+    fontSize: 14,
     textAlign: "right",
   },
-  chevron: {
-    color: "white",
-    fontSize: 22,
-    fontWeight: "300",
-    transform: [{ rotate: "90deg" }],
+  macroRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 12,
   },
-  chevronOpen: {
-    color: "white",
-    transform: [{ rotate: "-90deg" }],
+
+  macroBox: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
+    borderWidth: 1,
+    borderColor: "#262626",
+    paddingVertical: 8,
+    paddingHorizontal: 6,
+    alignItems: "center",
+  },
+
+  macroValue: {
+    color: "#C8FF00",
+    fontSize: 14,
+    fontWeight: "900",
+  },
+
+  macroLabel: {
+    color: "#8A8A8A",
+    fontSize: 10,
+    marginTop: 2,
+  },
+  dayHeaderContent: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingRight: 12,
+    gap: 12,
+  },
+
+  dayTitleBlock: {
+    flex: 1,
+  },
+
+  dayMacroInline: {
+    alignItems: "flex-end",
+    maxWidth: 150,
+  },
+
+  dayMacroText: {
+    color: PRIMARY,
+    fontSize: 13,
+    fontWeight: "900",
+  },
+
+  dayMacroSubText: {
+    color: MUTED,
+    fontSize: 10,
+    fontWeight: "700",
+    marginTop: 2,
+  },
+
+  dayMacroTextOpen: {
+    color: BG,
   },
 });

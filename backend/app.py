@@ -380,6 +380,7 @@ JSON format:
 
     try:
         diet = json.loads(response.output_text)
+        print(json.dumps(diet["diet"][0]["meals"][0], indent=2))
         return updateDietPlan(diet)
 
     except json.decoder.JSONDecodeError:
@@ -484,32 +485,53 @@ def getDietPlan():
     user_id = session.get("id")
     con = get_db_connection()
     cursor = con.cursor()
-    
-    #Getting last diet from DB
-    dietPlan = cursor.execute("SELECT  * FROM diets WHERE user_id = ? ORDER BY id DESC LIMIT 1", (user_id,)).fetchone()
-    
+
+    dietPlan = cursor.execute(
+        """
+        SELECT *
+        FROM diets
+        WHERE user_id = ?
+        ORDER BY id DESC
+        LIMIT 1
+        """,
+        (user_id,),
+    ).fetchone()
+
     if not dietPlan:
+        con.close()
         return jsonify({"message": "No plan has been created"}), 404
 
     result = {
         "diet_name": dietPlan["diet_name"],
-        "diet_days": [], 
+        "diet_days": [],
     }
-    
 
-    #getting all diet for all days from DB    
-    diet_days = cursor.execute("SELECT * FROM diet_days WHERE diet_id = ? ", (dietPlan["id"],)).fetchall()
-    
+    diet_days = cursor.execute(
+        """
+        SELECT *
+        FROM diet_days
+        WHERE diet_id = ?
+        """,
+        (dietPlan["id"],),
+    ).fetchall()
+
     for day in diet_days:
         diet_data = {
             "diet_day_id": day["id"],
-            "diet_day" : day["day_name"],
+            "diet_day": day["day_name"],
             "total_meals": day["total_meals"],
-            "meal":[]
+            "meal": [],
         }
-        
-        #getting meals for each day of the week from DB
-        meals = cursor.execute("SELECT * FROM meal WHERE diet_day_id = ? ", (day["id"],)).fetchall()   
+
+        meals = cursor.execute(
+            """
+            SELECT *
+            FROM meal
+            WHERE diet_day_id = ?
+            """,
+            (day["id"],),
+        ).fetchall()
+
         for meal in meals:
             meal_data = {
                 "meal_id": meal["id"],
@@ -518,22 +540,31 @@ def getDietPlan():
                 "protein": meal["protein"],
                 "carbs": meal["carbs"],
                 "fats": meal["fats"],
-                "ingredients": []
+                "ingredients": [],
             }
-            #getting ingredients for each meal
-            ingredients = cursor.execute("SELECT * FROM ingredients WHERE meal_id = ?", (meal["id"],)).fetchall()
+
+            ingredients = cursor.execute(
+                """
+                SELECT *
+                FROM ingredients
+                WHERE meal_id = ?
+                """,
+                (meal["id"],),
+            ).fetchall()
+
             for ing in ingredients:
                 meal_data["ingredients"].append({
                     "name": ing["name"],
                     "amount": ing["amount"],
                 })
+
             diet_data["meal"].append(meal_data)
-        
+
         result["diet_days"].append(diet_data)
 
     con.close()
-    
-    return jsonify(result),200
+
+    return jsonify(result), 200
 
 @app.route("/api/regenerateWorkout", methods=["POST"])
 @login_required
