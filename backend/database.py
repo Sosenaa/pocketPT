@@ -7,6 +7,23 @@ def get_db_connection():
 
 def create_tables():
      con = get_db_connection()
+     def ensure_meal_macro_columns(cursor):
+          existing_columns = {
+               row["name"] for row in cursor.execute("PRAGMA table_info(meal)").fetchall()
+          }
+
+          columns = [
+               ("calories", "INTEGER DEFAULT 0"),
+               ("protein", "INTEGER DEFAULT 0"),
+               ("carbs", "INTEGER DEFAULT 0"),
+               ("fats", "INTEGER DEFAULT 0"),
+          ]
+
+          for column_name, column_type in columns:
+               if column_name not in existing_columns:
+                    cursor.execute(f"ALTER TABLE meal ADD COLUMN {column_name} {column_type}")
+            
+            
      cursor = con.cursor()
      cursor.execute('''
      CREATE TABLE IF NOT EXISTS users(
@@ -115,9 +132,14 @@ def create_tables():
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          diet_day_id INTEGER NOT NULL,
                          meal_name TEXT NOT NULL,
+                         calories INTEGER DEFAULT 0,
+                         protein INTEGER DEFAULT 0,
+                         carbs INTEGER DEFAULT 0,
+                         fats INTEGER DEFAULT 0,
                          FOREIGN KEY (diet_day_id) REFERENCES diet_days (id) ON DELETE CASCADE
                          )               
      ''') 
+     ensure_meal_macro_columns(cursor)
      cursor.execute('''
      CREATE TABLE IF NOT EXISTS ingredients(
                          id INTEGER PRIMARY KEY AUTOINCREMENT,

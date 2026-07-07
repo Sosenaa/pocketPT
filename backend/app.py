@@ -13,8 +13,13 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key=os.getenv("FLASK_SECRET_KEY")
-app.config["SESSION_COOKIE_SAMESITE"] = "None"
-app.config["SESSION_COOKIE_SECURE"] = True
+#app.config["SESSION_COOKIE_SAMESITE"] = "None"
+#app.config["SESSION_COOKIE_SECURE"] = True
+
+#mobile testing
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = False
+
 CORS(app ,supports_credentials=True, 
      resources={ 
         r"/api/*":{
@@ -57,14 +62,15 @@ def register():
     
     username = data.get("username","")
     name = data.get("name")
-    lastName = data.get("lastName")
+    lastname = data.get("lastname")
     email = data.get("email")
     password = data.get("password")
     confirmPassword = data.get("confirmPassword")
 
-    required_fields = [username, name, lastName, email, password, confirmPassword]
+    required_fields = [username, name, lastname, email, password, confirmPassword]
     
     if any(field is None or field == "" for field in required_fields):
+        print(required_fields)
         return jsonify({"message": "User data missing"}),400
     
 
@@ -82,7 +88,7 @@ def register():
         return jsonify({"message": "This User already exists"}), 400
         
     #Add new user to database
-    con.execute("INSERT INTO users (username, name, lastname, email, password) VALUES(?, ?, ?, ?, ?)", (username, name, lastName, email, passwordHash))
+    con.execute("INSERT INTO users (username, name, lastname, email, password) VALUES(?, ?, ?, ?, ?)", (username, name, lastname, email, passwordHash))
     con.commit()
     con.close()
 
@@ -300,121 +306,152 @@ def trainingPlanGen():
 def dietPlanGen():
     client = OpenAI()
     print("Working on your diet plan")
-    
-    user_id = session.get("id")
+
     user_details = getUserData()
-  
-    
+
     response = client.responses.create(
-    model="gpt-4o-mini",
-    text={
-        "format":{
-        "type": "json_object"
-    }},
-    instructions="You are a qualified nutritionist",
-    input=f'''
-    Create 7 day professional, science-based diet.
-    Design diet to {user_details["goal"]}.
-    
-    
-    Age: {user_details["age"]}
-    Weight:{user_details["weight"]}
-    Height: {user_details["height"]}
-    Gender: {user_details["gender"]}
-    Goal: {user_details["goal"]}
-    Training_Environment: {user_details["trainingEnvironment"]}
-    Activity: {user_details["activity"]}
+        model="gpt-4o-mini",
+        text={
+            "format": {
+                "type": "json_object"
+            }
+        },
+        instructions="You are a qualified nutritionist.",
+        input=f'''
+Create a 7 day professional, science-based diet plan.
+Design the diet for this goal: {user_details["goal"]}.
 
-    Return ONLY raw JSON. 
-    Do not include markdown, 
-    code blocks, 
-    explanations, 
-    comments, 
-    or any text outside the JSON structure.
-    
-    Example....
+User details:
+Age: {user_details["age"]}
+Weight: {user_details["weight"]}
+Height: {user_details["height"]}
+Gender: {user_details["gender"]}
+Goal: {user_details["goal"]}
+Training Environment: {user_details["trainingEnvironment"]}
+Activity: {user_details["activity"]}
+
+Rules:
+- Return exactly 7 days.
+- Each day should have 4 meals.
+- Each meal must include calories, protein, carbs, and fats as numbers.
+- Each meal must include realistic ingredients with amounts.
+- Keep meals practical and simple.
+- Return ONLY raw JSON.
+- Do not include markdown, code blocks, explanations, comments, or text outside the JSON.
+
+JSON format:
+{{
+  "diet_name": "string",
+  "diet": [
     {{
-        "diet_name":"string",
-        "diet": [
+      "day_name": "Monday",
+      "total_meals": "4 meals",
+      "meals": [
         {{
-                "day_name": "Monday",
-                "total_meals": "4 meals",
-                "meals": [
-                    {{
-                        "meal":"string",
-                        "ingredients": [
-                            {{ "name": "Chicken", "amount": "250g" }},
-                            {{ "name": "Brown Rice", "amount": "100g"}},
-                            {{ "name": "Broccoli", "amount": "100g" }}
-                        ]
-                    }},
-                    {{
-                        "meal": "Beef Sweet Potato Bowl",
-                        "ingredients": [
-                            {{ "name": "Lean Beef", "amount": "200g"}},
-                            {{ "name": "Sweet Potatoes", "amount": "200g" }},
-                            {{"name": "Spinach", "amount": "100g" }}
-                        ]             
-                    }}
-                ]
-        }}   
-        ]
+          "meal": "Chicken Rice Bowl",
+          "calories": 650,
+          "protein": 45,
+          "carbs": 70,
+          "fats": 18,
+          "ingredients": [
+            {{ "name": "Chicken breast", "amount": "200g" }},
+            {{ "name": "Brown rice", "amount": "100g" }},
+            {{ "name": "Broccoli", "amount": "100g" }}
+          ]
+        }},
+        {{
+          "meal": "Beef Sweet Potato Bowl",
+          "calories": 700,
+          "protein": 50,
+          "carbs": 65,
+          "fats": 22,
+          "ingredients": [
+            {{ "name": "Lean beef", "amount": "200g" }},
+            {{ "name": "Sweet potato", "amount": "250g" }},
+            {{ "name": "Spinach", "amount": "100g" }}
+          ]
+        }}
+      ]
     }}
-
-    '''
+  ]
+}}
+'''
     )
+
     try:
         diet = json.loads(response.output_text)
         return updateDietPlan(diet)
-    
+
     except json.decoder.JSONDecodeError:
         print("Invalid JSON")
-        return jsonify({"error": "Invalid JSON"})
+        return jsonify({"error": "Invalid JSON"}), 500
     
 def updateDietPlan(diet):
     if diet:
         user_id = session.get("id")
         con = get_db_connection()
         cursor = con.cursor()
+
         cursor.execute("""
-                       INSERT INTO diets (user_id, diet_name) 
-                       VALUES (?,?)""", 
-                       (user_id, diet["diet_name"]))
+            INSERT INTO diets (user_id, diet_name)
+            VALUES (?, ?)
+        """, (
+            user_id,
+            diet["diet_name"],
+        ))
 
         diet_id = cursor.lastrowid
-        
-        for d in diet["diet"]:
+
+        for day in diet["diet"]:
             cursor.execute("""
-                           INSERT INTO diet_days (diet_id, day_name, total_meals) 
-                           VALUES (?,?,?) """, 
-                           (diet_id, d["day_name"], d["total_meals"]))
-            print(d["day_name"]) 
-            print(d["total_meals"])
-            
+                INSERT INTO diet_days (diet_id, day_name, total_meals)
+                VALUES (?, ?, ?)
+            """, (
+                diet_id,
+                day["day_name"],
+                day["total_meals"],
+            ))
+
             diet_day_id = cursor.lastrowid
-            
-            for meal in d["meals"]:
+
+            for meal in day["meals"]:
                 cursor.execute("""
-                               INSERT INTO meal(diet_day_id, meal_name) 
-                               VALUES (?,?)""",
-                               (diet_day_id, meal["meal"]))
-                print(meal["meal"])
-                
+                    INSERT INTO meal(
+                        diet_day_id,
+                        meal_name,
+                        calories,
+                        protein,
+                        carbs,
+                        fats
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    diet_day_id,
+                    meal["meal"],
+                    meal.get("calories", 0),
+                    meal.get("protein", 0),
+                    meal.get("carbs", 0),
+                    meal.get("fats", 0),
+                ))
+
                 meal_id = cursor.lastrowid
-                
-                for ing in meal["ingredients"]:
+
+                for ingredient in meal["ingredients"]:
                     cursor.execute("""
-                                   INSERT INTO ingredients (meal_id, name, amount) 
-                                   VALUES (?,?,?)""",
-                                   (meal_id, ing["name"], ing["amount"]))
-                    print(ing["name"])
-                    print(ing["amount"])   
-                     
+                        INSERT INTO ingredients (meal_id, name, amount)
+                        VALUES (?, ?, ?)
+                    """, (
+                        meal_id,
+                        ingredient["name"],
+                        ingredient["amount"],
+                    ))
+
         con.commit()
         con.close()
+
         return jsonify({"message": "Diet plan generated successfully"}), 200
-        
-        
+
+    return jsonify({"message": "No diet plan generated"}), 400 
         
 def updateTrainingPlan(plan):
     if plan:
@@ -465,6 +502,7 @@ def getDietPlan():
     
     for day in diet_days:
         diet_data = {
+            "diet_day_id": day["id"],
             "diet_day" : day["day_name"],
             "total_meals": day["total_meals"],
             "meal":[]
@@ -474,8 +512,13 @@ def getDietPlan():
         meals = cursor.execute("SELECT * FROM meal WHERE diet_day_id = ? ", (day["id"],)).fetchall()   
         for meal in meals:
             meal_data = {
+                "meal_id": meal["id"],
                 "meal_name": meal["meal_name"],
-                "ingredients":[]
+                "calories": meal["calories"],
+                "protein": meal["protein"],
+                "carbs": meal["carbs"],
+                "fats": meal["fats"],
+                "ingredients": []
             }
             #getting ingredients for each meal
             ingredients = cursor.execute("SELECT * FROM ingredients WHERE meal_id = ?", (meal["id"],)).fetchall()
@@ -576,6 +619,7 @@ def getTrainingPlan():
     con.close()
 
     return jsonify(result), 200
+
 
 
 @app.route("/api/createLog", methods=["POST"])
@@ -721,6 +765,327 @@ def getWeeklyVolume():
     
     return jsonify({"result": weeklyVolume}), 200
     
+@app.route("/api/substituteExercise", methods=["POST"])
+@login_required
+def substituteExercise():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"message": "Missing data"}), 400
+
+    exercise_id = data.get("exercise_id")
+    workout_id = data.get("workout_id")
+
+    if not exercise_id or not workout_id:
+        return jsonify({"message": "Missing exercise_id or workout_id"}), 400
+
+    user_id = session.get("id")
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    target_exercise = cursor.execute(
+        """
+        SELECT id, exercise_name, sets, reps
+        FROM exercises
+        WHERE id = ?
+        """,
+        (exercise_id,),
+    ).fetchone()
+
+    workout = cursor.execute(
+        """
+        SELECT id, plan_id, day_name, focus, exercise_duration
+        FROM workouts
+        WHERE id = ?
+        """,
+        (workout_id,),
+    ).fetchone()
+
+    if not target_exercise or not workout:
+        con.close()
+        return jsonify({"message": "Exercise or workout not found"}), 404
+
+    current_workout_exercises = cursor.execute(
+        """
+        SELECT exercise_name, sets, reps
+        FROM exercises
+        WHERE workout_id = ?
+        """,
+        (workout_id,),
+    ).fetchall()
+
+    full_plan_workouts = cursor.execute(
+        """
+        SELECT w.day_name, w.focus, e.exercise_name, e.sets, e.reps
+        FROM workouts w
+        JOIN training_plans tp ON w.plan_id = tp.id
+        JOIN exercises e ON e.workout_id = w.id
+        WHERE tp.user_id = ?
+        AND tp.id = ?
+        ORDER BY w.id, e.id
+        """,
+        (user_id, workout["plan_id"]),
+    ).fetchall()
+
+    current_exercise_names = [
+        exercise["exercise_name"] for exercise in current_workout_exercises
+    ]
+
+    full_plan_context = [
+        {
+            "day_name": row["day_name"],
+            "focus": row["focus"],
+            "exercise_name": row["exercise_name"],
+            "sets": row["sets"],
+            "reps": row["reps"],
+        }
+        for row in full_plan_workouts
+    ]
+
+    client = OpenAI()
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        text={
+            "format": {
+                "type": "json_object"
+            }
+        },
+        instructions="You are a qualified personal trainer. Replace one exercise while keeping the full training plan balanced.",
+        input=f"""
+        Replace this exercise with ONE suitable alternative.
+
+        Target exercise:
+        Name: {target_exercise["exercise_name"]}
+        Sets: {target_exercise["sets"]}
+        Reps: {target_exercise["reps"]}
+
+        Current workout:
+        Day: {workout["day_name"]}
+        Focus: {workout["focus"]}
+        Duration: {workout["exercise_duration"]}
+
+        Exercises already in this workout:
+        {current_exercise_names}
+
+        Full weekly plan context:
+        {full_plan_context}
+
+        Rules:
+        - Return only one replacement exercise.
+        - Do not return the same exercise.
+        - Do not duplicate any exercise already in the current workout.
+        - Keep the replacement appropriate for the workout focus.
+        - Keep the movement pattern similar where possible.
+        - Keep sets and reps suitable.
+        - Make sure the full weekly plan still makes sense.
+        - Return ONLY raw JSON.
+
+        JSON format:
+        {{
+          "name": "string",
+          "sets": "string",
+          "reps": "string",
+          "reason": "string"
+        }}
+        """
+    )
+
+    try:
+        replacement = json.loads(response.output_text)
+    except json.decoder.JSONDecodeError:
+        con.close()
+        return jsonify({"message": "Failed to create replacement"}), 500
+
+    replacement_name = replacement.get("name")
+    replacement_sets = replacement.get("sets")
+    replacement_reps = replacement.get("reps")
+    reason = replacement.get("reason", "")
+
+    if not replacement_name or not replacement_sets or not replacement_reps:
+        con.close()
+        return jsonify({"message": "Invalid replacement returned"}), 500
+
+    if replacement_name.lower() in [name.lower() for name in current_exercise_names]:
+        con.close()
+        return jsonify({"message": "Replacement already exists in this workout"}), 409
+
+    cursor.execute(
+        """
+        UPDATE exercises
+        SET exercise_name = ?, sets = ?, reps = ?
+        WHERE id = ?
+        """,
+        (replacement_name, replacement_sets, replacement_reps, exercise_id),
+    )
+
+    con.commit()
+    con.close()
+
+    return jsonify({
+        "exercise_id": exercise_id,
+        "name": replacement_name,
+        "sets": replacement_sets,
+        "reps": replacement_reps,
+        "reason": reason,
+    }), 200
+    
+@app.route("/api/substituteMeal", methods=["POST"])
+@login_required
+def substituteMeal():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"message": "Missing data"}), 400
+
+    meal_id = data.get("meal_id")
+
+    if not meal_id:
+        return jsonify({"message": "Missing meal_id"}), 400
+
+    user_id = session.get("id")
+    con = get_db_connection()
+    cursor = con.cursor()
+
+    target_meal = cursor.execute("""
+        SELECT 
+            m.id,
+            m.meal_name,
+            dd.id AS diet_day_id,
+            dd.day_name,
+            dd.total_meals,
+            d.id AS diet_id,
+            d.diet_name
+        FROM meal m
+        JOIN diet_days dd ON m.diet_day_id = dd.id
+        JOIN diets d ON dd.diet_id = d.id
+        WHERE m.id = ?
+        AND d.user_id = ?
+    """, (meal_id, user_id)).fetchone()
+
+    if not target_meal:
+        con.close()
+        return jsonify({"message": "Meal not found"}), 404
+
+    target_ingredients = cursor.execute("""
+        SELECT name, amount
+        FROM ingredients
+        WHERE meal_id = ?
+    """, (meal_id,)).fetchall()
+
+    day_meals = cursor.execute("""
+        SELECT meal_name
+        FROM meal
+        WHERE diet_day_id = ?
+    """, (target_meal["diet_day_id"],)).fetchall()
+
+    day_meal_names = [meal["meal_name"] for meal in day_meals]
+
+    current_ingredients = [
+        {
+            "name": ingredient["name"],
+            "amount": ingredient["amount"],
+        }
+        for ingredient in target_ingredients
+    ]
+
+    client = OpenAI()
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        text={
+            "format": {
+                "type": "json_object"
+            }
+        },
+        instructions="You are a qualified nutritionist. Replace one meal while keeping the daily diet balanced.",
+        input=f"""
+        Replace this meal with ONE suitable alternative.
+
+        Diet name:
+        {target_meal["diet_name"]}
+
+        Day:
+        {target_meal["day_name"]}
+
+        Meal to replace:
+        {target_meal["meal_name"]}
+
+        Current ingredients:
+        {current_ingredients}
+
+        Meals already in this day:
+        {day_meal_names}
+
+        Rules:
+        - Return only one replacement meal.
+        - Do not return the same meal.
+        - Do not duplicate any meal already in this day.
+        - Keep it suitable for the diet goal.
+        - Keep ingredients realistic and simple.
+        - Return ONLY raw JSON.
+
+        JSON format:
+        {{
+            "meal_name": "string",
+            "ingredients": [
+                {{"name": "string", "amount": "string"}},
+                {{"name": "string", "amount": "string"}},
+                {{"name": "string", "amount": "string"}}
+            ],
+            "reason": "string"
+        }}
+        """
+    )
+
+    try:
+        replacement = json.loads(response.output_text)
+    except json.decoder.JSONDecodeError:
+        con.close()
+        return jsonify({"message": "Failed to create replacement meal"}), 500
+
+    replacement_name = replacement.get("meal_name")
+    replacement_ingredients = replacement.get("ingredients", [])
+    reason = replacement.get("reason", "")
+
+    if not replacement_name or not replacement_ingredients:
+        con.close()
+        return jsonify({"message": "Invalid replacement meal"}), 500
+
+    if replacement_name.lower() in [name.lower() for name in day_meal_names]:
+        con.close()
+        return jsonify({"message": "Replacement already exists in this day"}), 409
+
+    cursor.execute("""
+        UPDATE meal
+        SET meal_name = ?
+        WHERE id = ?
+    """, (replacement_name, meal_id))
+
+    cursor.execute("""
+        DELETE FROM ingredients
+        WHERE meal_id = ?
+    """, (meal_id,))
+
+    for ingredient in replacement_ingredients:
+        cursor.execute("""
+            INSERT INTO ingredients (meal_id, name, amount)
+            VALUES (?, ?, ?)
+        """, (
+            meal_id,
+            ingredient.get("name"),
+            ingredient.get("amount"),
+        ))
+
+    con.commit()
+    con.close()
+
+    return jsonify({
+        "meal_id": meal_id,
+        "meal_name": replacement_name,
+        "ingredients": replacement_ingredients,
+        "reason": reason,
+    }), 200
     
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)
