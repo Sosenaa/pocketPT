@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Plan from "./components/Plan";
 import DietPlan from "./components/DietPlan";
+import ShoppingListPage from "./components/ShoppingListPage";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Plan" element={<Plan />} />
           <Route path="/DietPlan" element={<DietPlan />} />
+          <Route path="/ShoppingList" element={<ShoppingListPage />} />
         </Routes>
       </BrowserRouter>
     </div>

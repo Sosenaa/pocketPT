@@ -77,6 +77,11 @@ const Nav = () => {
                 <button onClick={handleLogOut}>{loginButton}</button>
               </li>
             </a>
+            <li className="mx-4 p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] text-slate-400">
+              <Link to={"/ShoppingList"} className="!no-underline !text-inherit">
+                Shopping List
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
