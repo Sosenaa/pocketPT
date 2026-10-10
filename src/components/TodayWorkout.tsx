@@ -246,6 +246,7 @@ const TodayWorkout = ({ workout, setWorkoutSelection }: todayWorkoutProps) => {
               ))}
             </tbody>
           </table>
+          {workout && (
           <div className="inline-flex w-full justify-end my-2 px-2">
             <div className="w-fit my-2 text-right rounded-full bg-[#C8FF00] px-4 py-2 text-sm font-medium text-[#080808]">
               <button onClick={() => workoutComplete(workout!.id)}>
@@ -253,6 +254,7 @@ const TodayWorkout = ({ workout, setWorkoutSelection }: todayWorkoutProps) => {
               </button>
             </div>
           </div>
+          )}
         </div>
       </div>
 

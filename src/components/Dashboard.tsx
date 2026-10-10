@@ -83,21 +83,17 @@ const Dashboard = () => {
   }, [navigate]);
 
   const weekday = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday",
-    "New",
   ];
   const dayIndex = new Date();
-  const day = weekday[dayIndex.getDay() + workoutSelection];
+  const day = weekday[(dayIndex.getDay() + workoutSelection) % weekday.length];
 
-  if (day === "New") {
-    setWorkoutSelection(0);
-  }
   const todayWorkout: Workout | undefined = plan?.workouts.find(
     (w) => w.day_name === day,
   );
