@@ -8,6 +8,8 @@ from openai import OpenAI
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import httpx
+import math
+from nutrition import calculate_portion
 
  
 load_dotenv()
@@ -156,6 +158,15 @@ def search_food():
 @app.route("/api/foods/<int:food_id>", methods=["GET"])
 @login_required
 def get_food(food_id):
+
+    try: 
+        grams = float(request.args.get("grams", 100))
+    except ValueError:
+        return jsonify({"error": "Invalid grams value."}), 400
+
+    if not math.isfinite(grams) or grams <= 0:
+        return jsonify({"error": "Grams must be a positive number."}), 400
+
     api_key = os.getenv("USDA_API_KEY")
 
     if not api_key:
@@ -192,7 +203,7 @@ def get_food(food_id):
         (
             nutrient_id
             for nutrient_id in (2048, 2047, 1008)
-            if nutrient_id in nutrients_by_id is not None
+            if nutrients_by_id.get(nutrient_id) is not None
         ),
         None,
     )
@@ -214,6 +225,7 @@ def get_food(food_id):
         "dataType": data.get("dataType"),
         "brand": data.get("brandOwner", ""),
         "nutrition": nutrition,
+        "portion": calculate_portion(nutrition, grams),
         "nutrients": [
             {
                 "id": entry["nutrient"]["id"],

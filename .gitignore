@@ -27,6 +27,7 @@ dist-ssr
 backend/.venv
 backend/database.db
 backend/users.db
+backend/users.db-journal
 backend/__pycache__
 *.pyc
 
