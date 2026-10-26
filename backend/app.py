@@ -9,8 +9,8 @@ import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import httpx
 import math
-from nutrition import calculate_portion
-from usda import search_usda_foods
+from nutrition import calculate_portion, extract_nutrition
+from usda import search_usda_foods, get_usda_food
  
 load_dotenv()
 
@@ -175,49 +175,26 @@ def get_food(food_id):
         return jsonify({"error": "USDA API key is not set."}), 503  
 
     try:
-        response = httpx.get(
-            f"https://api.nal.usda.gov/fdc/v1/food/{food_id}",
-            params={"api_key": api_key},
-            timeout=15.0
-        )
-
-        if response.status_code == 404:
-            return jsonify({"error": "Food not found."}), 404
-
-        if response.status_code == 429:
-            return jsonify({"error": "Food Search is busy. Please try again later."}), 503
-
-        response.raise_for_status()
-        data = response.json()
+        data = get_usda_food(food_id, api_key)
 
     except httpx.TimeoutException:
         return jsonify({"error": "Request timed out. Please try again later."}), 504
+
+    except httpx.HTTPStatusError as error:
+        if error.response.status_code == 404:
+            return jsonify({"error": "Food not found."}), 404
+
+        if error.response.status_code == 429:
+            return jsonify({"error": "Food Search is busy. Please try again later."}), 503
+
+        return jsonify({"error": "Could not retrieve food details from USDA API."}), 502
+    
     except (httpx.HTTPError, ValueError):
         return jsonify({"error": "Could not retrieve food details from USDA API."}), 502    
 
 
-    nutrients_by_id = {
-        entry["nutrient"]["id"]: entry.get("amount")
-        for entry in data.get("foodNutrients", [])
-    }
+    nutrition = extract_nutrition(data)
 
-    energy_id = next(
-        (
-            nutrient_id
-            for nutrient_id in (2048, 2047, 1008)
-            if nutrients_by_id.get(nutrient_id) is not None
-        ),
-        None,
-    )
-
-    nutrition = {
-        "basic_grams": 100,
-        "protein_g": nutrients_by_id.get(1003),
-        "fat_g": nutrients_by_id.get(1004),
-        "carbohydrates_g": nutrients_by_id.get(1005),
-        "energy_kcal": nutrients_by_id.get(energy_id),
-        "energy_nutrient_id": energy_id,
-    }
 
 
 

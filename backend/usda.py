@@ -24,3 +24,12 @@ def search_usda_foods(
 
     response.raise_for_status()
     return response.json()
+
+def get_usda_food(food_id, api_key):
+    response  = httpx.get(
+        f"https://api.nal.usda.gov/fdc/v1/food/{food_id}",
+        params={"api_key": api_key},
+        timeout=15.0
+    )
+    response.raise_for_status()
+    return response.json()
