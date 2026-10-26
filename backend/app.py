@@ -153,6 +153,79 @@ def search_food():
         "total_results": data.get("totalHits", 0),
     }),200
 
+@app.route("/api/foods/<int:food_id>", methods=["GET"])
+@login_required
+def get_food(food_id):
+    api_key = os.getenv("USDA_API_KEY")
+
+    if not api_key:
+        return jsonify({"error": "USDA API key is not set."}), 503  
+
+    try:
+        response = httpx.get(
+            f"https://api.nal.usda.gov/fdc/v1/food/{food_id}",
+            params={"api_key": api_key},
+            timeout=15.0
+        )
+
+        if response.status_code == 404:
+            return jsonify({"error": "Food not found."}), 404
+
+        if response.status_code == 429:
+            return jsonify({"error": "Food Search is busy. Please try again later."}), 503
+
+        response.raise_for_status()
+        data = response.json()
+
+    except httpx.TimeoutException:
+        return jsonify({"error": "Request timed out. Please try again later."}), 504
+    except (httpx.HTTPError, ValueError):
+        return jsonify({"error": "Could not retrieve food details from USDA API."}), 502    
+
+
+    nutrients_by_id = {
+        entry["nutrient"]["id"]: entry.get("amount")
+        for entry in data.get("foodNutrients", [])
+    }
+
+    energy_id = next(
+        (
+            nutrient_id
+            for nutrient_id in (2048, 2047, 1008)
+            if nutrient_id in nutrients_by_id is not None
+        ),
+        None,
+    )
+
+    nutrition = {
+        "basic_grams": 100,
+        "protein_g": nutrients_by_id.get(1003),
+        "fat_g": nutrients_by_id.get(1004),
+        "carbohydrates_g": nutrients_by_id.get(1005),
+        "energy_kcal": nutrients_by_id.get(energy_id),
+        "energy_nutrient_id": energy_id,
+    }
+
+
+
+    return jsonify({
+        "id": data.get("fdcId"),
+        "description": data.get("description"),
+        "dataType": data.get("dataType"),
+        "brand": data.get("brandOwner", ""),
+        "nutrition": nutrition,
+        "nutrients": [
+            {
+                "id": entry["nutrient"]["id"],
+                "name": entry["nutrient"]["name"],  
+                "unit": entry["nutrient"]["unitName"],
+                "amount": entry.get("amount")
+            }
+            for entry in data.get("foodNutrients", [])
+        ],
+    }), 200
+
+
 
 @app.route("/api/login", methods=["POST"])
 def login():
