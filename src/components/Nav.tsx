@@ -128,6 +128,16 @@ const Nav = () => {
             </li>
 
             <li className="m-4  text-slate-400">
+              <Link
+                to={"/ShoppingList"}
+                className="block !no-underline !text-inherit p-2 px-4 border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00]"
+                onClick={closeMenu}
+              >
+                Shopping List
+              </Link>
+            </li>
+
+            <li className="m-4  text-slate-400">
               <button
                 className="p-2 px-4 text-left border-2 rounded-sm hover:border-[#C8FF00] hover:text-[#C8FF00] w-full"
                 onClick={handleLogOut}

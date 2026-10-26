@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from .database import get_db_connection, create_tables
+from database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
 from functools import wraps
 from openai import OpenAI
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
+import httpx
 
  
 load_dotenv()
@@ -89,7 +90,69 @@ def register():
     return jsonify({"message": "Successful Registration"}), 201
     
 
-   
+@app.route("/api/foods/search", methods=["GET"])
+@login_required
+def search_food():
+    query = request.args.get("query", "").strip()
+    page = request.args.get("page", default=1, type=int)
+
+    if len(query) < 2:
+        return jsonify({"error": "Query must be at least 2-200 characters long."}), 400
+
+    if page is None or page < 1:
+        return jsonify({"error": "Invalid page number."}), 400
+
+    api_key = os.getenv("USDA_API_KEY")
+
+    if not api_key:
+        return jsonify({"error": "USDA API key is not set."}), 503
+
+    search_body = {
+        "query": query,
+        "pageSize": 20,
+        "pageNumber": page,
+    }
+
+    if request.args.get("mode") == "ingredients":
+        search_body["dataType"] = ["Foundation", "SR Legacy"]
+    try:
+        response = httpx.post(
+            "https://api.nal.usda.gov/fdc/v1/foods/search",
+            params={"api_key": api_key},
+            json=search_body,
+            timeout=15.0
+        )
+
+        
+
+        if response.status_code == 429:
+            return jsonify({"error": "Food Search is busy. Please try again later."}), 503
+            
+        response.raise_for_status()  # This will raise an HTTPError for 429 status code
+        data = response.json()
+            
+
+    except httpx.TimeoutException:
+        return jsonify({"error": "Request timed out. Please try again later."}), 504
+    except (httpx.HTTPError, ValueError):
+        return jsonify({"error": "Could not retrive foods from USDA API."}), 502
+
+
+    return jsonify({
+        "foods" : [
+            {
+                "id": food["fdcId"],
+                "description": food["description"],
+                "dataType": food["dataType"],
+                "brand": food.get("brandOwner", ""),
+            }
+            for food in data.get("foods", [])
+        ],
+        "page": page,
+        "total_pages": data.get("totalPages", 0),
+        "total_results": data.get("totalHits", 0),
+    }),200
+
 
 @app.route("/api/login", methods=["POST"])
 def login():
@@ -523,7 +586,7 @@ def regenerateWorkout():
     #Re-generate training plan. 
     print(age, weight, height, gender, goal, trainingEnvironment, activity)
     #Get latest plan
-    trainingPlanGen(age, weight, height, gender, goal, trainingEnvironment, activity)
+    trainingPlanGen()
     
     return jsonify({"message": "success"}), 201
 
