@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import httpx
 import math
 from nutrition import calculate_portion
-
+from usda import search_usda_foods
  
 load_dotenv()
 
@@ -118,26 +118,28 @@ def search_food():
     if request.args.get("mode") == "ingredients":
         search_body["dataType"] = ["Foundation", "SR Legacy"]
     try:
-        response = httpx.post(
-            "https://api.nal.usda.gov/fdc/v1/foods/search",
-            params={"api_key": api_key},
-            json=search_body,
-            timeout=15.0
+        data = search_usda_foods(
+            query=query,
+            api_key=api_key,    
+            page=page,
+            ingredients_only=request.args.get("mode") == "ingredients"
         )
-
-        
-
-        if response.status_code == 429:
-            return jsonify({"error": "Food Search is busy. Please try again later."}), 503
-            
-        response.raise_for_status()  # This will raise an HTTPError for 429 status code
-        data = response.json()
             
 
     except httpx.TimeoutException:
         return jsonify({"error": "Request timed out. Please try again later."}), 504
-    except (httpx.HTTPError, ValueError):
-        return jsonify({"error": "Could not retrive foods from USDA API."}), 502
+
+    except httpx.HTTPStatusError as error:
+        if error.response.status_code == 429:
+            return jsonify({"error": "Food Search is busy. Please try again later."}), 503
+        else:
+            return jsonify({"error": "Could not retrieve food data from USDA API."}), 503
+
+        return jsonify({"error": "Could not retrieve food data from USDA API."}), 502
+
+    except httpx.HTTPError, ValueError:
+        return jsonify({"error": "Could not retrieve food data from USDA API."}), 502
+        
 
 
     return jsonify({
