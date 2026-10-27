@@ -194,10 +194,58 @@ def select_food(food_request, grams):
 
     raise RuntimeError("The AI did not request a search")
 
+def build_meal(meal_name, ingredients):
+    resolved_ingredients = []
+
+    totals = {
+        "protein_g": 0,
+        "fat_g": 0,
+        "carbohydrates_g": 0,
+        "energy_kcal": 0,
+    }
+
+    for ingredient in ingredients:
+        selected = select_food(
+            ingredient["food_request"],
+            ingredient["grams"],
+        )
+
+        if selected.get("selected_food") is None:
+            raise ValueError(
+                f"No matching food found: {ingredient['food_request']}"
+            )
+
+        resolved_ingredients.append(selected)
+
+        for nutrient in totals:
+            value = selected["portion"][nutrient]
+
+            if value is None or totals[nutrient] is None:
+                totals[nutrient] = None
+            else:
+                totals[nutrient] += value
+
+    return {
+        "meal_name": meal_name,
+        "ingredients": resolved_ingredients,
+        "totals": totals,
+    }
 
 if __name__ == "__main__":
     load_dotenv()
 
-    result = select_food("raw broccoli", 150)
+    result = build_meal(
+        "Chicken and broccoli",
+        [
+            {
+                "food_request": "raw boneless skinless chicken breast",
+                "grams": 200,
+            },
+            {
+                "food_request": "raw broccoli",
+                "grams": 150,
+            },
+        ],
+    )
 
     print(json.dumps(result, indent=2))
