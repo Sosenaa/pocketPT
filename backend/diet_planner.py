@@ -4,6 +4,8 @@ import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import math
+
 
 
 
@@ -80,7 +82,18 @@ def execute_tool(name, arguments, api_key):
         "total_results": data.get("totalHits", 0),
     }
 
-def run_search_demo():
+def select_food(food_request, grams):
+    if not isinstance(food_request, str) or not food_request.strip():
+        raise ValueError("A food description is required")
+
+    if isinstance(grams, bool) or not isinstance(grams, (int, float)):
+        raise ValueError("Grams must be a number")
+
+    if not math.isfinite(grams) or grams <= 0:
+        raise ValueError("Grams must be positive, finite number")
+
+    food_request = food_request.strip()
+
     api_key = os.getenv("USDA_API_KEY")
 
     if not api_key:
@@ -91,7 +104,7 @@ def run_search_demo():
     response = client.responses.create(
         model="gpt-4o-mini",
         input=(
-            "Find raw, boneless, skinless chicken breast in USDA. "
+            f"Find this food in USDA: {food_request}."
             "Search page 1 using the ingredient filter."
         ),
         tools=[SEARCH_FOODS_TOOL],
@@ -140,8 +153,8 @@ def run_search_demo():
                     {
                         "role": "user",
                         "content": (
-                            "Choose one returned record for raw, boneless, "
-                            "skinless chicken breast without added solution. "
+                            f"Choose one returned record matching: {food_request}. "
+                            "Match the food and its requested preparation state. "
                             "Prefer Foundation when it matches. "
                             "Return food_id and a brief reason. "
                             "Use null for food_id if none match."
@@ -170,7 +183,7 @@ def run_search_demo():
 
             food_details = get_usda_food(food_id, api_key)
             nutrition = extract_nutrition(food_details)
-            portion = calculate_portion(nutrition, 200)
+            portion = calculate_portion(nutrition, grams)
 
             return {
                 "selected_food": selected_food,
@@ -184,5 +197,7 @@ def run_search_demo():
 
 if __name__ == "__main__":
     load_dotenv()
-    result = run_search_demo()
+
+    result = select_food("raw broccoli", 150)
+
     print(json.dumps(result, indent=2))
