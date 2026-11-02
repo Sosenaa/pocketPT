@@ -43,6 +43,32 @@ SEARCH_FOODS_TOOL = {
     },
 }
 
+MEAL_PROPOSAL_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "meal_name": {"type": "string"},
+        "ingredients": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "food_request": {"type": "string"},
+                    "grams": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                    },
+                },
+                "required": ["food_request", "grams"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["meal_name", "ingredients"],
+    "additionalProperties": False,
+}
+
 def execute_tool(name, arguments, api_key):
     if name != "search_foods":
         raise ValueError(f"Unknown tool: {name}")
@@ -82,7 +108,7 @@ def execute_tool(name, arguments, api_key):
         "total_results": data.get("totalHits", 0),
     }
 
-def select_food(food_request, grams):
+def select_food_page(food_request, grams,page, exclude_ids):
     if not isinstance(food_request, str) or not food_request.strip():
         raise ValueError("A food description is required")
 
@@ -104,8 +130,12 @@ def select_food(food_request, grams):
     response = client.responses.create(
         model="gpt-4o-mini",
         input=(
-            f"Find this food in USDA: {food_request}."
-            "Search page 1 using the ingredient filter."
+            f"Find this food in USDA: {food_request}. "
+            "Search using the basic food identity and nutrition-relevant state. "
+            "Omit kitchen preparation details such as chopped or diced. "
+            "Preserve raw versus cooked, dry versus hydrated, "
+            "and distinctions such as whole grains versus flour. "
+            f"Search page {page} using the ingredient filter."
         ),
         tools=[SEARCH_FOODS_TOOL],
         tool_choice={"type": "function", "name": "search_foods"},
@@ -117,9 +147,20 @@ def select_food(food_request, grams):
             arguments = json.loads(item.arguments)
 
             print("AI requested:", item.name)
+            
+
+            arguments["page"] = page
+            arguments["ingredients_only"] = True
+
             print("Arguments:", arguments)
 
             result = execute_tool(item.name, arguments, api_key)
+
+            result["foods"] = [
+                food
+                for food in result["foods"]
+                if food["id"] not in exclude_ids
+            ]
 
             follow_up = client.responses.create(
                 model="gpt-4o-mini",
@@ -154,10 +195,16 @@ def select_food(food_request, grams):
                         "role": "user",
                         "content": (
                             f"Choose one returned record matching: {food_request}. "
-                            "Match the food and its requested preparation state. "
-                            "Prefer Foundation when it matches. "
+                            "Match the actual food, its physical form and "
+                            "its requested preparation state. "
+                            "Do not substitute flour for whole grains, "
+                            "a different meat cut, or cooked food for raw food. "
+                            "Prefer Foundation only when the food matches; "
+                            "a matching SR Legacy record is better than "
+                            "a different food from Foundation. "
                             "Return food_id and a brief reason. "
-                            "Use null for food_id if none match."
+                            "Use null if no suitable match exists. "
+                            "Do not select an unsuitable closest alternative."
                         ),
                     },
                 ],
@@ -193,6 +240,50 @@ def select_food(food_request, grams):
             }
 
     raise RuntimeError("The AI did not request a search")
+
+def select_food(food_request, grams):
+    page = 1
+    excluded_ids = set()
+
+    required_nutrients = (
+        "protein_g",
+        "fat_g",
+        "carbohydrates_g",
+        "energy_kcal",
+    )
+
+    for attempt in range(5):
+        print(f"Lookup attempt {attempt + 1}, page {page}")
+
+        selected = select_food_page(
+            food_request,
+            grams,
+            page,
+            excluded_ids,
+        )
+
+        if selected.get("selected_food") is None:
+            page += 1
+            continue
+
+        missing = [
+            nutrient
+            for nutrient in required_nutrients
+            if selected["nutrition"].get(nutrient) is None
+        ]
+
+        if missing:
+            food_id = selected["selected_food"]["id"]
+            excluded_ids.add(food_id)
+            print(f"Skipping food {food_id}: missing {missing}")
+            continue
+
+        return selected
+
+    return {
+        "selected_food": None,
+        "reason": "No suitable food with complete macros found within 5 attempts",
+    }
 
 def build_meal(meal_name, ingredients):
     resolved_ingredients = []
@@ -231,21 +322,50 @@ def build_meal(meal_name, ingredients):
         "totals": totals,
     }
 
+def propose_meal(request_text):
+    client = OpenAI()
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        instructions=(
+            "Propose one practical meal as individual grocery ingredients. "
+            "Return ingredient descriptions and quantities in grams. "
+            "Specify raw edible weights for meat and vegetables, "
+            "and dry weights for rice, pasta and oats. "
+            "Include any cooking oil or sauces needed, also in grams. "
+            "Do not return whole dishes as ingredients. "
+            "Do not invent USDA IDs or nutrition values."
+            "Each food_request must be a standalone, precise food description. "
+            "Include the preparation state in the description itself. "
+            "For example: 'Chicken breast, boneless, skinless, raw', "
+            "'Brown rice, uncooked', and 'Broccoli, raw'. "
+        ),
+        input=request_text,
+        text={
+            "format": {
+                "type": "json_schema",
+                "name": "meal_proposal",
+                "strict": True,
+                "schema": MEAL_PROPOSAL_SCHEMA,
+            },
+        },
+    )
+
+    if response.status != "completed" or not response.output_text:
+        raise RuntimeError("AI did not return a complete meal proposal")
+
+    return json.loads(response.output_text)
+
 if __name__ == "__main__":
     load_dotenv()
 
-    result = build_meal(
-        "Chicken and broccoli",
-        [
-            {
-                "food_request": "raw boneless skinless chicken breast",
-                "grams": 200,
-            },
-            {
-                "food_request": "raw broccoli",
-                "grams": 150,
-            },
-        ],
+    proposal = propose_meal(
+        "A simple lunch using chicken breast, brown rice and broccoli."
     )
 
-    print(json.dumps(result, indent=2))
+    meal = build_meal(
+        proposal["meal_name"],
+        proposal["ingredients"],
+    )
+
+    print(json.dumps(meal, indent=2))
