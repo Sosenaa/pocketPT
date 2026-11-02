@@ -69,6 +69,18 @@ MEAL_PROPOSAL_SCHEMA = {
     "additionalProperties": False,
 }
 
+DAY_PROPOSAL_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "plan_name": {"type": "string"},
+        "breakfast": MEAL_PROPOSAL_SCHEMA,
+        "lunch": MEAL_PROPOSAL_SCHEMA,
+        "dinner": MEAL_PROPOSAL_SCHEMA,
+    },
+    "required": ["plan_name", "breakfast", "lunch", "dinner"],
+    "additionalProperties": False,
+}
+
 def execute_tool(name, arguments, api_key):
     if name != "search_foods":
         raise ValueError(f"Unknown tool: {name}")
@@ -356,16 +368,86 @@ def propose_meal(request_text):
 
     return json.loads(response.output_text)
 
+def propose_day(request_text):
+    client = OpenAI()
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        instructions=(
+            "Propose one day of meals for one person: "
+            "breakfast, lunch and dinner. "
+            "Use practical grocery ingredients and reuse ingredients "
+            "where sensible to reduce shopping complexity. "
+            "Each meal must contain individual ingredients, not whole "
+            "prepared dishes listed as ingredients. "
+            "Give all quantities in grams, including oils and sauces. "
+            "Use raw edible weights for meat and vegetables, "
+            "and dry weights for rice, pasta and oats. "
+            "Each food_request must identify the food precisely, "
+            "including its raw, cooked or dry state where relevant. "
+            "Do not invent USDA IDs or nutrition values."
+        ),
+        input=request_text,
+        text={
+            "format": {
+                "type": "json_schema",
+                "name": "day_proposal",
+                "strict": True,
+                "schema": DAY_PROPOSAL_SCHEMA,
+            },
+        },
+    )
+
+    if response.status != "completed" or not response.output_text:
+        raise RuntimeError("AI did not return a complete daily proposal")
+
+    return json.loads(response.output_text)
+
+def build_day(proposal):
+    meals = []
+
+    totals = {
+        "protein_g": 0,
+        "fat_g": 0,
+        "carbohydrates_g": 0,
+        "energy_kcal": 0,
+    }
+
+    for meal_type in ("breakfast", "lunch", "dinner"):
+        print(f"Building {meal_type}...")
+
+        proposed_meal = proposal[meal_type]
+
+        meal = build_meal(
+            proposed_meal["meal_name"],
+            proposed_meal["ingredients"],
+        )
+
+        meal["meal_type"] = meal_type
+        meals.append(meal)
+
+        for nutrient in totals:
+            value = meal["totals"][nutrient]
+
+            if value is None or totals[nutrient] is None:
+                totals[nutrient] = None
+            else:
+                totals[nutrient] += value
+
+    return {
+        "plan_name": proposal["plan_name"],
+        "meals": meals,
+        "totals": totals,
+    }
+
 if __name__ == "__main__":
     load_dotenv()
 
-    proposal = propose_meal(
-        "A simple lunch using chicken breast, brown rice and broccoli."
+    proposal = propose_day(
+        "Create a simple day of meals using everyday UK supermarket foods. "
+        "Include oats at breakfast and chicken with rice for lunch. "
+        "Keep meals straightforward to prepare."
     )
 
-    meal = build_meal(
-        proposal["meal_name"],
-        proposal["ingredients"],
-    )
-
-    print(json.dumps(meal, indent=2))
+    day = build_day(proposal)
+    print(json.dumps(day, indent=2))
