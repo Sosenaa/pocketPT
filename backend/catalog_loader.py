@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from nutrition import calculate_portion
+import math
 
 CATALOGUE_DIR = Path(__file__).resolve().parent / "catalogue"
 
@@ -14,8 +15,42 @@ def load_catalogue():
 
     return foods, meals
 
+def validate_portion(ingredient, grams):
+    minimum = ingredient.get("min_grams")
+    maximum = ingredient.get("max_grams")
+    step = ingredient.get("step_grams")
 
-def calculate_catalogue_meal(catalogue_id):
+    values = (grams, minimum, maximum, step)
+
+    if any(
+        isinstance(value, bool)
+        or not isinstance(value, (int, float))
+        or not math.isfinite(value)
+        or value <= 0
+        for value in values
+    ):
+        raise ValueError("Quantity and portion limits must be positive numbers")
+
+    if maximum < minimum:
+        raise ValueError("Maximum grams cannot be below minimum grams")
+
+    if not minimum <= grams <= maximum:
+        raise ValueError(
+            f"{ingredient['food_key']} must be between "
+            f"{minimum}g and {maximum}g"
+        )
+
+    steps = (grams - minimum) / step
+
+    if not math.isclose(steps, round(steps), rel_tol=0, abs_tol=1e-8):
+        raise ValueError(
+            f"{ingredient['food_key']} must change in "
+            f"{step}g steps starting from {minimum}g"
+        )
+
+    return grams
+
+def calculate_catalogue_meal(catalogue_id, portion_overrides=None):
     foods, meals = load_catalogue()
     foods_by_key = {food["food_key"]: food for food in foods}
 
@@ -26,6 +61,19 @@ def calculate_catalogue_meal(catalogue_id):
 
     if meal is None:
         raise ValueError(f"Meal not found: {catalogue_id}")
+
+    if portion_overrides is None:
+        portion_overrides = {}
+
+    ingredient_keys = {
+        ingredient["food_key"] for ingredient in meal["ingredients"]
+    }
+
+    unknown_keys = set(portion_overrides) - ingredient_keys
+
+    if unknown_keys:
+        raise ValueError(f"Ingredients not in this meal: {sorted(unknown_keys)}")
+    
 
     totals = {
         "protein_g": 0, 
@@ -43,7 +91,16 @@ def calculate_catalogue_meal(catalogue_id):
         if(food.get ("nutrition_review_status") != "reference_checked" or nutrition is None):
             raise ValueError(f"Nutrition needs review: {food["name"]}")
 
-        portion = calculate_portion(nutrition, ingredient["base_grams"])
+        food_key = ingredient["food_key"]
+        grams = ingredient["base_grams"]
+
+        if food_key in portion_overrides:
+            grams = validate_portion(
+                ingredient,
+                portion_overrides[food_key],
+            )
+
+        portion = calculate_portion(nutrition, grams)
 
         ingredients.append({
             "food_key":food["food_key"],
@@ -68,7 +125,7 @@ def calculate_catalogue_meal(catalogue_id):
         "totals": totals
     }
 
-def build_catalogue_day(breakfast_id, lunch_id, dinner_id):
+def build_catalogue_day(breakfast_id, lunch_id, dinner_id, portion_overrides=None,):
     meals = []
     totals = {
         "protein_g": 0,
@@ -83,8 +140,21 @@ def build_catalogue_day(breakfast_id, lunch_id, dinner_id):
         "dinner": dinner_id,
     }
 
+    if portion_overrides is None:
+        portion_overrides = {}
+
+    unknown_meal_types = set(portion_overrides) - set(selections)
+
+    if unknown_meal_types:
+        raise ValueError(
+            f"Unknown meal types: {sorted(unknown_meal_types)}"
+        )
+
     for meal_type, catalogue_id in selections.items():
-        meal = calculate_catalogue_meal(catalogue_id)
+        meal = calculate_catalogue_meal(
+            catalogue_id,
+            portion_overrides=portion_overrides.get(meal_type),
+        )
 
         if meal["category"] != meal_type:
             raise ValueError(f"{catalogue_id} is not a {meal_type} meal")
@@ -157,6 +227,20 @@ def build_shopping_list(week):
         key=lambda ingredient: ingredient["name"].lower(),
     )
 
+def compare_day_to_targets(day, targets):
+    comparison = {}
+
+    for nutrient, planned in day["totals"].items():
+        target = targets[nutrient]
+
+        comparison[nutrient] = {
+            "target": target,
+            "planned": planned,
+            "difference": planned - target,
+        }
+
+    return comparison
+
 if __name__ == "__main__":
     weekdays = (
         "Monday", "Tuesday", "Wednesday", "Thursday",
@@ -168,6 +252,11 @@ if __name__ == "__main__":
             "breakfast_id": "breakfast-021",
             "lunch_id": "lunch-001",
             "dinner_id": "dinner-021",
+            "portion_overrides": {
+                "lunch": {
+                    "chicken": 200,
+                },
+            },
         }
         for weekday in weekdays
     }
@@ -191,3 +280,44 @@ if __name__ == "__main__":
             f"{ingredient['grams']:.0f}g "
             f"({ingredient['measurement_state']})"
         )
+
+        # Example values for testing, not personal recommendations.
+    targets = {
+        "protein_g": 130,
+        "fat_g": 70,
+        "carbohydrates_g": 210,
+        "energy_kcal": 2000,
+    }
+
+    comparison = compare_day_to_targets(week["days"][0], targets)
+
+    print("\nMonday compared with test targets:")
+    print(json.dumps(comparison, indent=2))    
+
+
+    _, meals = load_catalogue()
+
+    lunch = next(
+        meal for meal in meals
+        if meal["catalogue_id"] == "lunch-001"
+    )
+
+    chicken = next(
+        ingredient for ingredient in lunch["ingredients"]
+        if ingredient["food_key"] == "chicken"
+    )
+
+    print("\nValid chicken quantity:", validate_portion(chicken, 200))
+
+    try:
+        validate_portion(chicken, 205)
+    except ValueError as error:
+        print("Rejected correctly:", error)
+
+    adjusted_meal = calculate_catalogue_meal(
+        "lunch-001",
+        portion_overrides={"chicken": 200},
+    )
+
+    print("\nLunch with 200g chicken:")
+    print(json.dumps(adjusted_meal["totals"], indent=2))
