@@ -128,7 +128,7 @@ def create_tables():
                          )
      ''')
      cursor.execute('''
-     CREATE TABLE IF NOT EXISTS daily_diet_plan(
+     CREATE TABLE IF NOT EXISTS daily_diet_plans(
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          user_id INTEGER NOT NULL,
                          plan_json TEXT NOT NULL,
@@ -137,6 +137,15 @@ def create_tables():
                          )                 
      ''')
      
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS weekly_diet_plans(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         user_id INTEGER NOT NULL,
+                         plan_json TEXT NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         FOREIGN KEY (user_id) REFERENCES users(id)
+                         )
+     ''')
      con.commit()
      con.close()
 

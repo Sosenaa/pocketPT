@@ -61,9 +61,31 @@ user's saved plan, preserving the shared catalogue template. Recalculate portion
 nutrition and cost after a change. Source-backed serving weights will be needed
 for count-based displays such as eggs and bananas.
 
-The current generator has not been switched to these catalogue files. An initial
-review of nine meals is recorded in `review/SAMPLE_REVIEW.md`: six have complete
-base-serving totals, while three await suitable milk, peanuts-only peanut butter
-or canned drained lentil references. Source-checked nutrition is not full meal
-approval. Review the results and pending product choices before implementing a
-catalogue importer or approving entries for generation.
+The app now offers an explicitly labelled **preview week** using breakfast-021,
+lunch-001 and dinner-021, repeated Monday to Sunday. These sample entries have
+source-checked nutrition and provisional test portion limits; they remain drafts,
+not approved meals for dietary/allergen exclusions. The other catalogue entries
+are not automatically selected. No claim of full catalogue approval is made.
+
+`catalog_loader.generate_catalogue_week(targets)` adjusts one meal at a time,
+retaining the other meals' changes, for at most three passes. It is a local search,
+not a guarantee of a global optimum or an exact target match. It reports whether
+each nutrient is within 10% of the requested daily targets. Targets are explicitly
+calculated from the latest saved body details and goal by default; manual values
+are an optional override. See `TARGETS.md` for the equation, app policy and limits.
+
+GET/POST `/api/weeklyDietPlan` saves/loads the week and its combined shopping list
+as a user-owned JSON snapshot in `weekly_diet_plans`. The diet page, today's diet
+card and shopping page use this same saved plan. Old daily-plan records are kept.
+Diet generation makes no AI or USDA requests. Existing training generation still
+uses its original flow.
+
+An initial review of nine meals is recorded in `review/SAMPLE_REVIEW.md`: six have
+complete base-serving totals; three await suitable milk, peanuts-only peanut
+butter or canned drained lentil references. Prices and pack counts remain deferred.
+
+Offline integration checks (temporary database, no API calls):
+
+```powershell
+backend\.venv\Scripts\python.exe -m unittest discover -s backend -p test_weekly_catalogue.py -v
+```

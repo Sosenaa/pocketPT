@@ -3,6 +3,7 @@ from pathlib import Path
 from nutrition import calculate_portion
 import math
 from itertools import product
+from copy import deepcopy
 CATALOGUE_DIR = Path(__file__).resolve().parent / "catalogue"
 
 
@@ -277,34 +278,52 @@ def get_portion_options(ingredient):
     ]
 
 
-def optimise_lunch_portions(breakfast_id, lunch_id, dinner_id, targets):
-    base_day = build_catalogue_day(breakfast_id, lunch_id, dinner_id)
+def optimise_meal_portions(
+    breakfast_id,
+    lunch_id,
+    dinner_id,
+    targets,
+    meal_type="lunch",
+    portion_overrides=None,
+):
+    base_day = build_catalogue_day(
+        breakfast_id, lunch_id, dinner_id, portion_overrides=portion_overrides,
+    )
 
     # Validate targets before searching.
     score_day(base_day, targets)
 
+    meal_ids = {
+        "breakfast": breakfast_id,
+        "lunch": lunch_id,
+        "dinner": dinner_id,
+    }
+
+    if meal_type not in meal_ids:
+        raise ValueError(f"Unknown meal type: {meal_type}")
+
     _, templates = load_catalogue()
     template = next(
         meal for meal in templates
-        if meal["catalogue_id"] == lunch_id
+        if meal["catalogue_id"] == meal_ids[meal_type]
     )
 
-    lunch = next(
+    selected_meal = next(
         meal for meal in base_day["meals"]
-        if meal["meal_type"] == "lunch"
+        if meal["meal_type"] == meal_type
     )
 
     foods = {
         ingredient["food_key"]: ingredient
-        for ingredient in lunch["ingredients"]
+        for ingredient in selected_meal["ingredients"]
     }
 
-    # Breakfast and dinner stay unchanged.
+    # Other meals stay unchanged.
     fixed_totals = {
         nutrient: sum(
             meal["totals"][nutrient]
             for meal in base_day["meals"]
-            if meal["meal_type"] != "lunch"
+            if meal["meal_type"] != meal_type
         )
         for nutrient in base_day["totals"]
     }
@@ -346,7 +365,95 @@ def optimise_lunch_portions(breakfast_id, lunch_id, dinner_id, targets):
 
     return best_overrides
 
+
+def validate_targets(targets):
+    nutrients = ("protein_g", "fat_g", "carbohydrates_g", "energy_kcal")
+    if not isinstance(targets, dict) or set(targets) != set(nutrients):
+        raise ValueError("Provide daily calorie, protein, carbohydrate and fat targets")
+    score_day({"totals": dict.fromkeys(nutrients, 0)}, targets)
+
+
+def generate_catalogue_week(targets):
+    """Build a prototype week from the three source-checked sample meals."""
+    validate_targets(targets)
+    nutrients = ("protein_g", "fat_g", "carbohydrates_g", "energy_kcal")
+
+    meal_ids = ("breakfast-021", "lunch-001", "dinner-021")
+    day = build_catalogue_day(*meal_ids)
+    best_score = score_day(day, targets)
+    overrides = {}
+
+    # Improve one meal at a time, retaining the other meals' adjustments.
+    # This is a bounded local search, not a guarantee of an exact target match.
+    for _ in range(3):
+        previous_score = best_score
+        for meal_type in ("breakfast", "lunch", "dinner"):
+            portions = optimise_meal_portions(
+                *meal_ids, targets, meal_type=meal_type,
+                portion_overrides=overrides,
+            )
+            candidate_overrides = {**overrides, meal_type: portions}
+            candidate = build_catalogue_day(
+                *meal_ids, portion_overrides=candidate_overrides,
+            )
+            candidate_score = score_day(candidate, targets)
+            if candidate_score < best_score:
+                overrides = candidate_overrides
+                day, best_score = candidate, candidate_score
+        if previous_score - best_score < 1e-10:
+            break
+
+    day["target_comparison"] = compare_day_to_targets(day, targets)
+    day["within_target_tolerance"] = all(
+        abs(day["totals"][key] - targets[key]) / targets[key] <= 0.10
+        for key in nutrients
+    )
+    days = []
+    for weekday in (
+        "Monday", "Tuesday", "Wednesday", "Thursday",
+        "Friday", "Saturday", "Sunday",
+    ):
+        entry = deepcopy(day)
+        entry["day_name"] = weekday
+        days.append(entry)
+
+    week = {
+        "schema_version": 1,
+        "plan_name": "Weekly Meal Plan",
+        "status": "draft",
+        "plan_kind": "catalogue_sample_week",
+        "notice": (
+            "Preview using the same three sample meals each day. "
+            "Portion limits are provisional; dietary suitability and allergens "
+            "have not been approved. Targets may not be met within these limits."
+        ),
+        "targets": dict(targets),
+        "days": days,
+        "totals": {
+            key: sum(entry["totals"][key] for entry in days)
+            for key in nutrients
+        },
+    }
+    week["shopping_list"] = build_shopping_list(week)
+    return week
+
 if __name__ == "__main__":
+    # Example targets for testing.
+    targets = {
+        "protein_g": 130,
+        "fat_g": 70,
+        "carbohydrates_g": 210,
+        "energy_kcal": 2000,
+    }
+
+    best_portions = optimise_meal_portions(
+        "breakfast-021",
+        "lunch-001",
+        "dinner-021",
+        targets,
+        meal_type="lunch",
+    )
+
     weekdays = (
         "Monday", "Tuesday", "Wednesday", "Thursday",
         "Friday", "Saturday", "Sunday",
@@ -358,24 +465,26 @@ if __name__ == "__main__":
             "lunch_id": "lunch-001",
             "dinner_id": "dinner-021",
             "portion_overrides": {
-                "lunch": {
-                    "chicken": 200,
-                },
+                "lunch": dict(best_portions),
             },
         }
         for weekday in weekdays
     }
 
     week = build_catalogue_week(selections)
+    shopping_list = build_shopping_list(week)
 
-    # Print a compact summary.
+    print("Optimised lunch portions:")
+    print(json.dumps(best_portions, indent=2))
+
     for day in week["days"]:
-        print(f"{day['day_name']}: {day['totals']['energy_kcal']:.1f} kcal")
+        print(
+            f"{day['day_name']}: "
+            f"{day['totals']['energy_kcal']:.1f} kcal"
+        )
 
     print("\nWeekly totals:")
     print(json.dumps(week["totals"], indent=2))
-
-    shopping_list = build_shopping_list(week)
 
     print("\nWeekly shopping list:")
 
@@ -385,96 +494,3 @@ if __name__ == "__main__":
             f"{ingredient['grams']:.0f}g "
             f"({ingredient['measurement_state']})"
         )
-
-        # Example values for testing, not personal recommendations.
-    targets = {
-        "protein_g": 130,
-        "fat_g": 70,
-        "carbohydrates_g": 210,
-        "energy_kcal": 2000,
-    }
-
-    comparison = compare_day_to_targets(week["days"][0], targets)
-
-    print("\nMonday compared with test targets:")
-    print(json.dumps(comparison, indent=2))    
-
-
-    _, meals = load_catalogue()
-
-    lunch = next(
-        meal for meal in meals
-        if meal["catalogue_id"] == "lunch-001"
-    )
-
-    chicken = next(
-        ingredient for ingredient in lunch["ingredients"]
-        if ingredient["food_key"] == "chicken"
-    )
-
-    print("\nValid chicken quantity:", validate_portion(chicken, 200))
-
-    try:
-        validate_portion(chicken, 205)
-    except ValueError as error:
-        print("Rejected correctly:", error)
-
-    adjusted_meal = calculate_catalogue_meal(
-        "lunch-001",
-        portion_overrides={"chicken": 200},
-    )
-
-    print("\nLunch with 200g chicken:")
-    print(json.dumps(adjusted_meal["totals"], indent=2))
-
-
-    base_day = build_catalogue_day(
-        "breakfast-021",
-        "lunch-001",
-        "dinner-021",
-    )
-
-    adjusted_day = build_catalogue_day(
-        "breakfast-021",
-        "lunch-001",
-        "dinner-021",
-        portion_overrides={
-            "lunch": {"chicken": 200},
-        },
-    )
-
-    print("\nBase day score:", round(score_day(base_day, targets), 4))
-    print("Adjusted day score:", round(score_day(adjusted_day, targets), 4))
-
-    print("\nAvailable lunch portions:")
-
-    for ingredient in lunch["ingredients"]:
-        options = get_portion_options(ingredient)
-
-        print(
-            f"{ingredient['food_key']}: "
-            f"{len(options)} options, "
-            f"{options[0]}g to {options[-1]}g"
-        )
-
-        best_portions = optimise_lunch_portions(
-        "breakfast-021",
-        "lunch-001",
-        "dinner-021",
-        targets,
-    )
-
-    optimised_day = build_catalogue_day(
-        "breakfast-021",
-        "lunch-001",
-        "dinner-021",
-        portion_overrides={"lunch": best_portions},
-    )
-
-    print("\nBest lunch portions:")
-    print(json.dumps(best_portions, indent=2))
-
-    print("\nOptimised daily totals:")
-    print(json.dumps(optimised_day["totals"], indent=2))
-
-    print("Score:", round(score_day(optimised_day, targets), 4))

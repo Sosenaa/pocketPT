@@ -11,8 +11,10 @@ import httpx
 import math
 from nutrition import calculate_portion, extract_nutrition
 from usda import search_usda_foods, get_usda_food
-from diet_storage import save_daily_plan, get_latest_daily_plan
-from meal_planner import generate_candidate_day
+from diet_storage import get_latest_daily_plan
+from diet_storage import save_weekly_plan, get_latest_weekly_plan
+from catalog_loader import generate_catalogue_week, validate_targets
+from nutrition_targets import calculate_nutrition_targets
  
 load_dotenv()
 
@@ -179,46 +181,68 @@ def generate_daily_diet_plan():
 
 
 def create_daily_diet_plan():
-    if not os.getenv("USDA_API_KEY") or not os.getenv("OPENAI_API_KEY"):
-        return jsonify({
-            "error": "Meal generation is not configured"
-        }), 503
+    # Compatibility for existing generation routes; new plans are weekly.
+    return create_weekly_diet_plan()
 
-    user_details = getUserData()
 
-    if user_details is None:
-        return jsonify({
-            "error": "Complete your personal details first"
-        }), 400
+@app.route("/api/weeklyDietPlan", methods=["GET"])
+@login_required
+def get_weekly_diet_plan():
+    saved_plan = get_latest_weekly_plan(session["id"])
+    if saved_plan is None:
+        return jsonify({"error": "No weekly meal plan has been created yet"}), 404
+    return jsonify(saved_plan), 200
 
-    request_text = (
-        "Create a practical day of meals for one person using "
-        "everyday UK supermarket foods. "
-        "Use these personal details and their goal as context: "
-        f"{json.dumps(user_details)}. "
-        "Keep meals straightforward to prepare."
-    )
 
+@app.route("/api/weeklyDietPlan", methods=["POST"])
+@login_required
+def create_weekly_diet_plan():
+    payload = request.get_json(silent=True)
+    if payload is None and not request.content_length:
+        payload = {}
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Provide valid diet settings"}), 400
     try:
-        day = generate_candidate_day(request_text)
-
-    except (OpenAIError, httpx.HTTPError):
+        calculation = resolve_diet_targets(payload)
+        week = generate_catalogue_week(calculation["targets"])
+        week["target_calculation"] = calculation
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 422
+    except RuntimeError:
+        app.logger.exception("Weekly meal generation failed")
         return jsonify({
-            "error": "A food or AI service is unavailable. Please try again."
-        }), 502
-
-    except (ValueError, RuntimeError):
-        app.logger.exception("Daily meal generation failed")
-        return jsonify({
-            "error": "Could not build a complete meal plan. Please try again."
+            "error": "Could not build the plan. Provide positive numbers for all four daily targets."
         }), 422
+    plan_id = save_weekly_plan(session["id"], week)
+    return jsonify({"id": plan_id, "plan": week}), 201
 
-    plan_id = save_daily_plan(session["id"], day)
 
-    return jsonify({
-        "id": plan_id,
-        "plan": day,
-    }), 201
+def resolve_diet_targets(payload):
+    mode = payload.get("target_mode", "manual" if "targets" in payload else "automatic")
+    if mode == "manual":
+        validate_targets(payload.get("targets"))
+        return {"mode": "manual", "targets": dict(payload["targets"])}
+    if mode != "automatic":
+        raise ValueError("Choose automatic or manual nutrition targets.")
+    con = get_db_connection()
+    try:
+        row = con.execute(
+            """SELECT age, weight, height, gender, activity, goal
+               FROM user_details WHERE user_id = ? ORDER BY id DESC LIMIT 1""",
+            (session["id"],),
+        ).fetchone()
+    finally:
+        con.close()
+    return calculate_nutrition_targets(dict(row) if row else None)
+
+
+@app.route("/api/nutritionTargets", methods=["GET"])
+@login_required
+def nutrition_target_preview():
+    try:
+        return jsonify(resolve_diet_targets({})), 200
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 422
 
 
 @app.route("/api/foods/<int:food_id>", methods=["GET"])
@@ -359,7 +383,17 @@ def userDetails():
 @app.route("/api/generateFullPlan", methods=["POST"])
 @login_required
 def generatePlan():
-    print("Generating training plan and USDA daily meal plan")
+    print("Generating training plan and catalogue weekly meal plan")
+
+    payload = request.get_json(silent=True)
+    if payload is None and not request.content_length:
+        payload = {}
+    if not isinstance(payload, dict):
+        return jsonify({"error": "Provide valid diet settings"}), 400
+    try:
+        resolve_diet_targets(payload)
+    except ValueError as error:
+        return jsonify({"error": str(error)}), 422
 
     try:
         training_response = app.make_response(trainingPlanGen())

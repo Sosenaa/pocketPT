@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
 import "../App.css";
+import NutritionTargetFields from "./NutritionTargetFields";
+import type { Nutrition } from "../types/diet";
 const UserForm = () => {
   const navigate = useNavigate();
   const [age, setAge] = useState("");
@@ -13,6 +15,10 @@ const UserForm = () => {
   const [trainingEnvironment, setTrainingEnvironment] = useState("");
   const [loading, setLoading] = useState(false);
   const [action, setAction] = useState("");
+  const [targets, setTargets] = useState<Nutrition>({
+    energy_kcal: 0, protein_g: 0, carbohydrates_g: 0, fat_g: 0,
+  });
+  const [useManualTargets, setUseManualTargets] = useState(false);
 
   useState(() => {
     const CheckAuth = async () => {
@@ -58,13 +64,17 @@ const UserForm = () => {
       }
             if (response.ok) {
         const endpoint =
-          action === "generatedDietPlan" ? "dailyDietPlan" : action;
+          action === "generatedDietPlan" ? "weeklyDietPlan" : action;
 
         const actionResponse = await fetch(
           `${API_BASE_URL}/api/${endpoint}`,
           {
             credentials: "include",
             method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(useManualTargets
+              ? { target_mode: "manual", targets }
+              : { target_mode: "automatic" }),
           },
         );
 
@@ -107,7 +117,7 @@ const UserForm = () => {
       <div className="min-h-screen px-4 py-10 bg-[#080808]">
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <p className="mb-4 text-sm text-slate-300">
-            I am currently working on a plan that is perfectly suited to you
+            Creating your plan…
           </p>
           <div className="spinner-border text-[#C8FF00]" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -285,6 +295,15 @@ const UserForm = () => {
             <div className="text-slate-200 ">
               <h2 className="text-center">Create</h2>
             </div>
+            <p className="text-sm text-slate-300">Diet calories and macros are calculated from your body details, activity and goal. These are starting estimates for adults, not medical prescriptions; they are not intended for pregnancy or breastfeeding.</p>
+            <label className="mb-4 flex items-center gap-2 text-slate-100">
+              <input type="checkbox" checked={useManualTargets}
+                onChange={(event) => setUseManualTargets(event.target.checked)} />
+              Override with my own nutrition targets
+            </label>
+            {useManualTargets && <NutritionTargetFields values={targets} onChange={setTargets}
+              required={action !== "generateTrainingPlan"} />}
+            <p className="text-sm text-slate-300">Diet generation currently creates a preview week using three repeated sample meals. Dietary restrictions and allergens are not supported yet.</p>
             <div className="pt-2 overflow-auto sm:flex ">
               <button
                 type="submit"

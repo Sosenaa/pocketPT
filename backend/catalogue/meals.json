@@ -1198,9 +1198,9 @@
           "base_grams": 100.0,
           "role": "protein",
           "position": 1,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 100,
+          "max_grams": 200,
+          "step_grams": 25,
           "substitution_group": null
         },
         {
@@ -1208,9 +1208,9 @@
           "base_grams": 80.0,
           "role": "vegetable",
           "position": 2,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 80,
+          "max_grams": 80,
+          "step_grams": 20,
           "substitution_group": null
         },
         {
@@ -1218,9 +1218,9 @@
           "base_grams": 60.0,
           "role": "carbohydrate",
           "position": 3,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 40,
+          "max_grams": 120,
+          "step_grams": 10,
           "substitution_group": null
         },
         {
@@ -1228,9 +1228,9 @@
           "base_grams": 5.0,
           "role": "fat",
           "position": 4,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 3,
+          "max_grams": 15,
+          "step_grams": 1,
           "substitution_group": null
         }
       ],
@@ -1252,7 +1252,8 @@
           "olive_oil": "171413"
         },
         "note": "Base-serving nutrition only. Allergen/product suitability, portion adjustment bounds and substitutions remain pending. Not fitted to individual targets."
-      }
+      },
+      "portion_bounds_review_status": "provisional_test_limits"
     },
     {
       "catalogue_id": "breakfast-022",
@@ -7817,9 +7818,9 @@
           "base_grams": 170.0,
           "role": "protein",
           "position": 1,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 100,
+          "max_grams": 250,
+          "step_grams": 10,
           "substitution_group": null
         },
         {
@@ -7827,9 +7828,9 @@
           "base_grams": 250.0,
           "role": "carbohydrate",
           "position": 2,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 150,
+          "max_grams": 350,
+          "step_grams": 25,
           "substitution_group": null
         },
         {
@@ -7837,9 +7838,9 @@
           "base_grams": 180.0,
           "role": "vegetable",
           "position": 3,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 180,
+          "max_grams": 180,
+          "step_grams": 20,
           "substitution_group": null
         },
         {
@@ -7847,9 +7848,9 @@
           "base_grams": 15.0,
           "role": "flavouring",
           "position": 4,
-          "min_grams": null,
-          "max_grams": null,
-          "step_grams": null,
+          "min_grams": 15,
+          "max_grams": 15,
+          "step_grams": 5,
           "substitution_group": null
         }
       ],
@@ -7871,7 +7872,8 @@
           "lemon": "167747"
         },
         "note": "Base-serving nutrition only. Allergen/product suitability, portion adjustment bounds and substitutions remain pending. Not fitted to individual targets."
-      }
+      },
+      "portion_bounds_review_status": "provisional_test_limits"
     },
     {
       "catalogue_id": "dinner-022",

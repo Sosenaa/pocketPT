@@ -1,54 +1,24 @@
-import { API_BASE_URL } from "../api";
-import ShoppingList from "./ShoppingList";
-import { useState, useEffect } from "react";
-import {combineIngredients} from "../helpers/shoppingList";
+import { Link } from "react-router-dom";
+import { useWeeklyDiet } from "../hooks/useWeeklyDiet";
 
-type Ingredient = {
-    name: string;
-    amount: string; 
-};
-
-type Diet = {
-  diet_name: string;
-  diet_days:{
-    diet_day:string;
-    meal:{
-      meal_name:string;
-      ingredients:Ingredient[];
-    }[];
-  }[];
-}
-
-const ShoppingListPage = () => {
-const [diet, setDiet] = useState<Diet|null>(null);
-
-useEffect(() => {
-  const fetchDietData = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/getDietPlan`,{
-        credentials: 'include',
-      });
-      const data: Diet = await response.json();
-      setDiet(data);
-    } catch (error) {
-      console.error('Error fetching diet data:', error);
-    }
-  };
-
-  void fetchDietData();
-}, []);
-
-const ingredients =
-  diet?.diet_days.flatMap((day) =>
-    day.meal.flatMap((meal) => meal.ingredients),
-  ) ?? [];
-
-
+export default function ShoppingListPage() {
+  const { diet, loading, error } = useWeeklyDiet();
   return (
-    <div>
-      <ShoppingList ingredients={combineIngredients(ingredients)} />
-    </div>
-  )
+    <main className="min-h-screen bg-[#080808] px-4 py-8 text-slate-100">
+      <div className="mx-auto max-w-4xl">
+        <h1 className="text-3xl text-[#c8ff00]">Weekly Shopping List</h1>
+        <Link to="/DietPlan" className="!text-[#c8ff00]">Back to meal plan</Link>
+        {loading ? <p role="status">Loading shopping list…</p> : error ? <p role="alert">{error}</p> : !diet ? <p className="mt-4">Create a weekly meal plan first.</p> : <>
+          <p className="mt-4 text-slate-300">Required ingredient weights for all seven days. Pack sizes and prices are not included yet.</p>
+          <p className="text-sm text-slate-400">Egg weights exclude shells; fruit and other ingredients use the edible portion. Liquids are weighed in grams.</p>
+          <ul className="mt-4 list-none divide-y divide-[#2a2a2e] rounded-sm border border-[#2a2a2e] bg-[#111] px-5">
+            {diet.shopping_list.map((item) => <li key={item.food_key} className="flex justify-between gap-4 py-4">
+              <span>{item.name}<small className="ml-2 text-slate-400">({item.measurement_state.replaceAll("_", " ")})</small></span>
+              <span className="shrink-0">{item.grams.toFixed(0)} g</span>
+            </li>)}
+          </ul>
+        </>}
+      </div>
+    </main>
+  );
 }
-
-export default ShoppingListPage
