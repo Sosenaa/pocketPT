@@ -127,6 +127,15 @@ def create_tables():
                          FOREIGN KEY (meal_id) REFERENCES meal(id) ON DELETE CASCADE
                          )
      ''')
+     cursor.execute('''
+     CREATE TABLE IF NOT EXISTS daily_diet_plan(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         user_id INTEGER NOT NULL,
+                         plan_json TEXT NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         FOREIGN KEY (user_id) REFERENCES users(id)
+                         )                 
+     ''')
      
      con.commit()
      con.close()

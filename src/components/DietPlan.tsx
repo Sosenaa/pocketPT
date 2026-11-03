@@ -1,122 +1,167 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
 
-type Ingredients = {
-  name: string;
-  amount: string;
+type Nutrition = {
+  protein_g: number | null;
+  fat_g: number | null;
+  carbohydrates_g: number | null;
+  energy_kcal: number | null;
 };
 
-type Meals = {
+type Ingredient = {
+  selected_food: {
+    id: number;
+    description: string;
+  };
+  portion: {
+    portion_grams: number;
+  };
+};
+
+type Meal = {
   meal_name: string;
-  ingredients: Ingredients[];
+  meal_type: string;
+  ingredients: Ingredient[];
+  totals: Nutrition;
 };
 
-type DietDay = {
-  diet_day: string;
-  total_meals: string;
-  meal: Meals[];
+type DailyPlan = {
+  plan_name: string;
+  meals: Meal[];
+  totals: Nutrition;
 };
 
-type Diet = {
-  diet_name: string;
-  diet_days: DietDay[];
-};
+function formatValue(value: number | null) {
+  return value === null ? "—" : value.toFixed(1);
+}
+
+function NutritionSummary({ totals }: { totals: Nutrition }) {
+  return (
+    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-300">
+      <span>Energy: {formatValue(totals.energy_kcal)} kcal</span>
+      <span>Protein: {formatValue(totals.protein_g)} g</span>
+      <span>Carbs: {formatValue(totals.carbohydrates_g)} g</span>
+      <span>Fat: {formatValue(totals.fat_g)} g</span>
+    </div>
+  );
+}
 
 const DietPlan = () => {
-  const [diet, setDiet] = useState<Diet | null>(null);
-  const [cardIndex, setCardIndex] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [diet, setDiet] = useState<DailyPlan | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchDiet = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/getDietPlan`, {
+        const response = await fetch(`${API_BASE_URL}/api/dailyDietPlan`, {
           credentials: "include",
-          method: "GET",
+          signal: controller.signal,
         });
+
         if (response.status === 401) {
+          navigate("/Login");
           return;
         }
-        if (!response.ok) {
-          throw new Error("Failed to fetch diet plan");
+
+        if (response.status === 404) {
+          return;
         }
-        const data = await response.json();
-        console.log(data);
-        setDiet(data);
+
+        if (!response.ok) {
+          throw new Error("Could not load your daily meal plan");
+        }
+
+        const data: { plan: DailyPlan } = await response.json();
+
+        if (!controller.signal.aborted) {
+          setDiet(data.plan);
+        }
       } catch (err) {
-        console.log(err);
+        if (!controller.signal.aborted) {
+          setError(
+            err instanceof Error ? err.message : "Could not load your plan",
+          );
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
-    fetchDiet();
-  }, []);
 
-  const showMeal = (dayIndex: number, mealIndex: number) => {
-    const key = `${dayIndex}-${mealIndex}`;
-    setCardIndex((prev) => (prev === key ? null : key));
-  };
+    void fetchDiet();
+
+    return () => controller.abort();
+  }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-[#080808] sm:px-4 sm:py-10 ">
+    <main className="min-h-screen bg-[#080808] px-4 py-8 text-slate-100">
       <div className="mx-auto max-w-4xl">
-        <div className="rounded-sm border-2 border-[#2a2a2e] bg-[#111] sm:p-6 shadow-xl pt-6">
-          <div className="mb-8 text-center text-slate-100">
-            {diet ? (
-              <>
-                <h1 className="text-3xl font-bold">{diet.diet_name}</h1>
-                {diet.diet_days.map((day, index) => (
-                  <div
-                    key={index}
-                    className="overflow-hidden rounded-sm border-2 border-[#2a2a2a] bg-[#0E0E0E] my-4"
-                  >
-                    <div className="flex border-b-2 border-[#2a2a2a] bg-[#111] px-5 py-4 justify-between">
-                      <div>
-                        <div className="text-[#c8ff00]">
-                          <h2 className="text-xl font-semibold text-left">
-                            {day.diet_day}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                    {day.meal.map((meal, mealIndex) => (
-                      <div key={mealIndex} className="hover:bg-[#2a2a2a] py-2">
-                        <div className="flex items-center justify-between ">
-                          <p className="text-lg text-left px-5 m-0 py-2 font-semibold ">
-                            {meal.meal_name}
-                          </p>
-                          <button
-                            onClick={() => showMeal(index, mealIndex)}
-                            className="px-5 text-right font-light"
-                          >
-                            {cardIndex === `${index}-${mealIndex}`
-                              ? `Hide ▲`
-                              : `Show ▼`}
-                          </button>
-                        </div>
-                        {cardIndex === `${index}-${mealIndex}` &&
-                          meal.ingredients.map((ing, ingIndex) => (
-                            <div
-                              key={ingIndex}
-                              className="grid grid-cols-2 border-b border-[#2a2a2e] font-light"
-                            >
-                              <p className="pl-5 pt-4 text-md font-light text-slate-100">
-                                {ing.name}
-                              </p>
-                              <p className="pl-5 pt-4 text-md font-light text-slate-100">
-                                {ing.amount}
-                              </p>
-                            </div>
-                          ))}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <h1>No diet</h1>
-            )}
+        {loading ? (
+          <p role="status">Loading your meal plan…</p>
+        ) : error ? (
+          <p role="alert">{error}</p>
+        ) : !diet ? (
+          <div>
+            <h1 className="text-3xl text-[#c8ff00]">Daily Meal Plan</h1>
+            <p>You haven’t created a daily meal plan yet.</p>
+            <Link to="/UserForm" className="!text-[#c8ff00]">
+              Create a plan
+            </Link>
           </div>
-        </div>
+        ) : (
+          <>
+            <h1 className="mb-6 text-3xl font-bold text-[#c8ff00]">
+              {diet.plan_name}
+            </h1>
+
+            <section className="mb-6 rounded-sm border border-[#2a2a2e] bg-[#111] p-5">
+              <h2 className="text-xl">Daily totals</h2>
+              <NutritionSummary totals={diet.totals} />
+            </section>
+
+            {diet.meals.map((meal) => (
+              <section
+                key={meal.meal_type}
+                className="mb-4 rounded-sm border border-[#2a2a2e] bg-[#111] p-5"
+              >
+                <p className="mb-1 text-sm uppercase text-[#c8ff00]">
+                  {meal.meal_type}
+                </p>
+
+                <h2 className="text-xl">{meal.meal_name}</h2>
+                <NutritionSummary totals={meal.totals} />
+
+                <details className="mt-4">
+                  <summary className="cursor-pointer text-[#c8ff00]">
+                    Ingredients and quantities
+                  </summary>
+
+                  <ul className="m-0 mt-3 list-none divide-y divide-[#2a2a2e] p-0">
+                    {meal.ingredients.map((ingredient, index) => (
+                      <li
+                        key={`${ingredient.selected_food.id}-${index}`}
+                        className="flex justify-between gap-4 py-3"
+                      >
+                        <span>{ingredient.selected_food.description}</span>
+                        <span className="shrink-0">
+                          {ingredient.portion.portion_grams} g
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              </section>
+            ))}
+          </>
+        )}
       </div>
-    </div>
+    </main>
   );
 };
 

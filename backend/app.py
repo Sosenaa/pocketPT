@@ -4,13 +4,15 @@ from database import get_db_connection, create_tables
 import os
 from dotenv import load_dotenv
 from functools import wraps
-from openai import OpenAI
+from openai import OpenAI, OpenAIError
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import httpx
 import math
 from nutrition import calculate_portion, extract_nutrition
 from usda import search_usda_foods, get_usda_food
+from diet_storage import save_daily_plan, get_latest_daily_plan
+from meal_planner import generate_candidate_day
  
 load_dotenv()
 
@@ -157,6 +159,68 @@ def search_food():
         "total_results": data.get("totalHits", 0),
     }),200
 
+
+@app.route("/api/dailyDietPlan", methods=["GET"])
+@login_required
+def get_daily_diet_plan():
+    saved_plan = get_latest_daily_plan(session["id"])
+
+    if saved_plan is None:
+        return jsonify({
+            "error": "No daily meal plan has been created yet"
+        }), 404
+
+    return jsonify(saved_plan), 200
+
+@app.route("/api/dailyDietPlan", methods=["POST"])
+@login_required
+def generate_daily_diet_plan():
+    return create_daily_diet_plan()
+
+
+def create_daily_diet_plan():
+    if not os.getenv("USDA_API_KEY") or not os.getenv("OPENAI_API_KEY"):
+        return jsonify({
+            "error": "Meal generation is not configured"
+        }), 503
+
+    user_details = getUserData()
+
+    if user_details is None:
+        return jsonify({
+            "error": "Complete your personal details first"
+        }), 400
+
+    request_text = (
+        "Create a practical day of meals for one person using "
+        "everyday UK supermarket foods. "
+        "Use these personal details and their goal as context: "
+        f"{json.dumps(user_details)}. "
+        "Keep meals straightforward to prepare."
+    )
+
+    try:
+        day = generate_candidate_day(request_text)
+
+    except (OpenAIError, httpx.HTTPError):
+        return jsonify({
+            "error": "A food or AI service is unavailable. Please try again."
+        }), 502
+
+    except (ValueError, RuntimeError):
+        app.logger.exception("Daily meal generation failed")
+        return jsonify({
+            "error": "Could not build a complete meal plan. Please try again."
+        }), 422
+
+    plan_id = save_daily_plan(session["id"], day)
+
+    return jsonify({
+        "id": plan_id,
+        "plan": day,
+    }), 201
+
+
 @app.route("/api/foods/<int:food_id>", methods=["GET"])
 @login_required
 def get_food(food_id):
@@ -295,18 +359,26 @@ def userDetails():
 @app.route("/api/generateFullPlan", methods=["POST"])
 @login_required
 def generatePlan():
-    print("Workout on full plan")
-    trainingPlanGen()
-    dietPlanGen()
-    return jsonify({"message": "Full plan has been created"}), 201
+    print("Generating training plan and USDA daily meal plan")
+
+    try:
+        training_response = app.make_response(trainingPlanGen())
+    except OpenAIError:
+        return jsonify({
+            "error": "Could not generate the training plan. Please try again."
+        }), 502
+
+    if training_response.status_code >= 400:
+        return training_response
+
+    return create_daily_diet_plan()
+
 
 
 @app.route("/api/generateDietPlan", methods=["POST"])
 @login_required
 def generateDietPlan():
-    print("Workout on diet plan")
-    dietPlanGen()
-    return jsonify({"message": "Diet plan has been created"}), 201    
+    return create_daily_diet_plan() 
 
 
 @app.route("/api/generateTrainingPlan", methods=["POST"])
@@ -334,6 +406,11 @@ def getUserData():
             ud.activity
         FROM user_details ud
         WHERE user_id = ?""", (user_id,)).fetchone()
+
+    con.close()
+
+    if user_details is None:
+        return None
     
     user = { 
         "age": user_details["age"],

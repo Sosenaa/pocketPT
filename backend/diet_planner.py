@@ -386,6 +386,12 @@ def propose_day(request_text):
             "Each food_request must identify the food precisely, "
             "including its raw, cooked or dry state where relevant. "
             "Do not invent USDA IDs or nutrition values."
+            "Each food_request must identify one specific grocery ingredient. "
+            "Avoid unspecified mixtures such as mixed salad leaves, "
+            "mixed vegetables, mixed berries or salad mix. "
+            "List their individual ingredients separately with gram amounts. "
+            "For example, use 'Romaine lettuce, raw' and 'Spinach, raw' "
+            "instead of 'mixed salad leaves'. "
         ),
         input=request_text,
         text={

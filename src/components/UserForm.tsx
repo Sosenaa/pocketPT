@@ -56,29 +56,48 @@ const UserForm = () => {
         navigate("/Login");
         return;
       }
-      if (response.ok) {
-        const actionResponse = await fetch(`${API_BASE_URL}/api/${action}`, {
-          credentials: "include",
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+            if (response.ok) {
+        const endpoint =
+          action === "generatedDietPlan" ? "dailyDietPlan" : action;
+
+        const actionResponse = await fetch(
+          `${API_BASE_URL}/api/${endpoint}`,
+          {
+            credentials: "include",
+            method: "POST",
           },
-        });
+        );
+
         const actionData = await actionResponse.json();
-        console.log(actionData);
-        if (actionResponse.ok) {
-          if (action === "generateDietPlan") {
-            navigate("/DietPlan");
-          } else {
-            navigate("/Plan");
-          }
+
+        if (actionResponse.status === 401) {
+          navigate("/Login");
+          return;
+        }
+
+        if (!actionResponse.ok) {
+          throw new Error(
+            actionData.error || "Could not generate your plan",
+          );
+        }
+
+        if (action === "generatedDietPlan") {
+          navigate("/DietPlan");
+        } else {
+          navigate("/Plan");
         }
       } else {
-        alert(data.error);
+        throw new Error(data.error || "Could not save your details");
       }
     } catch (error) {
       console.error(error);
-    } finally {
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while creating your plan",
+      );
+    }finally {
       setLoading(false);
     }
   };
@@ -280,7 +299,7 @@ const UserForm = () => {
                 type="submit"
                 name="action"
                 value={action}
-                onClick={() => setAction("generateDietPlan")}
+                onClick={() => setAction("generatedDietPlan")}
                 className="w-full rounded-sm bg-[#C8FF00] px-5 py-3 m-2  text-md font-medium text-[#080808] shadow-md transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 mx-2"
               >
                 Just Diet Plan
