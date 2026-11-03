@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from nutrition import calculate_portion
 import math
-
+from itertools import product
 CATALOGUE_DIR = Path(__file__).resolve().parent / "catalogue"
 
 
@@ -241,6 +241,111 @@ def compare_day_to_targets(day, targets):
 
     return comparison
 
+def score_day(day, targets):
+    score = 0
+
+    for nutrient, planned in day["totals"].items():
+        target = targets[nutrient]
+
+        if (
+            isinstance(target, bool)
+            or not isinstance(target, (int, float))
+            or not math.isfinite(target)
+            or target <= 0
+        ):
+            raise ValueError(f"Target must be positive: {nutrient}")
+
+        relative_difference = (planned - target) / target
+        score += relative_difference ** 2
+
+    return score
+
+def get_portion_options(ingredient):
+    minimum = validate_portion(
+        ingredient,
+        ingredient.get("min_grams"),
+    )
+
+    maximum = ingredient["max_grams"]
+    step = ingredient["step_grams"]
+
+    number_of_steps = math.floor((maximum - minimum) / step)
+
+    return [
+        minimum + index * step
+        for index in range(number_of_steps + 1)
+    ]
+
+
+def optimise_lunch_portions(breakfast_id, lunch_id, dinner_id, targets):
+    base_day = build_catalogue_day(breakfast_id, lunch_id, dinner_id)
+
+    # Validate targets before searching.
+    score_day(base_day, targets)
+
+    _, templates = load_catalogue()
+    template = next(
+        meal for meal in templates
+        if meal["catalogue_id"] == lunch_id
+    )
+
+    lunch = next(
+        meal for meal in base_day["meals"]
+        if meal["meal_type"] == "lunch"
+    )
+
+    foods = {
+        ingredient["food_key"]: ingredient
+        for ingredient in lunch["ingredients"]
+    }
+
+    # Breakfast and dinner stay unchanged.
+    fixed_totals = {
+        nutrient: sum(
+            meal["totals"][nutrient]
+            for meal in base_day["meals"]
+            if meal["meal_type"] != "lunch"
+        )
+        for nutrient in base_day["totals"]
+    }
+
+    keys = []
+    options = []
+
+    for ingredient in template["ingredients"]:
+        key = ingredient["food_key"]
+        keys.append(key)
+
+        options.append([
+            (grams, calculate_portion(foods[key]["nutrition"], grams))
+            for grams in get_portion_options(ingredient)
+        ])
+
+    if math.prod(len(choices) for choices in options) > 100_000:
+        raise ValueError("Too many combinations for this prototype search")
+
+    best_score = math.inf
+    best_overrides = None
+
+    for combination in product(*options):
+        totals = {
+            nutrient: fixed_totals[nutrient] + sum(
+                portion[nutrient] for _, portion in combination
+            )
+            for nutrient in fixed_totals
+        }
+
+        score = score_day({"totals": totals}, targets)
+
+        if score < best_score:
+            best_score = score
+            best_overrides = dict(zip(
+                keys,
+                (grams for grams, _ in combination),
+            ))
+
+    return best_overrides
+
 if __name__ == "__main__":
     weekdays = (
         "Monday", "Tuesday", "Wednesday", "Thursday",
@@ -321,3 +426,55 @@ if __name__ == "__main__":
 
     print("\nLunch with 200g chicken:")
     print(json.dumps(adjusted_meal["totals"], indent=2))
+
+
+    base_day = build_catalogue_day(
+        "breakfast-021",
+        "lunch-001",
+        "dinner-021",
+    )
+
+    adjusted_day = build_catalogue_day(
+        "breakfast-021",
+        "lunch-001",
+        "dinner-021",
+        portion_overrides={
+            "lunch": {"chicken": 200},
+        },
+    )
+
+    print("\nBase day score:", round(score_day(base_day, targets), 4))
+    print("Adjusted day score:", round(score_day(adjusted_day, targets), 4))
+
+    print("\nAvailable lunch portions:")
+
+    for ingredient in lunch["ingredients"]:
+        options = get_portion_options(ingredient)
+
+        print(
+            f"{ingredient['food_key']}: "
+            f"{len(options)} options, "
+            f"{options[0]}g to {options[-1]}g"
+        )
+
+        best_portions = optimise_lunch_portions(
+        "breakfast-021",
+        "lunch-001",
+        "dinner-021",
+        targets,
+    )
+
+    optimised_day = build_catalogue_day(
+        "breakfast-021",
+        "lunch-001",
+        "dinner-021",
+        portion_overrides={"lunch": best_portions},
+    )
+
+    print("\nBest lunch portions:")
+    print(json.dumps(best_portions, indent=2))
+
+    print("\nOptimised daily totals:")
+    print(json.dumps(optimised_day["totals"], indent=2))
+
+    print("Score:", round(score_day(optimised_day, targets), 4))
