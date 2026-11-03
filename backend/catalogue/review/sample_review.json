@@ -1,0 +1,112 @@
+{
+  "reviewed_on": "2026-11-03",
+  "source": "USDA FoodData Central",
+  "sample_meals": [
+    {
+      "catalogue_id": "breakfast-001",
+      "name": "Banana and Peanut Butter Porridge",
+      "category": "breakfast",
+      "base_nutrition": null,
+      "missing_food_keys": [
+        "milk",
+        "peanut_butter"
+      ]
+    },
+    {
+      "catalogue_id": "breakfast-021",
+      "name": "Eggs with Spinach and Wholemeal Toast",
+      "category": "breakfast",
+      "base_nutrition": {
+        "energy_kcal": 356.8,
+        "protein_g": 22.318,
+        "carbohydrates_g": 29.249999999999996,
+        "fat_g": 16.922
+      },
+      "missing_food_keys": []
+    },
+    {
+      "catalogue_id": "breakfast-035",
+      "name": "Avocado and Chickpea Toast",
+      "category": "breakfast",
+      "base_nutrition": {
+        "energy_kcal": 406.4,
+        "protein_g": 16.634999999999998,
+        "carbohydrates_g": 57.854,
+        "fat_g": 13.889999999999999
+      },
+      "missing_food_keys": []
+    },
+    {
+      "catalogue_id": "lunch-001",
+      "name": "Chicken with Brown Rice and Broccoli",
+      "category": "lunch",
+      "base_nutrition": {
+        "energy_kcal": 516.85433715,
+        "protein_g": 42.719635000000004,
+        "carbohydrates_g": 63.086565,
+        "fat_g": 10.7252
+      },
+      "missing_food_keys": []
+    },
+    {
+      "catalogue_id": "lunch-031",
+      "name": "Chickpea and Quinoa Salad",
+      "category": "lunch",
+      "base_nutrition": {
+        "energy_kcal": 490.3,
+        "protein_g": 19.906,
+        "carbohydrates_g": 77.29299999999999,
+        "fat_g": 12.8275
+      },
+      "missing_food_keys": []
+    },
+    {
+      "catalogue_id": "lunch-045",
+      "name": "Egg and Avocado Sandwich",
+      "category": "lunch",
+      "base_nutrition": {
+        "energy_kcal": 474.40000000000003,
+        "protein_g": 26.207,
+        "carbohydrates_g": 48.51,
+        "fat_g": 20.33
+      },
+      "missing_food_keys": []
+    },
+    {
+      "catalogue_id": "dinner-021",
+      "name": "Salmon with Potatoes and Broccoli",
+      "category": "dinner",
+      "base_nutrition": {
+        "energy_kcal": 605.2,
+        "protein_g": 44.5175,
+        "carbohydrates_g": 56.046,
+        "fat_g": 23.687
+      },
+      "missing_food_keys": []
+    },
+    {
+      "catalogue_id": "dinner-035",
+      "name": "Lentil and Kidney Bean Chilli Bowl",
+      "category": "dinner",
+      "base_nutrition": null,
+      "missing_food_keys": [
+        "lentils"
+      ]
+    },
+    {
+      "catalogue_id": "dinner-050",
+      "name": "Cottage Cheese and Lentil Potato Bowl",
+      "category": "dinner",
+      "base_nutrition": null,
+      "missing_food_keys": [
+        "lentils"
+      ]
+    }
+  ],
+  "checked_food_count": 23,
+  "pending_food_keys": [
+    "milk",
+    "peanut_butter",
+    "lentils"
+  ]
+}

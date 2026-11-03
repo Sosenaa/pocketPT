@@ -1,0 +1,2297 @@
+{
+  "schema_version": 1,
+  "status": "draft",
+  "foods": [
+    {
+      "food_key": "oats",
+      "name": "Rolled oats",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": "usda",
+      "source_food_id": "2346396",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 13.49645,
+        "fat_g": 5.89,
+        "carbohydrates_g": 68.65755,
+        "energy_kcal": 378.866123,
+        "energy_nutrient_id": 2048
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Oats, whole grain, rolled, old fashioned",
+      "source_data_type": "Foundation",
+      "source_url": "https://fdc.nal.usda.gov/food-details/2346396/nutrients",
+      "source_snapshot": "review/sources/2346396.json",
+      "source_snapshot_sha256": "65665cbaeb84e3b91c7503f8fbfe647ea4cac66c7df76c0be3bcfbafbc0e0d7d",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "rice",
+      "name": "Brown rice",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": "usda",
+      "source_food_id": "2512380",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 7.25305,
+        "fat_g": 3.306,
+        "carbohydrates_g": 76.68795,
+        "energy_kcal": 368.3584745,
+        "energy_nutrient_id": 2048
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Rice, brown, long grain, unenriched, raw",
+      "source_data_type": "Foundation",
+      "source_url": "https://fdc.nal.usda.gov/food-details/2512380/nutrients",
+      "source_snapshot": "review/sources/2512380.json",
+      "source_snapshot_sha256": "72aa741d14e25216122a598c9f6824c32245b40f5be9890f436b6f82436c9e99",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "white_rice",
+      "name": "White rice",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "pasta",
+      "name": "Wholewheat pasta",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "quinoa",
+      "name": "Quinoa",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": "usda",
+      "source_food_id": "168874",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 14.12,
+        "fat_g": 6.07,
+        "carbohydrates_g": 64.16,
+        "energy_kcal": 368.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Quinoa, uncooked",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/168874/nutrients",
+      "source_snapshot": "review/sources/168874.json",
+      "source_snapshot_sha256": "64d6ac74fdf1d7f46ebef90f5921d40c8300b7a4e69d2fc339ac0f79ae454a62",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "couscous",
+      "name": "Couscous",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "buckwheat",
+      "name": "Buckwheat groats",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "bread",
+      "name": "Wholemeal bread (generic commercial reference)",
+      "food_group": "grains_starches",
+      "measurement_state": "as_sold",
+      "source": "usda",
+      "source_food_id": "172688",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 12.45,
+        "fat_g": 3.5,
+        "carbohydrates_g": 42.71,
+        "energy_kcal": 252.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Bread, whole-wheat, commercially prepared",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/172688/nutrients",
+      "source_snapshot": "review/sources/172688.json",
+      "source_snapshot_sha256": "85b708979c09561fb9c8b6d30426c808d32affa92cabbddc363709cfda2ec118",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Generic commercial whole-wheat bread reference; not an exact UK product. Verify actual product formulation and allergens before exclusion-based use."
+    },
+    {
+      "food_key": "sourdough",
+      "name": "Sourdough bread",
+      "food_group": "grains_starches",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "wrap",
+      "name": "Wholewheat tortilla",
+      "food_group": "grains_starches",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "potato",
+      "name": "Potato, flesh and skin",
+      "food_group": "grains_starches",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "170026",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 2.05,
+        "fat_g": 0.09,
+        "carbohydrates_g": 17.49,
+        "energy_kcal": 77.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Potatoes, flesh and skin, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/170026/nutrients",
+      "source_snapshot": "review/sources/170026.json",
+      "source_snapshot_sha256": "59ad4fe8225c1ffc582dc90cee536178c712fe3c4d098a37f464c342bd1c2e53",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Raw flesh and skin reference; catalogue quantities include edible skin."
+    },
+    {
+      "food_key": "sweet_potato",
+      "name": "Sweet potato, edible portion",
+      "food_group": "grains_starches",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "flour",
+      "name": "Wholewheat flour",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "egg_noodles",
+      "name": "Egg noodles",
+      "food_group": "grains_starches",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "milk",
+      "name": "Semi-skimmed milk",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "nutrition_review_status": "pending",
+      "source_match_notes": "Pending: a US 2% reduced-fat milk record is not an exact reference for unspecified UK semi-skimmed milk."
+    },
+    {
+      "food_key": "yogurt",
+      "name": "Plain Greek yogurt",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cottage",
+      "name": "Cottage cheese, creamed (4.3g fat/100g reference)",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": "usda",
+      "source_food_id": "172179",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 11.12,
+        "fat_g": 4.3,
+        "carbohydrates_g": 3.38,
+        "energy_kcal": 98.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Cheese, cottage, creamed, large or small curd",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/172179/nutrients",
+      "source_snapshot": "review/sources/172179.json",
+      "source_snapshot_sha256": "790c84beb60687b5b8ba3fedacef36dfc4be12f3a6bc441f8ddf27d977c931a8",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Creamed cottage-cheese reference with 4.3 g fat per 100 g; not interchangeable with all low-fat cottage cheeses. Product dietary suitability remains unknown."
+    },
+    {
+      "food_key": "quark",
+      "name": "Plain quark",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "feta",
+      "name": "Feta cheese",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "halloumi",
+      "name": "Halloumi cheese",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cheddar",
+      "name": "Cheddar cheese",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "mozzarella",
+      "name": "Mozzarella cheese",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "soy_milk",
+      "name": "Unsweetened soya drink",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "soy_yogurt",
+      "name": "Plain soya yogurt alternative",
+      "food_group": "dairy_alternatives",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "egg",
+      "name": "Whole chicken egg, without shell",
+      "food_group": "eggs",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "171287",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 12.56,
+        "fat_g": 9.51,
+        "carbohydrates_g": 0.72,
+        "energy_kcal": 143.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Egg, whole, raw, fresh",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/171287/nutrients",
+      "source_snapshot": "review/sources/171287.json",
+      "source_snapshot_sha256": "4023068f6158fe776f4a24edfc478af3b391c0d14356ea490ff7ceee2f54f4aa",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "egg_white",
+      "name": "Chicken egg white",
+      "food_group": "eggs",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "chicken",
+      "name": "Chicken breast, boneless, skinless",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "2646170",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 22.525,
+        "fat_g": 1.934,
+        "carbohydrates_g": 0,
+        "energy_kcal": 112.20227,
+        "energy_nutrient_id": 2048
+      },
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Chicken, breast, boneless, skinless, raw",
+      "source_data_type": "Foundation",
+      "source_url": "https://fdc.nal.usda.gov/food-details/2646170/nutrients",
+      "source_snapshot": "review/sources/2646170.json",
+      "source_snapshot_sha256": "669706af719af5dccccc4a13ce7aa809d166125319ae1576d8b78413dc92ede4",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "chicken_thigh",
+      "name": "Chicken thigh, boneless, skinless",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "turkey",
+      "name": "Turkey breast, boneless, skinless",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "turkey_mince",
+      "name": "Lean turkey mince",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "beef",
+      "name": "Lean beef strips",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "beef_mince",
+      "name": "Lean beef mince",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "pork",
+      "name": "Pork tenderloin",
+      "food_group": "meat_poultry",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": false
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "salmon",
+      "name": "Atlantic salmon, farmed, boneless",
+      "food_group": "fish_seafood",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "175167",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 20.42,
+        "fat_g": 13.42,
+        "carbohydrates_g": 0.0,
+        "energy_kcal": 208.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Fish, salmon, Atlantic, farmed, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/175167/nutrients",
+      "source_snapshot": "review/sources/175167.json",
+      "source_snapshot_sha256": "911fef29233d788fac4a7c2c0977c786b723c354a031138e3c9c517e20b21fd8",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Atlantic farmed salmon reference; not interchangeable with all salmon species or wild salmon."
+    },
+    {
+      "food_key": "cod",
+      "name": "Cod fillet, boneless",
+      "food_group": "fish_seafood",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "prawns",
+      "name": "Prawns, peeled",
+      "food_group": "fish_seafood",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "tuna",
+      "name": "Tuna canned in spring water",
+      "food_group": "fish_seafood",
+      "measurement_state": "drained",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "sardines",
+      "name": "Sardines canned in oil, edible portion",
+      "food_group": "fish_seafood",
+      "measurement_state": "drained",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "smoked_salmon",
+      "name": "Smoked salmon",
+      "food_group": "fish_seafood",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": false,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "tofu",
+      "name": "Plain firm tofu",
+      "food_group": "beans_lentils",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "lentils",
+      "name": "Lentils, canned",
+      "food_group": "beans_lentils",
+      "measurement_state": "drained",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "nutrition_review_status": "pending",
+      "source_match_notes": "Pending: canned drained lentils have not been matched. Boiled lentils are not silently substituted."
+    },
+    {
+      "food_key": "chickpeas",
+      "name": "Chickpeas, canned",
+      "food_group": "beans_lentils",
+      "measurement_state": "drained",
+      "source": "usda",
+      "source_food_id": "173800",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 7.05,
+        "fat_g": 2.77,
+        "carbohydrates_g": 22.53,
+        "energy_kcal": 139.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, drained solids",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/173800/nutrients",
+      "source_snapshot": "review/sources/173800.json",
+      "source_snapshot_sha256": "f321e3c49ef23e3de83e6e34afcc009db7e3b443cc293697469c18ee2937172e",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Canned chickpeas, drained solids; not dry, boiled-from-dry, solids-and-liquid, or drained-and-rinsed records."
+    },
+    {
+      "food_key": "kidney_beans",
+      "name": "Red kidney beans, canned",
+      "food_group": "beans_lentils",
+      "measurement_state": "drained",
+      "source": "usda",
+      "source_food_id": "174285",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 7.98,
+        "fat_g": 1.05,
+        "carbohydrates_g": 21.49,
+        "energy_kcal": 124.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Beans, kidney, red, mature seeds, canned, drained solids",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/174285/nutrients",
+      "source_snapshot": "review/sources/174285.json",
+      "source_snapshot_sha256": "ee015ec358186af2bae017f40a18de0de9cf83758e2e8953a54c4a00c2848a6f",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Canned red kidney beans, drained solids; not the separately listed drained-and-rinsed record."
+    },
+    {
+      "food_key": "black_beans",
+      "name": "Black beans, canned",
+      "food_group": "beans_lentils",
+      "measurement_state": "drained",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "white_beans",
+      "name": "Cannellini beans, canned",
+      "food_group": "beans_lentils",
+      "measurement_state": "drained",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "edamame",
+      "name": "Edamame, shelled",
+      "food_group": "beans_lentils",
+      "measurement_state": "frozen",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "peas",
+      "name": "Green peas",
+      "food_group": "vegetables",
+      "measurement_state": "frozen",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "spinach",
+      "name": "Spinach",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "168462",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 2.86,
+        "fat_g": 0.39,
+        "carbohydrates_g": 3.63,
+        "energy_kcal": 23.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Spinach, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/168462/nutrients",
+      "source_snapshot": "review/sources/168462.json",
+      "source_snapshot_sha256": "22ff08d227b15df3970ea497ae61dd50472689a56f17c81ae9e3a8c90b90338f",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "broccoli",
+      "name": "Broccoli",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "747447",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 2.57,
+        "fat_g": 0.34,
+        "carbohydrates_g": 6.27,
+        "energy_kcal": 31.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Broccoli, raw",
+      "source_data_type": "Foundation",
+      "source_url": "https://fdc.nal.usda.gov/food-details/747447/nutrients",
+      "source_snapshot": "review/sources/747447.json",
+      "source_snapshot_sha256": "188158c408184bc19dbda482dc91a5c4b6947e9390cb31a06ee46513c5e5351b",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "tomato",
+      "name": "Red ripe tomatoes",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "170457",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 0.88,
+        "fat_g": 0.2,
+        "carbohydrates_g": 3.89,
+        "energy_kcal": 18.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Tomatoes, red, ripe, raw, year round average",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/170457/nutrients",
+      "source_snapshot": "review/sources/170457.json",
+      "source_snapshot_sha256": "a9725eab69c69f8f3a30431bb41f4004910318efb9b88653106a34edf78f4fed",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "pepper",
+      "name": "Red bell pepper",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "2258590",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 0.895625,
+        "fat_g": 0.1256,
+        "carbohydrates_g": 6.653175,
+        "energy_kcal": 26.98843175,
+        "energy_nutrient_id": 2048
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Peppers, bell, red, raw",
+      "source_data_type": "Foundation",
+      "source_url": "https://fdc.nal.usda.gov/food-details/2258590/nutrients",
+      "source_snapshot": "review/sources/2258590.json",
+      "source_snapshot_sha256": "97e182d037010b67d9f0657aaee68af0229c56aa7c2a678d2e31d716e8a0ebe1",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "carrot",
+      "name": "Carrot, edible portion",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "courgette",
+      "name": "Courgette",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "mushroom",
+      "name": "White mushrooms",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "lettuce",
+      "name": "Romaine lettuce",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "169247",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 1.23,
+        "fat_g": 0.3,
+        "carbohydrates_g": 3.29,
+        "energy_kcal": 17.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Lettuce, cos or romaine, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/169247/nutrients",
+      "source_snapshot": "review/sources/169247.json",
+      "source_snapshot_sha256": "c17bcf5fe3fa0787cf19624349f7568846e1a94f5c71dd580a92260637c24957",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "cucumber",
+      "name": "Cucumber, with peel",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "168409",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 0.65,
+        "fat_g": 0.11,
+        "carbohydrates_g": 3.63,
+        "energy_kcal": 15.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Cucumber, with peel, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/168409/nutrients",
+      "source_snapshot": "review/sources/168409.json",
+      "source_snapshot_sha256": "739a2281168daac8312e15a1c72fdc2e76a7ed6f692745d0d82d81766c357cb0",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Raw cucumber with peel reference."
+    },
+    {
+      "food_key": "onion",
+      "name": "Onion, edible portion",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cauliflower",
+      "name": "Cauliflower",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "green_beans",
+      "name": "Green beans",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cabbage",
+      "name": "White cabbage",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "kale",
+      "name": "Kale",
+      "food_group": "vegetables",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "beetroot",
+      "name": "Plain cooked beetroot",
+      "food_group": "vegetables",
+      "measurement_state": "cooked",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "sweetcorn",
+      "name": "Sweetcorn, canned",
+      "food_group": "vegetables",
+      "measurement_state": "drained",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "banana",
+      "name": "Banana, peeled",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "173944",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 1.09,
+        "fat_g": 0.33,
+        "carbohydrates_g": 22.84,
+        "energy_kcal": 89.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Bananas, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/173944/nutrients",
+      "source_snapshot": "review/sources/173944.json",
+      "source_snapshot_sha256": "8105c016aa227ede0ae38394f643904151816fdb216dfc86124a0f4374ef6f01",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "apple",
+      "name": "Apple, core removed",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "pear",
+      "name": "Pear, core removed",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "blueberry",
+      "name": "Blueberries",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "strawberry",
+      "name": "Strawberries, hulled",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "raspberry",
+      "name": "Raspberries",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "orange",
+      "name": "Orange, peeled",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "kiwi",
+      "name": "Kiwi fruit, peeled",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "mango",
+      "name": "Mango flesh",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "pineapple",
+      "name": "Pineapple flesh",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "avocado",
+      "name": "Avocado flesh",
+      "food_group": "fruit",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "171705",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 2.0,
+        "fat_g": 14.66,
+        "carbohydrates_g": 8.53,
+        "energy_kcal": 160.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Avocados, raw, all commercial varieties",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/171705/nutrients",
+      "source_snapshot": "review/sources/171705.json",
+      "source_snapshot_sha256": "8c21b85a6e6cc743e9493cb275e85ee776e37b7df6fbf49cea3df506421b24e6",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "raisins",
+      "name": "Raisins",
+      "food_group": "fruit",
+      "measurement_state": "dried",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "almonds",
+      "name": "Almonds",
+      "food_group": "nuts_seeds",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "walnuts",
+      "name": "Walnuts",
+      "food_group": "nuts_seeds",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "chia",
+      "name": "Chia seeds",
+      "food_group": "nuts_seeds",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "flax",
+      "name": "Ground flaxseed",
+      "food_group": "nuts_seeds",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "pumpkin_seeds",
+      "name": "Pumpkin seeds",
+      "food_group": "nuts_seeds",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "sunflower_seeds",
+      "name": "Sunflower seeds",
+      "food_group": "nuts_seeds",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "peanut_butter",
+      "name": "Peanut butter, peanuts only",
+      "food_group": "nuts_seeds",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "nutrition_review_status": "pending",
+      "source_match_notes": "Pending: broad USDA peanut-butter descriptions do not establish the requested peanuts-only formulation."
+    },
+    {
+      "food_key": "tahini",
+      "name": "Tahini, sesame only",
+      "food_group": "nuts_seeds",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "olive_oil",
+      "name": "Olive oil",
+      "food_group": "oils_fats",
+      "measurement_state": "as_sold",
+      "source": "usda",
+      "source_food_id": "171413",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 0.0,
+        "fat_g": 100.0,
+        "carbohydrates_g": 0.0,
+        "energy_kcal": 884.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Oil, olive, salad or cooking",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/171413/nutrients",
+      "source_snapshot": "review/sources/171413.json",
+      "source_snapshot_sha256": "959a23ed3fa5adea12f7424a80ecc535d7838a97601428b5b7b78cc07cd8b835",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "honey",
+      "name": "Honey",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": false,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "maple",
+      "name": "Pure maple syrup",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cocoa",
+      "name": "Unsweetened cocoa powder",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cinnamon",
+      "name": "Ground cinnamon",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "lemon",
+      "name": "Lemon juice, raw",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "raw",
+      "source": "usda",
+      "source_food_id": "167747",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 0.35,
+        "fat_g": 0.24,
+        "carbohydrates_g": 6.9,
+        "energy_kcal": 22.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Lemon juice, raw",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/167747/nutrients",
+      "source_snapshot": "review/sources/167747.json",
+      "source_snapshot_sha256": "d437936ada55ea65586126abd047378ac78a74a4098cf2e53957b6d85ff1f532",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Raw lemon juice reference, weighed in grams."
+    },
+    {
+      "food_key": "soy_sauce",
+      "name": "Soy sauce",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "tinned_tomato",
+      "name": "Red ripe tomatoes, canned, diced",
+      "food_group": "vegetables",
+      "measurement_state": "as_sold",
+      "source": "usda",
+      "source_food_id": "333281",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 0.84,
+        "fat_g": 0.5,
+        "carbohydrates_g": 3.32,
+        "energy_kcal": 18.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Tomatoes, canned, red, ripe, diced",
+      "source_data_type": "Foundation",
+      "source_url": "https://fdc.nal.usda.gov/food-details/333281/nutrients",
+      "source_snapshot": "review/sources/333281.json",
+      "source_snapshot_sha256": "411456cdd6733a0a31460b4017ab75151954deb1deccc62d02cb2f750e439028",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Reviewed generic food reference with matching food identity and measurement state; not a specific retailer product."
+    },
+    {
+      "food_key": "tomato_puree",
+      "name": "Tomato puree",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "as_sold",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "garlic",
+      "name": "Garlic, peeled",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "ginger",
+      "name": "Root ginger, edible portion",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "raw",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "paprika",
+      "name": "Ground paprika",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    },
+    {
+      "food_key": "cumin",
+      "name": "Ground cumin",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "dry",
+      "source": "usda",
+      "source_food_id": "170923",
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": {
+        "basic_grams": 100,
+        "protein_g": 17.81,
+        "fat_g": 22.27,
+        "carbohydrates_g": 44.24,
+        "energy_kcal": 375.0,
+        "energy_nutrient_id": 1008
+      },
+      "dietary_suitability": {
+        "vegan": true,
+        "vegetarian": true,
+        "pescatarian": true
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft",
+      "source_description": "Spices, cumin seed",
+      "source_data_type": "SR Legacy",
+      "source_url": "https://fdc.nal.usda.gov/food-details/170923/nutrients",
+      "source_snapshot": "review/sources/170923.json",
+      "source_snapshot_sha256": "e91c4bd52d8eef19c6f3e090b2614359d308b1d532adbd76149b70903a87312d",
+      "nutrition_review_status": "reference_checked",
+      "nutrition_reviewed_on": "2026-11-03",
+      "source_match_notes": "Generic cumin-seed composition reference for ground cumin; no formulation-specific seasoning blend."
+    },
+    {
+      "food_key": "curry",
+      "name": "Curry powder",
+      "food_group": "sauces_seasonings",
+      "measurement_state": "dry",
+      "source": null,
+      "source_food_id": null,
+      "nutrition_basis": {
+        "quantity": 100,
+        "unit": "g"
+      },
+      "nutrition": null,
+      "dietary_suitability": {
+        "vegan": null,
+        "vegetarian": null,
+        "pescatarian": null
+      },
+      "allergen_review_status": "pending",
+      "verification_status": "draft"
+    }
+  ]
+}
